@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../App/old-app/views/User.js", "../../../app/routes/user.tsx"],
+  "sourcesContent": ["export default function User(){\r\n  return(\r\n    <div>\r\n      <h1>Usuarios</h1>\r\n      <p>This is where you will be able to manage Users</p>\r\n    </div>\r\n  )\r\n}", "// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app\\\\routes\\\\user.tsx\"\n);\nimport.meta.hot.lastModified = \"1715554559941.6602\";\n}\n// REMIX HMR END\n\nexport {default} from \"App/old-app/views/User\";"],
+  "mappings": ";;;;;;;;;;;;;AAGM;AAHS,SAAR,OAAuB;AAC5B,SACE,mDAAC,SACC;AAAA,uDAAC,QAAG,wBAAJ;AAAA;AAAA;AAAA;AAAA,WAAY;AAAA,IACZ,mDAAC,OAAE,8DAAH;AAAA;AAAA;AAAA;AAAA,WAAiD;AAAA,OAFnD;AAAA;AAAA;AAAA;AAAA,SAGA;AAEJ;;;ACLA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;",
+  "names": []
+}

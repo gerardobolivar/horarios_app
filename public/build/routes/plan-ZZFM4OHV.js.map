@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../App/old-app/views/Planes.tsx", "../../../app/routes/plan.tsx"],
+  "sourcesContent": ["\r\nexport default function Planes(){\r\n  return (\r\n    <div>\r\n      <h1> Planes de estudio</h1>\r\n      <p>This is where you will be able to manage curriculums</p>\r\n    </div>\r\n  )\r\n}", "// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app\\\\routes\\\\plan.tsx\"\n);\nimport.meta.hot.lastModified = \"1715554366357.5269\";\n}\n// REMIX HMR END\n\nexport {default} from \"App/old-app/views/Planes\";"],
+  "mappings": ";;;;;;;;;;;;;AAIM;AAHS,SAAR,SAAyB;AAC9B,SACE,mDAAC,SACC;AAAA,uDAAC,QAAG,kCAAJ;AAAA;AAAA;AAAA;AAAA,WAAsB;AAAA,IACtB,mDAAC,OAAE,oEAAH;AAAA;AAAA;AAAA;AAAA,WAAuD;AAAA,OAFzD;AAAA;AAAA;AAAA;AAAA,SAGA;AAEJ;;;ACNA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;",
+  "names": []
+}

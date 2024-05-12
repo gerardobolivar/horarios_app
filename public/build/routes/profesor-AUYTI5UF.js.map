@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../App/old-app/views/Profesor.js", "../../../app/routes/profesor.tsx"],
+  "sourcesContent": ["export default function Profesor(){\r\n  return(\r\n    <div>\r\n      <h1>Profesores</h1>\r\n      <p>This is where you will be able to manage teachers</p>\r\n    </div>\r\n  )\r\n}", "// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app\\\\routes\\\\profesor.tsx\"\n);\nimport.meta.hot.lastModified = \"1715554534432.537\";\n}\n// REMIX HMR END\n\nexport {default} from \"App/old-app/views/Profesor\";"],
+  "mappings": ";;;;;;;;;;;;;AAGM;AAHS,SAAR,WAA2B;AAChC,SACE,mDAAC,SACC;AAAA,uDAAC,QAAG,0BAAJ;AAAA;AAAA;AAAA;AAAA,WAAc;AAAA,IACd,mDAAC,OAAE,iEAAH;AAAA;AAAA;AAAA;AAAA,WAAoD;AAAA,OAFtD;AAAA;AAAA;AAAA;AAAA,SAGA;AAEJ;;;ACLA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;",
+  "names": []
+}

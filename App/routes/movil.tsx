@@ -1,0 +1,1 @@
+export {default} from "App/old-app/views/Movil";

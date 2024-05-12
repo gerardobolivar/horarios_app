@@ -1,0 +1,31 @@
+{
+  "type": "module",
+  "name": "horarios_app",
+  "version": "1.0.0",
+  "description": "Sistema para la gestión de horarios de cursos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "remix build",
+    "dev": "remix dev",
+    "start": "remix-serve build/index.js"
+  },
+  "keywords": [
+    "Horarios"
+  ],
+  "author": "Gerardo Vargas Fernández",
+  "license": "ISC",
+  "dependencies": {
+    "@remix-run/node": "^2.9.2",
+    "@remix-run/react": "^2.9.2",
+    "@remix-run/serve": "^2.9.2",
+    "bootstrap": "^5.3.3",
+    "isbot": "^5.1.6"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.9.2",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
+    "vite-tsconfig-paths": "^4.3.2"
+  }
+}
