@@ -5,7 +5,6 @@ export default function Aula() {
   const data = useLoaderData<typeof loader>();
   let string = data.name
   let capitalizedNAme = string.charAt(0).toUpperCase() + string.slice(1);
-  console.log(data);
   
   
   return (
