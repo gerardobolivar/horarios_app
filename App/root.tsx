@@ -4,7 +4,7 @@ import {
   Scripts,
   Meta,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import appStyles from './old-app/Styles/app.css';
 import bootstrap from "bootstrap/dist/css/bootstrap.css";
 import MainLayout from "./old-app/Layouts/Main";
@@ -27,7 +27,6 @@ export default function App() {
         <meta name="description" content="Web site for managing courses inscriptions" />
         <meta name="author" content="Gerardo Vargas Fernández" />
         <meta name="email" content="geramena102@gmail.com" />
-        <title> Sistema de Horarios</title>
         <Links />
         <Meta />
       </head>
@@ -41,3 +40,10 @@ export default function App() {
     </html>
   )
 }
+
+export const meta: MetaFunction = ({location}) => {
+  let token = location.pathname == "/" ? "HOME" : location.pathname.split("/").pop();  
+  return [
+    { title:  `SISTEMA DE HORARIOS | ${token?.toUpperCase()}` }
+  ];
+};

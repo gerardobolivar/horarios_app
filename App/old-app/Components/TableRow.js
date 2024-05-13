@@ -44,7 +44,7 @@ export default function TableRow(props) {
 }
 
 function DataCell({ props, children }) {
-  let debug = true;
+  let debug = false;
   function handleClick() {
     if (debug) { console.log("Click en celda con id: " + props.id) }
   }

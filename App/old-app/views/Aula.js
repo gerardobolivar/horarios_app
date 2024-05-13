@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router-dom";
 
 export default function Aula() {
   const data = useLoaderData();
-  console.log(data)
+  //console.log(data)
   let string = data.name
   let capitalizedNAme = string.charAt(0).toUpperCase() + string.slice(1);
   return (
@@ -19,7 +19,6 @@ export default function Aula() {
 const AulaLoader = async () => {
   //Some fetch call here...
   let randInt = Math.floor(Math.random()*500)+1;
-  console.log(randInt);
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/'+randInt)
   return res
 }
