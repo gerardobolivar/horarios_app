@@ -8,12 +8,11 @@ export default function Planes(){
   const tag = "Planes de estudio";
 
   return (
-    <div className="container-sm border border-primary ">
+    <div className="container-sm">
       <MainTitle innerText={tag}/>
-      <div className="whiteContainer d-flex justify-content-around">
+      <div className="whiteContainer container d-flex ">
         <PlanCard innerText="nombre_plan" url="/plan/1" active={true} />
-        <PlanCard innerText="Agregar" url="/plan/edit" active={true} />
-
+        <PlanCard innerText="+" url="/plan/new" active={true} />
       </div>
     </div>
   )

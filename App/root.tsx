@@ -3,6 +3,8 @@ import {
   Links,
   Scripts,
   Meta,
+  json,
+  useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import appStyles from './old-app/Styles/app.css';
@@ -17,6 +19,8 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+
+    
   return (
     <html lang="es-013">
       <head>
@@ -41,9 +45,17 @@ export default function App() {
   )
 }
 
-export const meta: MetaFunction = ({location}) => {
-  let token = location.pathname == "/" ? "HOME" : location.pathname.split("/").pop();  
+export const meta: MetaFunction = ({params}) => {
+  const datas = useLoaderData<typeof loader>();
+  console.log(params);
+  console.log(datas);
+  
+  let title = "asd";
   return [
-    { title:  `SISTEMA DE HORARIOS | ${token?.toUpperCase()}` }
+    { title:  `${datas.appName} | ${title?.toUpperCase()}` }
   ];
 };
+
+export async function loader() {
+  return json({appName:process.env.APP_NAME})
+}

@@ -1,5 +1,5 @@
 body{
-  background-color: #D9D9D9 !important ;
+  background-color: #D9D9D9 !important ;  
 }
 
 .infoText {
@@ -74,8 +74,17 @@ body{
 }
 .planCard{
   background-color: #ffffff !important;
-  width: 18rem;
+  width: 10rem;
   height: 10rem !important;
+  margin-left: 25px;
+}
+
+.cardBody{
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #204C6F !important;
 }
 
 .planCard > div{
@@ -85,7 +94,9 @@ body{
   margin: auto;
 }
 
-
+.cardTitle{
+  font-size:  1.2rem !important;
+}
 
 .disableLink{
   pointer-events: none;
@@ -100,6 +111,7 @@ body{
   background-color: #FFFFFF;
   height: 50vmin;
   padding-top: 5vmin;
+  border-radius: 50px;
 }
 
 /*Development purposes*/
