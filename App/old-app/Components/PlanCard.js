@@ -6,7 +6,7 @@ export default function PlanCard(props) {
   let isActive = props.active
   return (
     <Link to={href} className={!isActive ? "disableLink noDecoration" : "noDecoration"}>
-      <div className=" planCard">
+      <div className="planCard">
         <div className="card-body cardBody">
           <h5 className="cardTitle">{title}</h5>
         </div>

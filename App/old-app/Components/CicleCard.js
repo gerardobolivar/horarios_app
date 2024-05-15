@@ -6,9 +6,9 @@ export default function CicleCard(props) {
   let isActive = props.active
   return (
     <Link to={href} className={!isActive ? "disableLink noDecoration" : "noDecoration"}>
-      <div className="card cicleCard">
-        <div className="card-body">
-          <h5 className="card-title">{title}</h5>
+      <div className="cicleCard">
+        <div className="cardBody">
+          <h5 className="cardTitle">{title}</h5>
         </div>
       </div>
     </Link>

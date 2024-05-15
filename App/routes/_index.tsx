@@ -9,7 +9,7 @@ export default function HomeAdmin(){
 return (
   <div className="">
     <MainTitle innerText="Horarios"/>
-    <div className="Panel d-flex justify-content-around">
+    <div className="planCardContainer">
       <CicleCard innerText="Ciclo I" url="form" active={false} ></CicleCard>
       <CicleCard innerText="Ciclo II" url="horario" active={true} ></CicleCard>
       <CicleCard innerText="Ciclo III" url="form" active={false} ></CicleCard>
