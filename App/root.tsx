@@ -45,16 +45,17 @@ export default function App() {
   )
 }
 
-export const meta: MetaFunction = ({params}) => {
-  const datas = useLoaderData<typeof loader>();
-  console.log(params);
-  console.log(datas);
-  
-  let title = "asd";
-  return [
-    { title:  `${datas.appName} | ${title?.toUpperCase()}` }
-  ];
-};
+export const meta: MetaFunction = ({location}) => {
+  const data = useLoaderData<typeof loader>();
+  const isHome = location.pathname === "/"
+  if(isHome){
+    return [
+      { title:  `${data.appName} | HOME` }
+    ];
+  }else{
+    return [];
+  }
+}
 
 export async function loader() {
   return json({appName:process.env.APP_NAME})
