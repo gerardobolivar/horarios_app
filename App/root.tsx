@@ -20,7 +20,7 @@ export const links: LinksFunction = () => [
 
 export default function App() {
 
-    
+
   return (
     <html lang="es-013">
       <head>
@@ -36,7 +36,7 @@ export default function App() {
       </head>
       <body>
         <div id="root">
-          <MainLayout/>
+          <MainLayout />
           <Outlet />
           <Scripts />
         </div>
@@ -45,18 +45,18 @@ export default function App() {
   )
 }
 
-export const meta: MetaFunction = ({location}) => {
+export const meta: MetaFunction = ({ location }) => {
   const data = useLoaderData<typeof loader>();
   const isHome = location.pathname === "/"
-  if(isHome){
+  if (isHome) {
     return [
-      { title:  `${data.appName} | HOME` }
+      { title: `${data.appName} | HOME` }
     ];
-  }else{
+  } else {
     return [];
   }
 }
 
 export async function loader() {
-  return json({appName:process.env.APP_NAME})
+  return json({ appName: process.env.APP_NAME })
 }
