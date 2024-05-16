@@ -12,15 +12,12 @@ import bootstrap from "bootstrap/dist/css/bootstrap.css";
 import MainLayout from "./old-app/Layouts/Main";
 
 
-
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: bootstrap },
 ];
 
 export default function App() {
-
-
   return (
     <html lang="es-013">
       <head>

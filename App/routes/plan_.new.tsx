@@ -1,7 +1,17 @@
+import { Form } from "@remix-run/react";
+
 export default function PlanNew() {
   return (
     <div>
-      <h1>This would be a form to create a new "Plan"</h1>
+      <Form>
+        <p>
+          <input type="text" name="nombre" placeholder="Nombre del plan de estudios" />
+        </p>
+        <label>
+          Código
+          <input type="text" name="codigo" placeholder="Código" />
+        </label>
+      </Form>
     </div>
   )
 }
