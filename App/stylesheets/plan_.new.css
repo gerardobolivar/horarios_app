@@ -1,0 +1,89 @@
+.inputTitle {
+  border: 0;
+  background-color: transparent;
+  color: #204C6F !important;
+  font-size: 40px;
+  text-overflow: ellipsis;
+  margin-left: 0;
+
+}
+
+.inputTitle::placeholder {
+  color: #204C6F;
+  font-style: italic;
+}
+
+/*Trying to remove border when writting in the input*/
+.inputTitle:focus {
+  border: 0 !important;
+  outline: 0;
+}
+
+[data-tooltip]::after {
+  content: attr(title);
+  display: none;
+  position: absolute;
+  background-color: #000;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 999;
+}
+
+.whiteContainer {
+  padding: 20px;
+  border-radius: 25px;
+  height: auto !important;
+}
+
+.whiteContainer>div {
+  background-color: #d9d9d9;
+  margin-bottom: 20px;
+}
+
+.whiteContainer>div>label {
+  font-weight: bold;
+  color: #204C6F;
+  margin: 10px;
+}
+
+.whiteContainer>div>label>input {
+  margin-left: 5px !important;
+  all: unset;
+  color: black;
+}
+
+.whiteContainer>div>label>input::placeholder {
+  font-style: italic;
+}
+
+.whiteContainer>div>.whiteContainer {
+  border-radius: 12.5px;
+  margin: 10px;
+}
+
+.whiteContainer>div>span>button:first-child {
+  margin-left: 10px;
+}
+
+.whiteContainer>div>span>button,[type="submit"]{ 
+  border-radius: 50px;
+  margin-bottom: 10px;
+  background-color: #204C6F;
+  color: #fff;
+  width: 15vmin;
+  border:none;
+  font-weight: bold;
+}
+.whiteContainer>div>span>button:active{
+  scale: 1.1;
+}
+
+.whiteContainer>div>span>:not(button:last-child){
+  margin-right: 10px;
+}
+
+[type="submit"]{
+  margin-top: 20px;
+}
