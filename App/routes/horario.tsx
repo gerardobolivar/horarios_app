@@ -1,11 +1,11 @@
 import { LinksFunction, json, MetaFunction } from "@remix-run/node";
-import TableBody from "App/old-app/Components/TableBody";
-import TableHeader from "App/old-app/Components/TableHeader";
-import Navbar from "App/old-app/Components/NavBarAn";
-import { Meta, useLoaderData } from "@remix-run/react";
+import TableBody from "~/old-app/Components/TableBody";
+import TableHeader from "~/old-app/Components/TableHeader";
+import Navbar from "~/old-app/Components/NavBarAn";
+import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import dataCells from "App/old-app/data";
-import horarioStyles from "../old-app/Styles/horario.css";
+import dataCells from "~/old-app/data";
+import  horarioStyles from "../old-app/Styles/horario.css?url";
 
 function MainTitle({ titleText = "Mi horario" }) {
   return (

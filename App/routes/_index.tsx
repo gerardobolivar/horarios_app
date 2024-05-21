@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
-import MainTitle from "App/old-app/Components/MainTitle";
-import CicleCard from "App/old-app/Components/CicleCard";
-//export {default} from "App/old-app/views/admin/home";
+import MainTitle from "~/old-app/Components/MainTitle";
+import CicleCard from "~/old-app/Components/CicleCard";
+//export {default} from "~/old-app/views/admin/home";
 
 export default function HomeAdmin(){
   //Some relevant logic in here  

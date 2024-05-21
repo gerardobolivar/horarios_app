@@ -1,3 +1,4 @@
+/*
 import { Route, Routes } from "react-router-dom";
 import MainLayout from "./Layouts/Main";
 import Planes from "./views/Planes";
@@ -32,3 +33,4 @@ export default function App() {
     </div>
   )
 }
+*/

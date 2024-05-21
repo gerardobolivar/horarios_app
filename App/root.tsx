@@ -7,8 +7,8 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import appStyles from './old-app/Styles/app.css';
-import bootstrap from "bootstrap/dist/css/bootstrap.css";
+import appStyles from "./old-app/Styles/app.css?url";
+import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import MainLayout from "./old-app/Layouts/Main";
 
 

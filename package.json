@@ -5,10 +5,11 @@
   "description": "Sistema para la gestión de horarios de cursos",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "remix build",
-    "dev": "remix dev",
-    "start": "remix-serve build/index.js"
+    "build": "remix vite:build",
+    "dev": "remix vite:dev",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "start": "remix-serve ./build/server/index.js",
+    "typecheck": "tsc"
   },
   "keywords": [
     "Horarios"

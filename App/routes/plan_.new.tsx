@@ -1,8 +1,8 @@
 import { ActionFunctionArgs, LinksFunction, redirect } from "@remix-run/node";
 import { Form, json, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import appStyles from '../stylesheets/plan_.new.css';
-import icons from "bootstrap-icons/font/bootstrap-icons.css";
+import appStyles from '../stylesheets/plan_.new.css?url';
+import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 
 
 export default function PlanNew() {

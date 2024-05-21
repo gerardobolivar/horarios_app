@@ -1,3 +1,4 @@
+/*
 import dataCells from "./data";
 import Horario from "./Components/Horario";
 import ReactDOM from 'react-dom/client';
@@ -18,4 +19,4 @@ const login = {
   type: "user",
   isAdmin: true
 }
-
+*/
