@@ -1,4 +1,4 @@
-import { Link, Outlet} from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function NavBar() {
   const stateData = { name: "Nombre Apellido" };
@@ -12,10 +12,10 @@ export default function NavBar() {
         </a>
       </nav>
       <nav className="navbar d-flex flex-row metaNavBar">
-          <Link to="/" className="noDecoration navbar-brand d-flex"><p>Sistema de Horarios</p></Link>
+        <Link to="/" className="noDecoration navbar-brand d-flex"><p>Sistema de Horarios</p></Link>
       </nav>
       <hr className="hr divider"></hr>
-      <nav className="navbar navbar-expand-lg mainNavBarmenu">
+      <nav className="navbar navbar-expand-lg mainNavBarmenu ">
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
           <li>
             <Link to="/plan" className="navbar-brand d-flex nav-item" >Planes de estudio</Link>
