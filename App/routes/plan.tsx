@@ -19,8 +19,7 @@ export default function Planes() {
 }
 
 export const loader = async () => {
-  console.log(process.env.APP_NAME)
-  return process.env.APP_NAME || null;
+    return json({appName: process.env.APP_NAME}) || "Horarios";
 }
 
 export const meta: MetaFunction = () => {

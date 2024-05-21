@@ -1,11 +1,4 @@
-import {
-  Outlet,
-  Links,
-  Scripts,
-  Meta,
-  json,
-  useLoaderData,
-} from "@remix-run/react";
+import { Outlet, Links, Scripts, Meta, json, useLoaderData,} from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import appStyles from "./old-app/Styles/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
@@ -55,5 +48,8 @@ export const meta: MetaFunction = ({ location }) => {
 }
 
 export async function loader() {
-  return json({ appName: process.env.APP_NAME })
+  const ENVIROMENT = import.meta.env.MODE ? import.meta.env.VITE_APP_NAME : process.env.APP_NAME;
+  return json({ appName: ENVIROMENT })
 }
+
+//TRYING TO GET ACCESS TO ENV VARIABLES FROM PRODUCTION
