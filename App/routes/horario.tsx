@@ -3,7 +3,6 @@ import Navbar from "~/old-app/Components/NavBarAn";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import dataCells from "~/old-app/data";
-import  horarioStyles from "../old-app/Styles/horario.css?url";
 
 function MainTitle({ titleText = "Mi horario" }) {
   return (
@@ -21,8 +20,8 @@ function MainTitle({ titleText = "Mi horario" }) {
     const [tableDataState, setTableDataState] = useState(tableData);
     return (
       <>
-        <div className="schedule-container">
-          <MainTitle />
+        <div className="">
+          <MainTitle titleText="Horario"/>
         </div>
       </>
     );
@@ -38,5 +37,4 @@ export const loader = async () => {
 }
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: horarioStyles },
 ];

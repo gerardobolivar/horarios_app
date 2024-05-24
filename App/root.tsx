@@ -16,7 +16,7 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <link rel="icon" href="favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1,  maximum-scale=1.0, user-scalable=0" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="Web site for managing courses inscriptions" />
         <meta name="author" content="Gerardo Vargas Fernández" />
@@ -25,7 +25,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div id="root">
+        <div id="root" className="container-lg">
           <MainLayout />
           <Outlet />
           <ScrollRestoration />
