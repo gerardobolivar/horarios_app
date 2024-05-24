@@ -15,20 +15,27 @@ export default function TableRow(props) {
       let multiDataCell = [];
       dataCell.forEach((element, elementIndex) => {
         multiDataCell.push(
+
           <DataCell
             props={{ className: isTimeCell ? "time-cell" : "td-cell", id: token, colspan: amountCourses, index: elementIndex }}
-            key={"cell" + timeIndex + j}
+            key={crypto.randomUUID()}
           >
             {element.cname}
           </DataCell>
         );
       });
-      listaCeldas.push(<td className="td-parent">{multiDataCell}</td>)
+      listaCeldas.push(
+        <table key={crypto.randomUUID()}>
+          <th>
+          <tr key={crypto.randomUUID()} className="td-parent">{multiDataCell}</tr>
+          </th>
+        </table>  
+      )
     } else {
       listaCeldas.push(
         <DataCell
           props={{ className: isTimeCell ? "time-cell" : "td-cell", id: token, colspan: amountCourses }}
-          key={"cell" + timeIndex + j}
+          key={crypto.randomUUID()}
         >
           {isTimeCell ? timeRow : ""}
         </DataCell>
@@ -38,7 +45,7 @@ export default function TableRow(props) {
 
   return (
     <>
-      <tr>{listaCeldas}</tr>
+      <tr key={crypto.randomUUID()}>{listaCeldas}</tr>
     </>
   );
 }
@@ -54,8 +61,13 @@ function DataCell({ props, children }) {
       id={props.id + props.index}
       onClick={handleClick}
       colSpan={props.colspan}
+      key={crypto.randomUUID()}
     >
       {children}
     </td>
   )
 }
+
+
+
+//Solving the table bugs

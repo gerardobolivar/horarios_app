@@ -27,7 +27,7 @@ function TableBody({ tableState }) {
               timeIndex={timeIndex}
               timeRow={timeRow}
               tableState = {tableState}
-              key={"row" + timeIndex}
+              key={crypto.randomUUID()}
             />
           );
   });

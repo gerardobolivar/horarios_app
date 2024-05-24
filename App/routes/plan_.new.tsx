@@ -13,14 +13,14 @@ export default function PlanNew() {
   //const [codigoPlan, setCondigoPlan] = useState("");
 
   let cursos = Object.values(listaCursos.cursos).map(curso => {
-    return <li key={curso.slice(0, 6)}>{curso}</li>
+    return <li key={crypto.randomUUID()}>{curso}</li>
   })
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
       ? setNombrePlan(event.currentTarget.value)
       : setNombrePlan(DEFAULT_TOOLTIP_PLAN)
-  }
+  }  
 
 
   return (
@@ -34,7 +34,7 @@ export default function PlanNew() {
             placeholder="Nombre"
             className="inputTitle mainTitle "
             onChange={handleChange} />
-            <i className="bi-pencil"></i>
+            <i className="bi-pencil"/>
         </span>
         <div className="whiteContainer">
           <div>

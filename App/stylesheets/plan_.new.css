@@ -5,7 +5,8 @@
   font-size: 40px;
   text-overflow: ellipsis;
   margin-left: 0;
-
+  width: 11.5%;
+  max-width: 90% !important;
 }
 
 .inputTitle::placeholder {
@@ -17,6 +18,7 @@
 .inputTitle:focus {
   border: 0 !important;
   outline: 0;
+  width: 90%;
 }
 
 [data-tooltip]::after {

@@ -1,4 +1,4 @@
-import { Outlet, Links, Scripts, Meta, json, useLoaderData,} from "@remix-run/react";
+import { Outlet, Links, Scripts, Meta, json, useLoaderData, ScrollRestoration, LiveReload, } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import appStyles from "./old-app/Styles/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
@@ -21,13 +21,14 @@ export default function App() {
         <meta name="description" content="Web site for managing courses inscriptions" />
         <meta name="author" content="Gerardo Vargas Fernández" />
         <meta name="email" content="geramena102@gmail.com" />
-        <Links />
         <Meta />
+        <Links />
       </head>
       <body>
         <div id="root">
           <MainLayout />
           <Outlet />
+          <ScrollRestoration />
           <Scripts />
         </div>
       </body>
