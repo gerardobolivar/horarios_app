@@ -6,7 +6,7 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
-  ],
+, "app/routes/horario.tsx"  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["@remix-run/node", "vite/client"],
@@ -19,6 +19,7 @@
     "strict": true,
     "allowJs": true,
     "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "module": "ES2020",
@@ -27,6 +28,6 @@
     },
 
     // Remix takes care of building everything in `remix build`.
-    "noEmit": true
-  }
+    "noEmit": true,
+  },
 }

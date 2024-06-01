@@ -17,7 +17,6 @@
   "author": "Gerardo Vargas Fernández",
   "license": "ISC",
   "dependencies": {
-    "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
     "bootstrap": "^5.3.3",
@@ -28,6 +27,7 @@
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",
+    "@remix-run/node": "^2.9.2",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "vite-tsconfig-paths": "^4.3.2"
