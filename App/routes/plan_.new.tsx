@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LinksFunction, redirect } from "@remix-run/node";
 import { Form, json, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 
@@ -20,27 +20,38 @@ export default function PlanNew() {
     event.currentTarget.value !== ""
       ? setNombrePlan(event.currentTarget.value)
       : setNombrePlan(DEFAULT_TOOLTIP_PLAN)
-  }  
+  }
 
+  const [importedScript, setImportedScript] = useState<any>();
+
+  useEffect(() => {
+    const importedScript = async () => {
+      const module = await import("~/Scripts/FrontEnd/newPlan.js");
+      const script = module.default;
+      setImportedScript(script);
+    };
+
+    importedScript();
+  }, []);
 
   return (
     <div className="container">
       <Form method="post" autoComplete="off">
         <span className="d-block">
           <input
+            id="planTitle"
             title={nombrePlan}
             type="text"
             name="nombre"
-            placeholder="Nombre"
-            className="inputTitle mainTitle "
+            placeholder="Nombre del plan✎"
+            className="inputTitle mainTitle"
             onChange={handleChange} />
-            <i className="bi-pencil"/>
         </span>
         <div className="whiteContainer">
           <div>
             <label>
               Código:
-              <input type="text" name="codigo" placeholder="Código" />
+              <input type="text" name="codigo" placeholder="Código✎" />
             </label>
           </div>
           <div className="listaCursos inputElement">

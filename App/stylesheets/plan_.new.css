@@ -5,8 +5,7 @@
   font-size: 40px;
   text-overflow: ellipsis;
   margin-left: 0;
-  width: 11.5%;
-  max-width: 90% !important;
+  width: 90% ;
 }
 
 .inputTitle::placeholder {

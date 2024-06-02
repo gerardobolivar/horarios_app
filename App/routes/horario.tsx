@@ -1,7 +1,5 @@
 import { LinksFunction, json, MetaFunction } from "@remix-run/node";
-import Navbar from "~/old-app/Components/NavBarAn";
 import { useLoaderData } from "@remix-run/react";
-import { useState, useEffect, lazy, createElement} from "react";
 import dataCells from "~/old-app/data";
 //import  "~/WebComponents/MyCustomElement";
 //import MyCustomElement from "~/WebComponents/MyCustomElement";
@@ -16,9 +14,7 @@ function MainTitle({ titleText = "Mi horario" }) {
 
   export default function Horario() {
     const data = useLoaderData<typeof loader>();
-    
-    
-    //To be able to use the custom web component it is necessary to do import dynamicly.
+    //To be able to use the custom web component it is necessary to do a import dynamicly.
     //HTMLElement its a DOM element and it is not available in the server side.
     /*
     
@@ -38,8 +34,9 @@ function MainTitle({ titleText = "Mi horario" }) {
       <>
         <div className="">
           <MainTitle titleText="Horario"/>
-          {<my-custom-element text="Hola mundo" size="50px"  color="blue"></my-custom-element>}
+          {/*<my-custom-element text="Hola mundo" size="50px"  color="blue"></my-custom-element>*/}
         </div>
+        
       </>
     );
   }
@@ -55,4 +52,5 @@ export const loader = async () => {
 
 
 export const links: LinksFunction = () => [
+
 ];
