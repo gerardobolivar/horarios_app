@@ -17,6 +17,7 @@
   "author": "Gerardo Vargas Fernández",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.15.0",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
     "bootstrap": "^5.3.3",
@@ -28,8 +29,10 @@
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",
     "@remix-run/node": "^2.9.2",
+    "@types/node": "^20.14.1",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
+    "prisma": "^5.15.0",
     "vite-tsconfig-paths": "^4.3.2"
   }
 }
