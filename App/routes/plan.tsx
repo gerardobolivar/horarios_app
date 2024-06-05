@@ -1,17 +1,24 @@
 import { json } from "@remix-run/node"
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import MainTitle from "~/old-app/Components/MainTitle";
 import PlanCard from "~/old-app/Components/PlanCard";
 import { MetaFunction } from "@remix-run/node";
+import { getPlanes } from "prisma/models/planEstudioModel";
 
-const tag = "Planes de estudio";
+const ROUTE_TAG = "Planes de estudio";
 
 export default function Planes() {
+  let data = useLoaderData<typeof loader>();
+
+  let planesCards = data.planes.map((plan) => {
+    return <PlanCard key={plan.id_plan_estudio} innerText={plan.nombre_plan} url={`/plan/${plan.id_plan_estudio}`} active={true} />
+  })
+
   return (
     <div className="container-sm">
-      <MainTitle innerText={tag} />
+      <MainTitle innerText={ROUTE_TAG} />
       <div className="whiteContainer container d-flex">
-        <PlanCard innerText="nombre_plan" url="/plan/1" active={true} />
+        {planesCards}
         <PlanCard innerText="+" url="/plan/new" active={true} />
       </div>
     </div>
@@ -19,10 +26,11 @@ export default function Planes() {
 }
 
 export const loader = async () => {
-    return json({appName: process.env.APP_NAME}) || "Horarios";
+  const planes = await getPlanes();
+  return json({ appName: process.env.APP_NAME || "Horarios", planes: planes });
 }
 
 export const meta: MetaFunction = () => {
   const data = useLoaderData<typeof loader>();
-  return [{ title: `${data.appName} | ${tag}` }]
+  return [{ title: `${data.appName} | ${ROUTE_TAG}` }]
 } 

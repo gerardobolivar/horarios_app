@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 
-
 export default function PlanNew() {
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
   const data = useLoaderData<typeof loader>();
