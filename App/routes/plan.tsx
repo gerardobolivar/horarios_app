@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node"
-import { useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import MainTitle from "~/old-app/Components/MainTitle";
 import PlanCard from "~/old-app/Components/PlanCard";
 import { MetaFunction } from "@remix-run/node";
