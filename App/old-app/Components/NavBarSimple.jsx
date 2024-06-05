@@ -8,7 +8,7 @@ export default function NavBarSimple() {
       <nav className="navbar d-flex flex-row-reverse mainNavBar">
         <a className="navbar-brand d-flex" href="#">
           <p>{username}</p>
-          <img src="favicon.ico" width="30" height="30" className="d-inline-block align-top" alt=""/>
+          <img src="/favicon.ico" width="30" height="30" className="d-inline-block align-top" alt=""/>
         </a>
       </nav>
       <nav className="navbar d-flex flex-row metaNavBar">
