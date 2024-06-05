@@ -4,7 +4,6 @@ import appStyles from "./old-app/Styles/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import MainLayout from "./old-app/Layouts/Main";
 
-
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: bootstrap },
@@ -36,21 +35,10 @@ export default function App() {
   )
 }
 
-export const meta: MetaFunction = ({ location }) => {
-  const data = useLoaderData<typeof loader>();
-  const isHome = location.pathname === "/"
-  if (isHome) {
-    return [
-      { title: `${data.appName} | HOME` }
-    ];
-  } else {
-    return [];
-  }
-}
+//export const meta: MetaFunction = ({ location }) => {}
 
 export async function loader() {
-  const ENVIROMENT = import.meta.env.MODE ? import.meta.env.VITE_APP_NAME : process.env.APP_NAME;
-  return json({ appName: ENVIROMENT })
+  return json({ok:true})
 }
 
 //TRYING TO GET ACCESS TO ENV VARIABLES FROM PRODUCTION
