@@ -3,7 +3,7 @@ import { Form, json, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getPlanById } from "prisma/models/planEstudioModel";
+import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
@@ -78,17 +78,25 @@ export default function PlanEdit() {
           </div>
 
         </div>
-        <button type="submit">Actualizar</button>
-        <button type="submit">Eliminar plan</button>
+        <button name="intent" type="submit" value="update">Actualizar</button>
+        <button name="intent" type="submit" value="delete">Eliminar plan</button>
       </Form>
     </div>
   )
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request,params }: ActionFunctionArgs) {
   //Validar datos codigo, nombre
   const formData = await request.formData();
-  const name = String(formData.get("name"));
+  const name = String(formData.get('nombre'));
+  const intent = formData.get('intent');
+  const code = String(formData.get('codigo'));
+  if(intent == 'delete'){
+    await removePlan(Number(params.idplan));
+    return redirect("/plan")
+  }
+
+  await updatePlan(Number(params.idplan),name,code);
   return redirect("/plan");
 }
 

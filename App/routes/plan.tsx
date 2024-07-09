@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node"
+import { ActionFunctionArgs, json, redirect } from "@remix-run/node"
 import { Outlet, useLoaderData } from "@remix-run/react";
 import MainTitle from "~/old-app/Components/MainTitle";
 import PlanCard from "~/old-app/Components/PlanCard";
@@ -7,7 +7,7 @@ import { getPlanes } from "prisma/models/planEstudioModel";
 const ROUTE_TAG = "Planes de estudio";
 
 export default function Planes() {
-  var METATAGDATA = useLoaderData<typeof loader>();
+  var META_TAG_DATA = useLoaderData<typeof loader>();
   let data = useLoaderData<typeof loader>();
 
   let planesCards = data.planes.map((plan) => {

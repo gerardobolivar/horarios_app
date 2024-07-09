@@ -77,6 +77,10 @@
   border:none;
   font-weight: bold;
 }
+
+[value="delete"]{
+  background-color: #ED6E7F;
+}
 .whiteContainer>div>span>button:active{
   scale: 1.1;
 }
