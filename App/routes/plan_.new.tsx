@@ -47,6 +47,7 @@ export default function PlanNew() {
             name="nombre"
             placeholder="Nombre del plan✎"
             className="inputTitle mainTitle"
+            required={true}
             onChange={handleChange} />
         </span>
         <div className="whiteContainer">
@@ -73,10 +74,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const planId = plan.id_plan_estudio
   
   return redirect(`/plan/${planId}`)
-}
-
-export function loader() {
-  return null;
 }
 
 export const links: LinksFunction = () => [

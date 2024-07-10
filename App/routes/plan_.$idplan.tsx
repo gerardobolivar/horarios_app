@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
+import ModalCourse from "~/Components/plan_estudio/modal_curso";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
   const [listaCursos, setListaCursos] = useState(data);
   const [nombrePlan, setNombrePlan] = useState(data.plan.nombre_plan);
   const [codigoPlan, setCodigoPlan] = useState(data?.plan?.codigo);
+  const [modal, setModal] = useState(false);
   const [importedScript, setImportedScript] = useState<any>();
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
 
@@ -36,6 +38,10 @@ export default function PlanEdit() {
     event.currentTarget.value !== ""
       ? setCodigoPlan(event.currentTarget.value)
       : setCodigoPlan("")
+  }
+
+  function handleModalChange(event: any) {
+    setModal(true);
   }
 
   return (
@@ -71,37 +77,45 @@ export default function PlanEdit() {
               {cursos}
             </ul>
             <span className="horarios-plan-new-listacursos-buttons">
-              <button type="button">Agregar</button>
+              <button type="button" onClick={handleModalChange}>Agregar</button>
               <button type="button">Eliminar</button>
               <button type="button">Ver</button>
             </span>
           </div>
-
         </div>
-        <button name="intent" type="submit" value="update">Actualizar</button>
+        <button name="intent" type="submit" value="update" >Actualizar</button>
         <button name="intent" type="submit" value="delete">Eliminar plan</button>
       </Form>
+      <ModalCourse state={modal} setState={setModal} ></ModalCourse>
+
     </div>
   )
 }
 
-export async function action({ request,params }: ActionFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
   //Validar datos codigo, nombre
   const formData = await request.formData();
   const name = String(formData.get('nombre'));
   const intent = formData.get('intent');
   const code = String(formData.get('codigo'));
-  if(intent == 'delete'){
+  if (intent == 'delete') {
     await removePlan(Number(params.idplan));
     return redirect("/plan")
+  } else if (intent == "modal_cancel") {
+    //I think anything have to be done in here!
+    return redirect(`/plan/${params.idplan}`);
+  } else if(intent == "modal_course_create"){
+    //Create course
+    console.log(params.idplan);
+    return redirect(`/plan/${params.idplan}`);
   }
 
-  await updatePlan(Number(params.idplan),name,code);
+  await updatePlan(Number(params.idplan), name, code);
   return redirect("/plan");
 }
 
 export const loader = async ({
-  params,}: LoaderFunctionArgs) => {
+  params, }: LoaderFunctionArgs) => {
 
   const planid = params.idplan;
   if (!planid || isNaN(Number(planid))) {

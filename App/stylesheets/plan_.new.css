@@ -92,3 +92,89 @@
 [type="submit"]{
   margin-top: 20px;
 }
+
+/*Course Modal styles*/
+.modalContainer{
+  width: 30%;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+}
+
+.modalContainer h2 {
+  text-align: center;
+  color: #204C6F;
+}
+
+.outter_white_container {
+  background-color: #fff;
+  padding: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 15px;
+  border-radius: 10px;
+}
+
+.modalContainer form span{
+  display: block;
+}
+.grayContainer{
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  padding: 40px;
+  
+}
+
+.course_input_container{
+  background-color: #d9d9d9;
+  padding-left: 5px ;
+  width: fit-content;
+  margin: auto;
+}
+
+.modalContainer form span:not(:last-child){
+  margin-bottom: 10px;
+}
+
+.modalContainer form span input,label{
+  display: block !important;
+}
+
+.course_modal_btns{
+  text-align: center;
+}
+
+.modalContainer input,select{
+  width: 250px;
+  background-color: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-width: 2px;
+  border-color: black;
+}
+
+.modalContainer label{
+  font-weight: bold;
+  color: #204C6F;
+}
+
+/*Modal styles*/
+
+.modalContainer{
+  position: fixed;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.overlay_styles{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0, 0, 0,0.7);
+  z-index: 1000;
+}
