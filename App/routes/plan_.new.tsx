@@ -58,7 +58,7 @@ export default function PlanNew() {
             </label>
           </div>
         </div>
-        <button type="submit">Crear</button>
+        <button className="menu_bottom_btn" type="submit">Crear</button>
       </Form>
     </div>
   )

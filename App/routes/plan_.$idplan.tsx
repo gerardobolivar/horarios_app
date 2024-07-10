@@ -15,6 +15,8 @@ export default function PlanEdit() {
   const [importedScript, setImportedScript] = useState<any>();
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
 
+  // How to import JavaScript script when needed. This script will be loaded in the client end. 
+  /*
   useEffect(() => {
     const importedScript = async () => {
       const module = await import("~/Scripts/FrontEnd/newPlan.js");
@@ -23,6 +25,7 @@ export default function PlanEdit() {
     };
     importedScript();
   }, []);
+  */
 
   let cursos = Object.values(listaCursos.cursos).map(curso => {
     return <li key={crypto.randomUUID()}>{curso}</li>
@@ -83,8 +86,8 @@ export default function PlanEdit() {
             </span>
           </div>
         </div>
-        <button name="intent" type="submit" value="update" >Actualizar</button>
-        <button name="intent" type="submit" value="delete">Eliminar plan</button>
+        <button className="menu_bottom_btn" name="intent" type="submit" value="update" >Actualizar</button>
+        <button className="menu_bottom_btn_remove" name="intent" type="submit" value="delete">Eliminar plan</button>
       </Form>
       <ModalCourse state={modal} setState={setModal} ></ModalCourse>
 

@@ -76,7 +76,10 @@
   width: 15vmin;
   border:none;
   font-weight: bold;
+  margin-left: 18px;
 }
+
+
 
 [value="delete"]{
   background-color: #ED6E7F;
@@ -94,6 +97,17 @@
 }
 
 /*Course Modal styles*/
+.menu_bottom_btn:hover{
+  scale: 1.1;
+}
+
+.menu_bottom_btn:active{
+  background-color: hsla(207, 55%, 28%, 0.50);
+}
+.menu_bottom_btn_remove:active{
+  background-color: rgb(237, 110, 127,0.50);
+}
+
 .modalContainer{
   width: 30%;
   background-color: #d9d9d9;
