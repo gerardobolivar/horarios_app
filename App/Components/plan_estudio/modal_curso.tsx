@@ -16,7 +16,8 @@ export default function ModalCourse({ state, setState }: any) {
       ? setCurso({
         ...curso, nombre: event.currentTarget.value
       })
-      : setCurso(curso)      
+      : setCurso(curso)
+      
   }
   function handleAcronymChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""

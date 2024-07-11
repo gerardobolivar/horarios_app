@@ -109,8 +109,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return redirect(`/plan/${params.idplan}`);
   } else if(intent == "modal_course_create"){
     //Create course
-    console.log(params.idplan);
+    
     return redirect(`/plan/${params.idplan}`);
+
+    
   }
 
   await updatePlan(Number(params.idplan), name, code);

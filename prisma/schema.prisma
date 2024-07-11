@@ -28,7 +28,20 @@ model PlanEstudio{
   codigo String? @db.VarChar(10)
   usuario User @relation(fields: [usuario_id],references: [id_usuario] )
   usuario_id Int
+  cursos Curso[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
 
+model Curso{
+  id_curso Int @id @default(autoincrement())
+  plan PlanEstudio @relation(fields: [plan_id],references: [id_plan_estudio])
+  plan_id Int @unique
+  horas String @db.VarChar(2)
+  tipo String @db.VarChar(2)
+  nombre String @db.VarChar(150)
+  sigla String @db.VarChar(10)
+  tipoCurso String @db.VarChar(2)
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+}

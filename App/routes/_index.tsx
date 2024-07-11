@@ -2,6 +2,9 @@ import { json } from "@remix-run/node";
 import MainTitle from "~/old-app/Components/MainTitle";
 import CicleCard from "~/old-app/Components/CicleCard";
 
+console.log(new Date().getHours());
+
+
 export default function HomeAdmin(){
   //Some relevant logic in here
 
