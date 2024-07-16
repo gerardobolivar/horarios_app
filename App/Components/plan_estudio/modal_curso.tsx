@@ -1,8 +1,10 @@
-import { Form } from "@remix-run/react";
-import { useState } from "react";
+import { Form, useNavigation } from "@remix-run/react";
+import { useEffect, useState, useTransition } from "react";
 
 export default function ModalCourse({ state, setState }: any) {
-
+  const transition = useNavigation()
+  const isCreating = transition.state;
+  const [btnState, setBtnState] = useState(false);
   let [curso, setCurso] = useState({
     nombre: "",
     sigla: "",
@@ -10,6 +12,19 @@ export default function ModalCourse({ state, setState }: any) {
     tipoCurso: ""
   });
 
+  useEffect(() => {
+    if (isCreating === "submitting") {
+      setBtnState(true);
+    } else if (isCreating === "idle") {
+      setBtnState(false);
+      let form: any = document.getElementById("courseForm");
+      if (form != null) {
+        form.reset();
+      }
+      setState(false);
+    }
+
+  }, [isCreating])
 
   function handleNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
@@ -17,8 +32,9 @@ export default function ModalCourse({ state, setState }: any) {
         ...curso, nombre: event.currentTarget.value
       })
       : setCurso(curso)
-      
+
   }
+
   function handleAcronymChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
       ? setCurso({
@@ -26,6 +42,7 @@ export default function ModalCourse({ state, setState }: any) {
       })
       : setCurso(curso)
   }
+
   function handleTimeChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
       ? setCurso({
@@ -33,6 +50,7 @@ export default function ModalCourse({ state, setState }: any) {
       })
       : setCurso(curso)
   }
+
   function handleTypeChange(event: any) {
     event.currentTarget.value !== ""
       ? setCurso({
@@ -45,12 +63,17 @@ export default function ModalCourse({ state, setState }: any) {
     setState(false);
   }
 
+  function handleCreateClick() {
+    //setState(false);
+
+  }
+
 
   return <div className="overlay_styles" style={{ display: (state ? "block" : "none") }}>
     <div className="modalContainer" style={{ display: (state ? "block" : "none") }}>
       <h2>Agregar Curso</h2>
       <div className="body_container">
-        <Form method="post" autoComplete="off">
+        <Form id="courseForm" method="post" autoComplete="off">
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
@@ -94,7 +117,7 @@ export default function ModalCourse({ state, setState }: any) {
                 </span>
                 <span>
                   <label htmlFor="type" >Tipo de Curso</label>
-                  <select id="type" defaultValue={"T"} onChange={handleTypeChange}>
+                  <select name="tipo" id="type" defaultValue={"T"} onChange={handleTypeChange}>
                     <option value="T">Teórico</option>
                     <option value="P">Práctico</option>
                     <option value="TP">Teórico-Práctico</option>
@@ -104,7 +127,16 @@ export default function ModalCourse({ state, setState }: any) {
             </div>
           </div>
           <div className="course_modal_btns">
-            <button type="submit" name="intent" value="modal_course_create">Guardar</button>
+            <button
+              id="m_course_create"
+              type="submit"
+              name="intent"
+              value="modal_course_create"
+              disabled={btnState}
+              onClick={handleCreateClick}
+              className={btnState ? "disabled" : ""}>
+              Guardar
+            </button>
             <button type="submit" name="intent" value="modal_cancel" onClick={handleStateChange}>Cancelar</button>
           </div>
         </Form>

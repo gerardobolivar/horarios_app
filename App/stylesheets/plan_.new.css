@@ -192,3 +192,9 @@
   background-color: rgb(0, 0, 0,0.7);
   z-index: 1000;
 }
+
+/*Create course modal styles*/
+
+.disabled{
+  background-color: rgb(32, 76, 111,0.5);
+}

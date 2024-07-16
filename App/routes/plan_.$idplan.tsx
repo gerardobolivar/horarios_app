@@ -5,6 +5,7 @@ import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
 import ModalCourse from "~/Components/plan_estudio/modal_curso";
+import { createCourse } from "prisma/models/courseModel";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
@@ -12,20 +13,19 @@ export default function PlanEdit() {
   const [nombrePlan, setNombrePlan] = useState(data.plan.nombre_plan);
   const [codigoPlan, setCodigoPlan] = useState(data?.plan?.codigo);
   const [modal, setModal] = useState(false);
+  //const [createBtnState,setCreateBtnState] = useState(false);
   const [importedScript, setImportedScript] = useState<any>();
-  const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
+  const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios";
 
   // How to import JavaScript script when needed. This script will be loaded in the client end. 
-  /*
   useEffect(() => {
     const importedScript = async () => {
-      const module = await import("~/Scripts/FrontEnd/newPlan.js");
+      const module = await import("~/Scripts/FrontEnd/newCourse.js");
       const script = module.default;
       setImportedScript(script);
     };
     importedScript();
   }, []);
-  */
 
   let cursos = Object.values(listaCursos.cursos).map(curso => {
     return <li key={crypto.randomUUID()}>{curso}</li>
@@ -89,8 +89,7 @@ export default function PlanEdit() {
         <button className="menu_bottom_btn" name="intent" type="submit" value="update" >Actualizar</button>
         <button className="menu_bottom_btn_remove" name="intent" type="submit" value="delete">Eliminar plan</button>
       </Form>
-      <ModalCourse state={modal} setState={setModal} ></ModalCourse>
-
+      <ModalCourse state={modal} setState={setModal}></ModalCourse>
     </div>
   )
 }
@@ -104,29 +103,38 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (intent == 'delete') {
     await removePlan(Number(params.idplan));
     return redirect("/plan")
-  } else if (intent == "modal_cancel") {
-    //I think anything have to be done in here!
-    return redirect(`/plan/${params.idplan}`);
-  } else if(intent == "modal_course_create"){
-    //Create course
-    
-    return redirect(`/plan/${params.idplan}`);
-
-    
   }
+  else if (intent == "modal_cancel") {
+    return redirect(`/plan/${params.idplan}`);
+  }
+  else if (intent == "modal_course_create") {
+    const name = String(formData.get("course_name"));
+    const sigla = String(formData.get("sigla"));
+    const idplan = Number(params.idplan);
+    const horas = String(formData.get("horas"));
+    const tipo = String(formData.get("tipo"));
+    const course = await createCourse(name, sigla, idplan, horas, tipo);
 
-  await updatePlan(Number(params.idplan), name, code);
-  return redirect("/plan");
+    return redirect(`/plan/${params.idplan}`);
+
+  }
+  else if (intent == "update") {
+    await updatePlan(Number(params.idplan), name, code);
+    return redirect("/plan");
+  }
+  return null;
+
 }
 
 export const loader = async ({
   params, }: LoaderFunctionArgs) => {
-
   const planid = params.idplan;
   if (!planid || isNaN(Number(planid))) {
     throw new Response("Not found", { status: 404 });
   }
+
   const plan = await getPlanById(Number(planid));
+
   if (!plan) {
     throw new Response("Not found", { status: 404 });
   }
@@ -134,8 +142,8 @@ export const loader = async ({
   const cursos = {
     0: "IF5584 Dummy Data",
   };
+  
   return json({ cursos: cursos, plan: plan })
-
 }
 
 export const links: LinksFunction = () => [
