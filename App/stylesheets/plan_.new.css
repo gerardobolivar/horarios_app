@@ -201,6 +201,7 @@
 
 /**/
 
+/*Table*/
 tr:nth-child(even) {
   background-color: rgb(0, 192, 243,0.1);
 }
@@ -209,7 +210,17 @@ tr:nth-child(even) {
   height: 50vh !important;
   overflow-y: auto;
 }
+
 table{
   width: 100%;
   overflow: hidden;
 }
+table tr:hover{
+  cursor: pointer;
+}
+
+.selected{
+  background-color: rgb(0, 192, 243,0.5) !important;
+}
+
+/**/

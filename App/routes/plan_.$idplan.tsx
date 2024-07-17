@@ -33,7 +33,12 @@ export default function PlanEdit() {
   })
 
   let cursosLista:any = listaCursos.map((curso) => {
-    return <tr onClick={handleCellClick} key={String(curso.id_curso)}> <td id={String(curso.id_curso)}>{`${curso.sigla} - ${curso.nombre}`}</td> </tr>
+    return <tr 
+      onClick={handleCellClick}
+      key={String(curso.id_curso)} 
+      className={String(curso.id_curso) == curretCellId ? "selected":"" }> 
+      <td id={String(curso.id_curso)}>{`${curso.sigla} - ${curso.nombre}`}</td>
+      </tr>
     
   })
 
