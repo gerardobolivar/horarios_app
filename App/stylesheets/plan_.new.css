@@ -198,3 +198,18 @@
 .disabled{
   background-color: rgb(32, 76, 111,0.5);
 }
+
+/**/
+
+tr:nth-child(even) {
+  background-color: rgb(0, 192, 243,0.1);
+}
+
+.whiteContainerTable{
+  height: 50vh !important;
+  overflow-y: auto;
+}
+table{
+  width: 100%;
+  overflow: hidden;
+}

@@ -15,6 +15,17 @@ export const getCourses = async () => {
   });
 };
 
+export const getCoursesbyPlan = async (plan_id:number) => {
+  return await prisma.curso.findMany({
+    where:{plan_id},
+    select:{
+      nombre: true,
+      sigla: true,
+      id_curso: true
+    }
+  });
+};
+
 export const createCourse = async (nombre:string,sigla:string,plan_id:number,horas: string,tipoCurso:string) => {
   return await prisma.curso.create({
     data:{

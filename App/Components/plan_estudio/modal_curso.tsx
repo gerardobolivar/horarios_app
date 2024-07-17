@@ -1,9 +1,10 @@
 import { Form, useNavigation } from "@remix-run/react";
+import { getCoursesbyPlan } from "prisma/models/courseModel";
 import { useEffect, useState, useTransition } from "react";
 
 export default function ModalCourse({ state, setState }: any) {
   const transition = useNavigation()
-  const isCreating = transition.state;
+  const isCreating:any = transition.state;
   const [btnState, setBtnState] = useState(false);
   let [curso, setCurso] = useState({
     nombre: "",
@@ -18,10 +19,11 @@ export default function ModalCourse({ state, setState }: any) {
     } else if (isCreating === "idle") {
       setBtnState(false);
       let form: any = document.getElementById("courseForm");
-      if (form != null) {
+      if (form != null && state == true) {
         form.reset();
+        setState(false);
+        location.reload();
       }
-      setState(false);
     }
 
   }, [isCreating])
