@@ -1,4 +1,4 @@
-import { Outlet, Links, Scripts, Meta, json, useLoaderData, ScrollRestoration, LiveReload, } from "@remix-run/react";
+import { Outlet, Links, Scripts, Meta, json, useLoaderData, ScrollRestoration, LiveReload, useRouteError, } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import appStyles from "./old-app/Styles/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
@@ -23,7 +23,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body id="body">
         <div id="root" className="container-lg">
           <MainLayout />
           <Outlet />
@@ -41,4 +41,29 @@ export async function loader() {
   return json({ok:true})
 }
 
-//TRYING TO GET ACCESS TO ENV VARIABLES FROM PRODUCTION
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html>
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {/* add the UI you want your users to see */}
+        <h1>KABOOM 💥... You made it explode!!</h1>
+        <p>This is ok, error happens sometimes.</p>
+        <p>Make sure to take note about the error and send it to the dev.</p>
+        <br/>
+        <h1>Error info</h1>
+        {
+          `${error}`
+        }
+        <Scripts />
+      </body>
+    </html>
+  );
+}

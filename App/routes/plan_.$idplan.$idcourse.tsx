@@ -1,11 +1,16 @@
-import { Form, useNavigation } from "@remix-run/react";
-import { getCoursesbyPlan } from "prisma/models/courseModel";
-import { useEffect, useState, useTransition } from "react";
+import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { createCourse, getCourseById, updateCourse } from "prisma/models/courseModel";
+import { useState } from "react";
 
-export default function ModalCourse({ state, setState }: any) {
+export default function ModalCourse() {
   const transition = useNavigation()
-  const isCreating:any = transition.state;
+  const isCreating: any = transition.state;
   const [btnState, setBtnState] = useState(false);
+  const data = useLoaderData<typeof loader>();
+  const isNewCourse: boolean = data.isNewCourse;
+  const course = data.course;
+
   let [curso, setCurso] = useState({
     nombre: "",
     sigla: "",
@@ -13,20 +18,12 @@ export default function ModalCourse({ state, setState }: any) {
     tipoCurso: ""
   });
 
-  useEffect(() => {
-    if (isCreating === "submitting") {
-      setBtnState(true);
-    } else if (isCreating === "idle") {
-      setBtnState(false);
-      let form: any = document.getElementById("courseForm");
-      if (form != null && state == true) {
-        form.reset();
-        setState(false);
-        location.reload();
-      }
-    }
-
-  }, [isCreating])
+  function getTimeStamp(course_date:string){
+    let date = new Date(course_date);
+    let stringDate = date.toLocaleDateString();
+    let stringTime = date.toLocaleTimeString();
+    return `${stringDate} a las ${stringTime}`
+  }
 
   function handleNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
@@ -61,21 +58,11 @@ export default function ModalCourse({ state, setState }: any) {
       : setCurso(curso);
   }
 
-  function handleStateChange() {
-    setState(false);
-  }
-
-  function handleCreateClick() {
-    //setState(false);
-
-  }
-
-
-  return <div className="overlay_styles" style={{ display: (state ? "block" : "none") }}>
-    <div className="modalContainer" style={{ display: (state ? "block" : "none") }}>
+  return <div className="overlay_styles" >
+    <div className="modalContainer">
       <h2>Agregar Curso</h2>
       <div className="body_container">
-        <Form id="courseForm" method="post" autoComplete="off">
+        <form id="courseForm" method="post" autoComplete="off">
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
@@ -88,6 +75,7 @@ export default function ModalCourse({ state, setState }: any) {
                     name="course_name"
                     placeholder=""
                     className=""
+                    defaultValue={!isNewCourse && course ? course.nombre : ""}
                     onChange={handleNameChange}
                   />
                 </span>
@@ -100,6 +88,7 @@ export default function ModalCourse({ state, setState }: any) {
                     name="sigla"
                     placeholder=""
                     className=""
+                    defaultValue={!isNewCourse && course ? course.sigla : ""}
                     onChange={handleAcronymChange}
                   />
                 </span>
@@ -114,16 +103,22 @@ export default function ModalCourse({ state, setState }: any) {
                     className=""
                     min={0}
                     max={8}
+                    defaultValue={!isNewCourse && course ? course.horas : ""}
                     onChange={handleTimeChange}
                   />
                 </span>
                 <span>
                   <label htmlFor="type" >Tipo de Curso</label>
-                  <select name="tipo" id="type" defaultValue={"T"} onChange={handleTypeChange}>
+                  <select name="tipo" id="type" defaultValue={!isNewCourse && course? course.tipoCurso : "T"} onChange={handleTypeChange}>
                     <option value="T">Teórico</option>
                     <option value="P">Práctico</option>
                     <option value="TP">Teórico-Práctico</option>
                   </select>
+                </span>
+                <span hidden={isNewCourse}>
+                  <p><strong>Modificado:</strong>
+                  {!isNewCourse && course ? ` ${getTimeStamp(course.fecha_modificado)}`: ""}
+                  </p>
                 </span>
               </div>
             </div>
@@ -132,17 +127,46 @@ export default function ModalCourse({ state, setState }: any) {
             <button
               id="m_course_create"
               type="submit"
+              className={btnState ? "disabled" : ""}
               name="intent"
-              value="modal_course_create"
-              disabled={btnState}
-              onClick={handleCreateClick}
-              className={btnState ? "disabled" : ""}>
-              Guardar
+              value={isNewCourse ? "create" : "update"}>
+              {isNewCourse ? "Guardar" : "Actualizar"}
             </button>
-            <button type="submit" name="intent" value="modal_cancel" onClick={handleStateChange}>Cancelar</button>
+            <Link to={`/plan/${data.planId}`} preventScrollReset={true}>
+              <button type="submit" className="mainButton">Cancelar</button>
+            </Link>
           </div>
-        </Form>
+        </form>
       </div>
     </div>
   </div>
+}
+
+export async function action({ request, params }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const name = String(formData.get("course_name")).toUpperCase();
+  const sigla = String(formData.get("sigla")).toUpperCase();
+  const idplan = Number(params.idplan);
+  const horas = String(formData.get("horas"));
+  const tipo = String(formData.get("tipo"));
+  const intent = formData.get("intent");
+  let status:number;
+  
+  console.log(`Intent: ${intent}`);
+  
+  if (intent === "create") {
+    await createCourse(name, sigla, idplan, horas, tipo)
+    return redirect(`/plan/${idplan}/`, 200);
+  } else {
+    const idcourse = Number(params.idcourse);
+    await updateCourse(idcourse, name, sigla, horas, tipo)
+    return redirect(`/plan/${idplan}/`);
+  }
+}
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const planId = params.idplan;
+  const isNewCourse = params.idcourse === "new";
+  const idcourse = Number(params.idcourse);
+  return json({ planId: planId, isNewCourse: isNewCourse, course: isNewCourse ? null: await getCourseById(idcourse)})
 }

@@ -1,11 +1,10 @@
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Form, json, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import { json, Link, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
-import ModalCourse from "~/Components/plan_estudio/modal_curso";
-import { createCourse, getCourses, getCoursesbyPlan } from "prisma/models/courseModel";
+import { getCoursesbyPlan, removeCourse } from "prisma/models/courseModel";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
@@ -14,9 +13,10 @@ export default function PlanEdit() {
   const [codigoPlan, setCodigoPlan] = useState(data?.plan?.codigo);
   const [modal, setModal] = useState(false);
   const [curretCellId, setCurretCellId] = useState("");
-  //const [createBtnState,setCreateBtnState] = useState(false);
+  const [previousCellId, setPreviousCellId] = useState("");
   const [importedScript, setImportedScript] = useState<any>();
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios";
+
 
   // How to import JavaScript script when needed. This script will be loaded in the client end. 
   useEffect(() => {
@@ -28,23 +28,38 @@ export default function PlanEdit() {
     importedScript();
   }, []);
 
-  let cursos = Object.values(listaCursos).map(curso => {
-    return <li key={curso.id_curso}>{`${curso.sigla}-${curso.nombre}`}</li>
+  useEffect(() => {
+    document.getElementById(`${curretCellId}d`)?.classList.add("selected");
+    document.getElementById(`${curretCellId}`)?.classList.add("selected");
+    document.getElementById(`${previousCellId}`)?.classList.remove("selected");
+    document.getElementById(`${previousCellId}d`)?.classList.remove("selected");
+  }, [curretCellId]);
+
+
+  let cursosLista: any = listaCursos.map((curso) => {
+    return <div
+      className="noLinkDecoration dataRowLink"
+      key={String(curso.id_curso)}
+      onMouseDown={handleCellClick}
+      onFocusCapture={handleFocus}>
+      <div
+        id={String(curso.id_curso) + "d"}>
+        <h5 id={String(curso.id_curso)} className={"dataRow"}>
+          {`${curso.sigla} - ${curso.nombre}`}
+        </h5>
+      </div>
+    </div>
   })
 
-  let cursosLista:any = listaCursos.map((curso) => {
-    return <tr 
-      onClick={handleCellClick}
-      key={String(curso.id_curso)} 
-      className={String(curso.id_curso) == curretCellId ? "selected":"" }> 
-      <td id={String(curso.id_curso)}>{`${curso.sigla} - ${curso.nombre}`}</td>
-      </tr>
-    
-  })
-
-  function handleCellClick(e:any){
+  function handleCellClick(e: any) {
+    setPreviousCellId(curretCellId)
     setCurretCellId(e.target.id);
   }
+
+  function handleFocus(e: any) {
+    console.log("Event triggered!");
+  }
+
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
@@ -58,58 +73,71 @@ export default function PlanEdit() {
       : setCodigoPlan("")
   }
 
-  function handleModalChange(event: any) {
-    setModal(true);
-  }
-
   return (
     <div className="container">
-      <Form method="post" autoComplete="off">
-        <span className="d-block">
-          <input
-            id="planTitle"
-            title={nombrePlan}
-            type="text"
-            name="nombre"
-            placeholder="Nombre del plan✎"
-            className="inputTitle mainTitle"
-            value={nombrePlan}
-            required={true}
-            onChange={handleChange} />
-        </span>
-        <div className="whiteContainer">
-          <div>
-            <label>
-              Código:
+      <div>
+        <form method="post" autoComplete="off">
+            <span className="d-block">
               <input
+                id="planTitle"
+                title={nombrePlan}
                 type="text"
-                name="codigo"
-                placeholder="Código✎"
-                value={codigoPlan || ""}
-                onChange={handleCodeChange} />
-            </label>
-          </div>
-          <div className="listaCursos inputElement">
-            <label>Cursos asociados:</label>
-            <div className="whiteContainer whiteContainerTable">
-            <table>
-              <tbody className="dataTable">
-                {cursosLista}
-              </tbody>
-            </table>
-            </div>
-            <span className="horarios-plan-new-listacursos-buttons">
-              <button type="button" onClick={handleModalChange}>Agregar</button>
-              <button type="button">Eliminar</button>
-              <button type="button">Ver</button>
+                name="nombre"
+                placeholder="Nombre del plan✎"
+                className="inputTitle mainTitle"
+                value={nombrePlan}
+                required={true}
+                onChange={handleChange} />
             </span>
+          <div className="whiteContainer" id="whiteContainerPlan">
+            <div>
+              <label>
+                Código:
+                <input
+                  type="text"
+                  name="codigo"
+                  placeholder="Código✎"
+                  value={codigoPlan || ""}
+                  onChange={handleCodeChange} />
+              </label>
+            </div>
+
+            <div>
+              <div>
+              </div>
+              <label>Cursos asociados:</label>
+              <div className="whiteContainer whiteContainerTable">
+                {cursosLista}
+              </div>
+              <span className="horarios-plan-new-listacursos-buttons">
+                <input id="courseID" name='courseID' hidden={true} defaultValue={curretCellId}></input>
+                <Link to={`/plan/${data.plan.id_plan_estudio}/new`}
+                  preventScrollReset={true}>
+                  <button type="button" className="mainButton">Agregar</button>
+                </Link>
+                <Link to={`/plan/${data.plan.id_plan_estudio}/${curretCellId}`}
+                  preventScrollReset={true}>
+                  <button type="submit"
+                    disabled={curretCellId === "" ? true : false}
+                    className={curretCellId === "" ? "disabled" : ""}>
+                    Ver/Actualizar</button>
+                </Link>
+                <button name="intent"
+                  type="submit"
+                  value="delete_course"
+                  disabled={curretCellId === "" ? true : false}
+                  className={curretCellId === "" ? "disabled" : ""}>
+                  Eliminar</button>
+              </span>
+            </div>
+            <div>
+            </div>
           </div>
-        </div>
-        <button className="menu_bottom_btn" name="intent" type="submit" value="update" >Actualizar</button>
-        <button className="menu_bottom_btn_remove" name="intent" type="submit" value="delete">Eliminar plan</button>
-      </Form>
-      <ModalCourse state={modal} setState={setModal}></ModalCourse>
-      <ScrollRestoration></ScrollRestoration>
+          <button className="menu_bottom_btn" name="intent" type="submit" value="update" >Actualizar</button>
+          <button className="menu_bottom_btn_remove" name="intent" type="submit" value="delete">Eliminar plan</button>
+        </form>
+      </div>
+      <Outlet />
     </div>
   )
 }
@@ -120,28 +148,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const name = String(formData.get('nombre'));
   const intent = formData.get('intent');
   const code = String(formData.get('codigo'));
+  const courseID = Number(formData.get('courseID'));
+
   let goTo = "";
   if (intent == 'delete') {
     await removePlan(Number(params.idplan));
     goTo = "/plan";
   }
-  else if (intent == "modal_cancel") {
-    goTo = `/plan/${params.idplan}`;
-  }
-  else if (intent == "modal_course_create") {
-    const name = String(formData.get("course_name")).toLocaleUpperCase();
-    const sigla = String(formData.get("sigla")).toLocaleUpperCase();
-    const idplan = Number(params.idplan);
-    const horas = String(formData.get("horas"));
-    const tipo = String(formData.get("tipo"));
-    const curso = await createCourse(name, sigla, idplan, horas, tipo);
-    if (curso) {
-      return redirect(`/plan/${params.idplan}`);
-    }
-  }
   else if (intent == "update") {
     await updatePlan(Number(params.idplan), name, code);
     goTo = "/plan";
+  }
+  else if (intent == "delete_course" && courseID != 0) {
+    //This should show up a warning
+    await removeCourse(courseID).then(
+      ()=>{},
+      ()=>{})
+    goTo = `/plan/${Number(params.idplan)}`;
   }
 
   return redirect(goTo);
@@ -150,23 +173,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export const loader = async ({
   params, }: LoaderFunctionArgs) => {
   const planid = params.idplan;
+  const plan = await getPlanById(Number(planid));
+  const listaCursos = await getCoursesbyPlan(Number(planid));
+
   if (!planid || isNaN(Number(planid))) {
     throw new Response("Not found", { status: 404 });
   }
-
-  const plan = await getPlanById(Number(planid));
-
   if (!plan) {
     throw new Response("Not found", { status: 404 });
   }
-  const listaCursos = await getCoursesbyPlan(Number(planid));
-
-
-
-  const cursos = {
-    0: "IF5584 Dummy Data",
-  };
-
   return json({ cursos: listaCursos, plan: plan })
 }
 
@@ -174,3 +189,26 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: icons },
 ];
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html>
+      <head>
+        <title>Oh no!</title>
+      </head>
+      <body>
+        {/* add the UI you want your users to see */}
+        <h1>KABOOM 💥... You made it explode!!</h1>
+        <p>This is ok, error happens sometimes.</p>
+        <p>Make sure to take note about the error and send it to the dev.</p>
+        <br/>
+        <h1>Error info</h1>
+        {
+          `${error}`
+        }
+      </body>
+    </html>
+  );
+}

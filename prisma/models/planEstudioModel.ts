@@ -42,3 +42,4 @@ export const updatePlan = async (idPlan: number, name:string, codigoPlan:string)
     }
   })
 }
+
