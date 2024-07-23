@@ -1,10 +1,10 @@
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { json, Link, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
+import { json, Link, Outlet, useLoaderData, useNavigate, useRouteError } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
-import { getCoursesbyPlan, removeCourse } from "prisma/models/courseModel";
+import { countCoursesById, getCoursesbyPlan, removeCourse } from "prisma/models/courseModel";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
@@ -14,9 +14,10 @@ export default function PlanEdit() {
   const [modal, setModal] = useState(false);
   const [curretCellId, setCurretCellId] = useState("");
   const [previousCellId, setPreviousCellId] = useState("");
+  const [previousString, setPreviousString] = useState(nombrePlan+codigoPlan);
   const [importedScript, setImportedScript] = useState<any>();
+  const [noChange, setNoChange] = useState(true);
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios";
-
 
   // How to import JavaScript script when needed. This script will be loaded in the client end. 
   useEffect(() => {
@@ -34,6 +35,17 @@ export default function PlanEdit() {
     document.getElementById(`${previousCellId}`)?.classList.remove("selected");
     document.getElementById(`${previousCellId}d`)?.classList.remove("selected");
   }, [curretCellId]);
+
+  useEffect(() => {
+    const newString = nombrePlan+codigoPlan
+    if(newString !== previousString){
+      console.log("Change detected");
+      setNoChange(false);
+    }else{
+      console.log("No change detected");
+      setNoChange(true);
+    }
+  }, [nombrePlan,codigoPlan]);
 
 
   let cursosLista: any = listaCursos.map((curso) => {
@@ -77,18 +89,19 @@ export default function PlanEdit() {
     <div className="container">
       <div>
         <form method="post" autoComplete="off">
-            <span className="d-block">
-              <input
-                id="planTitle"
-                title={nombrePlan}
-                type="text"
-                name="nombre"
-                placeholder="Nombre del plan✎"
-                className="inputTitle mainTitle"
-                value={nombrePlan}
-                required={true}
-                onChange={handleChange} />
-            </span>
+          <span className="d-block">
+            <input
+              id="planTitle"
+              title={nombrePlan}
+              type="text"
+              name="nombre"
+              placeholder="Nombre del plan✎"
+              className="inputTitle mainTitle"
+              value={nombrePlan}
+              required={true}
+              maxLength={100}
+              onChange={handleChange} />
+          </span>
           <div className="whiteContainer" id="whiteContainerPlan">
             <div>
               <label>
@@ -98,6 +111,7 @@ export default function PlanEdit() {
                   name="codigo"
                   placeholder="Código✎"
                   value={codigoPlan || ""}
+                  maxLength={10}
                   onChange={handleCodeChange} />
               </label>
             </div>
@@ -133,8 +147,14 @@ export default function PlanEdit() {
             <div>
             </div>
           </div>
-          <button className="menu_bottom_btn" name="intent" type="submit" value="update" >Actualizar</button>
-          <button className="menu_bottom_btn_remove" name="intent" type="submit" value="delete">Eliminar plan</button>
+          <Link to={"/plan"}>
+            <button className="mainButton" >Regresar</button>
+          </Link>
+          <button className={noChange ? "menu_bottom_btn disabled": "menu_bottom_btn"} name="intent" type="submit" value="update" disabled={noChange}>Actualizar</button>
+          <button className="menu_bottom_btn_remove"
+                  name="intent"
+                  type="submit"
+                  value="delete">Eliminar plan</button>
         </form>
       </div>
       <Outlet />
@@ -152,8 +172,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   let goTo = "";
   if (intent == 'delete') {
-    await removePlan(Number(params.idplan));
-    goTo = "/plan";
+    const coursesCount = await countCoursesById(Number(params.idplan));
+    if (coursesCount.id_curso == 0) {
+      console.log(coursesCount);
+      await removePlan(Number(params.idplan));
+      goTo = "/plan";
+    } else {
+      let error = new Error("Plan contiene cursos")
+      throw error;
+    }
   }
   else if (intent == "update") {
     await updatePlan(Number(params.idplan), name, code);
@@ -161,10 +188,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
   else if (intent == "delete_course" && courseID != 0) {
     //This should show up a warning
-    await removeCourse(courseID).then(
-      ()=>{},
-      ()=>{})
-    goTo = `/plan/${Number(params.idplan)}`;
+    try {
+      await removeCourse(courseID).then();
+      goTo = `/plan/${Number(params.idplan)}`
+    } catch (error) {
+
+    }
   }
 
   return redirect(goTo);
@@ -175,6 +204,7 @@ export const loader = async ({
   const planid = params.idplan;
   const plan = await getPlanById(Number(planid));
   const listaCursos = await getCoursesbyPlan(Number(planid));
+
 
   if (!planid || isNaN(Number(planid))) {
     throw new Response("Not found", { status: 404 });
@@ -192,23 +222,17 @@ export const links: LinksFunction = () => [
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  console.error(error);
+  const navigate = useNavigate();
+  console.log(error);
+
+  function goBack() {
+    navigate(-1);
+  }
   return (
-    <html>
-      <head>
-        <title>Oh no!</title>
-      </head>
-      <body>
-        {/* add the UI you want your users to see */}
-        <h1>KABOOM 💥... You made it explode!!</h1>
-        <p>This is ok, error happens sometimes.</p>
-        <p>Make sure to take note about the error and send it to the dev.</p>
-        <br/>
-        <h1>Error info</h1>
-        {
-          `${error}`
-        }
-      </body>
-    </html>
+    <div>
+      <h5>Acción no permitida</h5>
+      <h6 style={{ "color": "red" }}>{`${error}`}</h6>
+      <button onClick={goBack}>Go back</button>
+    </div>
   );
 }

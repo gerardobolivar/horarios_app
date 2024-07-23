@@ -8,17 +8,17 @@ export const getCourseById = async (id_curso: number) => {
 
 export const getCourses = async () => {
   return await prisma.curso.findMany({
-    select:{
+    select: {
       nombre: true,
       id_curso: true
     }
   });
 };
 
-export const getCoursesbyPlan = async (plan_id:number) => {
+export const getCoursesbyPlan = async (plan_id: number) => {
   return await prisma.curso.findMany({
-    where:{plan_id},
-    select:{
+    where: { plan_id },
+    select: {
       nombre: true,
       sigla: true,
       id_curso: true
@@ -26,19 +26,19 @@ export const getCoursesbyPlan = async (plan_id:number) => {
   });
 };
 
-export const createCourse = async (nombre:string,sigla:string,plan_id:number,horas: string,tipoCurso:string) => {
+export const createCourse = async (nombre: string, sigla: string, plan_id: number, horas: string, tipoCurso: string) => {
   return await prisma.curso.create({
-    data:{
+    data: {
       nombre: nombre,
       sigla: sigla,
       plan_id: plan_id,
-      horas:horas,
+      horas: horas,
       tipoCurso: tipoCurso
     },
   });
 };
 
-export const removeCourse = async (id_curso : number) => {
+export const removeCourse = async (id_curso: number) => {
   return await prisma.curso.delete({
     where: {
       id_curso: id_curso
@@ -46,14 +46,23 @@ export const removeCourse = async (id_curso : number) => {
   });
 }
 
-export const updateCourse = async (id_curso:number,nombre:string,sigla:string,horas: string,tipoCurso:string) =>{
+export const updateCourse = async (id_curso: number, nombre: string, sigla: string, horas: string, tipoCurso: string) => {
   return await prisma.curso.update({
-    where:{id_curso: id_curso},
-    data:{
-      nombre:nombre,
-      sigla:sigla,
-      horas:horas,
+    where: { id_curso: id_curso },
+    data: {
+      nombre: nombre,
+      sigla: sigla,
+      horas: horas,
       tipoCurso: tipoCurso
     }
+  })
+}
+
+export const countCoursesById = async (idPlan: number) => {
+  return await prisma.curso.count({
+    where:{
+      plan_id: idPlan
+    },
+    select: { id_curso: true}
   })
 }

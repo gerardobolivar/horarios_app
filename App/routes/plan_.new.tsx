@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LinksFunction, redirect } from "@remix-run/node";
-import { Form, json, useLoaderData } from "@remix-run/react";
+import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
@@ -7,17 +7,7 @@ import { createPlan } from "prisma/models/planEstudioModel";
 
 export default function PlanNew() {
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
-  //const data = useLoaderData<typeof loader>();
-  //const [listaCursos, setListaCursos] = useState(data);
   const [nombrePlan, setNombrePlan] = useState(DEFAULT_TOOLTIP_PLAN);
-  //const [codigoPlan, setCondigoPlan] = useState("");
-
-  /*
-  let cursos = Object.values(listaCursos.cursos).map(curso => {
-    return <li key={crypto.randomUUID()}>{curso}</li>
-  })
-  */
-
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
       ? setNombrePlan(event.currentTarget.value)
@@ -25,14 +15,12 @@ export default function PlanNew() {
   }
 
   const [importedScript, setImportedScript] = useState<any>();
-
   useEffect(() => {
     const importedScript = async () => {
       const module = await import("~/Scripts/FrontEnd/newPlan.js");
       const script = module.default;
       setImportedScript(script);
     };
-
     importedScript();
   }, []);
 
@@ -48,13 +36,17 @@ export default function PlanNew() {
             placeholder="Nombre del plan✎"
             className="inputTitle mainTitle"
             required={true}
+            maxLength={100}
             onChange={handleChange} />
         </span>
         <div className="whiteContainer">
           <div>
             <label>
               Código:
-              <input type="text" name="codigo" placeholder="Código✎" />
+              <input type="text"
+                    name="codigo"
+                    maxLength={10}
+                    placeholder="Código✎" />
             </label>
           </div>
         </div>
@@ -65,7 +57,6 @@ export default function PlanNew() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  //Validar datos codigo, nombre
   const formData = await request.formData();
   const name = String(formData.get("nombre"));
   const code = String(formData.get("codigo"));

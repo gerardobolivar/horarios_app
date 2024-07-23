@@ -1,5 +1,5 @@
-import { Outlet, Links, Scripts, Meta, json, useLoaderData, ScrollRestoration, LiveReload, useRouteError, } from "@remix-run/react";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import { Outlet, Links, Scripts, Meta, json, ScrollRestoration, useRouteError, useNavigate, } from "@remix-run/react";
+import type { LinksFunction} from "@remix-run/node";
 import appStyles from "./old-app/Styles/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import MainLayout from "./old-app/Layouts/Main";
@@ -44,24 +44,30 @@ export async function loader() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  console.error(error);
+  const navigate = useNavigate();
+  function goBack(){
+    navigate(-1);
+  }
   return (
     <html>
       <head>
         <title>Oh no!</title>
-        <Meta />
-        <Links />
+        <Links/>
       </head>
       <body>
         {/* add the UI you want your users to see */}
+        <div>
         <h1>KABOOM 💥... You made it explode!!</h1>
         <p>This is ok, error happens sometimes.</p>
-        <p>Make sure to take note about the error and send it to the dev.</p>
+        <p>Make sure to take note about the error and send it to the dev @ geramena102@gmail.com</p>
         <br/>
         <h1>Error info</h1>
         {
           `${error}`
         }
+        </div>
+        <br/>
+        <button onClick={goBack}>Go back</button>
         <Scripts />
       </body>
     </html>

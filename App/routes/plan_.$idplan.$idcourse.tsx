@@ -75,6 +75,8 @@ export default function ModalCourse() {
                     name="course_name"
                     placeholder=""
                     className=""
+                    required={true}
+                    maxLength={150}
                     defaultValue={!isNewCourse && course ? course.nombre : ""}
                     onChange={handleNameChange}
                   />
@@ -88,6 +90,8 @@ export default function ModalCourse() {
                     name="sigla"
                     placeholder=""
                     className=""
+                    required={true}
+                    maxLength={10}
                     defaultValue={!isNewCourse && course ? course.sigla : ""}
                     onChange={handleAcronymChange}
                   />
@@ -101,9 +105,10 @@ export default function ModalCourse() {
                     name="horas"
                     placeholder=""
                     className=""
-                    min={0}
+                    min={1}
                     max={8}
                     defaultValue={!isNewCourse && course ? course.horas : ""}
+                    required={true}
                     onChange={handleTimeChange}
                   />
                 </span>
