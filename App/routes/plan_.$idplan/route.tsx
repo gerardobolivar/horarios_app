@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, json, Link, Outlet, useLoaderData, useNavigate, useNavigation, useRouteError } from "@remix-run/react";
 import { useEffect, useState} from "react";
-import appStyles from '../stylesheets/plan_.new.css?url';
+import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
 import { countCoursesById, getCoursesbyPlan, removeCourse } from "prisma/models/courseModel";

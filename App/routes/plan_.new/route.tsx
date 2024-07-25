@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, LinksFunction, redirect } from "@remix-run/node";
 import { Form, Link, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import appStyles from '../stylesheets/plan_.new.css?url';
+import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { createPlan } from "prisma/models/planEstudioModel";
 
