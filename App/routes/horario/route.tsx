@@ -1,6 +1,6 @@
 import { LinksFunction, json, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import dataCells from "~/old-app/data";
+import dataCells from "./data";
 //import  "~/WebComponents/MyCustomElement";
 //import MyCustomElement from "~/WebComponents/MyCustomElement";
 

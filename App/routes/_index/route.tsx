@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
-import MainTitle from "~/old-app/Components/MainTitle";
-import CicleCard from "~/old-app/Components/CicleCard";
+import MainTitle from "../shared/MainTitle";
+import CicleCard from "./CicleCard";
 
 export default function HomeAdmin(){
   //Some relevant logic in here

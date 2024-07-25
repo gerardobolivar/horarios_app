@@ -1,4 +1,4 @@
-import NavBar from "../Components/NavBar";
+import NavBar from "./NavBar";
 
 export default function MainLayout(props){
   //let login = props.loginData

@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node"
 import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
-import MainTitle from "~/old-app/Components/MainTitle";
+import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import { getAulas, removeAula } from "prisma/models/aulaModel";
 import appStyles from '~/stylesheets/plan_.new.css?url';

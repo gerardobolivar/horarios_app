@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react";
-import MainTitle from "~/old-app/Components/MainTitle";
-import PlanCard from "~/old-app/Components/PlanCard";
+import MainTitle from "../shared/MainTitle";
+import PlanCard from "./PlanCard";
 import { getPlanes } from "prisma/models/planEstudioModel";
 const ROUTE_TAG = "Planes de estudio";
 
