@@ -44,3 +44,13 @@ model Curso{
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
+
+model Aula{
+  id_aula Int @id @default(autoincrement())
+  identificador String @db.VarChar(45)
+  cupo Int
+  detalle String @db.VarChar(100)
+  edificio String @db.VarChar(45)
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+}
