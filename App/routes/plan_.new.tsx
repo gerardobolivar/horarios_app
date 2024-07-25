@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LinksFunction, redirect } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, Link, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
@@ -8,6 +8,18 @@ import { createPlan } from "prisma/models/planEstudioModel";
 export default function PlanNew() {
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
   const [nombrePlan, setNombrePlan] = useState(DEFAULT_TOOLTIP_PLAN);
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const navigation = useNavigation();
+
+  useEffect(()=>{
+    if(navigation.state === "submitting" || navigation.state === "loading"){
+      setBtnDisabled(true);
+    }else{
+      setBtnDisabled(false);
+    }
+  },[navigation.state])
+
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
       ? setNombrePlan(event.currentTarget.value)
@@ -50,7 +62,14 @@ export default function PlanNew() {
             </label>
           </div>
         </div>
-        <button className="menu_bottom_btn" type="submit">Crear</button>
+        <button 
+          className={`${btnDisabled?"disabled":null} menu_bottom_btn`}
+          disabled={btnDisabled}
+          type="submit">
+            Crear</button>
+        <Link to={"/plan"}>
+            <button className="mainButton" >Regresar</button>
+          </Link>
       </Form>
     </div>
   )

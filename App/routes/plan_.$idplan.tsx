@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { json, Link, Outlet, useLoaderData, useNavigate, useRouteError } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { Form, json, Link, Outlet, useLoaderData, useNavigate, useNavigation, useRouteError } from "@remix-run/react";
+import { useEffect, useState} from "react";
 import appStyles from '../stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
@@ -8,55 +8,50 @@ import { countCoursesById, getCoursesbyPlan, removeCourse } from "prisma/models/
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
-  const [listaCursos, setListaCursos] = useState(data.cursos);
   const [nombrePlan, setNombrePlan] = useState(data.plan.nombre_plan);
   const [codigoPlan, setCodigoPlan] = useState(data?.plan?.codigo);
-  const [modal, setModal] = useState(false);
   const [curretCellId, setCurretCellId] = useState("");
-  const [previousCellId, setPreviousCellId] = useState("");
-  const [previousString, setPreviousString] = useState(nombrePlan+codigoPlan);
-  const [importedScript, setImportedScript] = useState<any>();
+  const [previousString, setPreviousString] = useState(nombrePlan + codigoPlan);
   const [noChange, setNoChange] = useState(true);
-  const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios";
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const navigation = useNavigation();
+  
 
-  // How to import JavaScript script when needed. This script will be loaded in the client end. 
-  useEffect(() => {
-    const importedScript = async () => {
-      const module = await import("~/Scripts/FrontEnd/newCourse.js");
-      const script = module.default;
-      setImportedScript(script);
-    };
-    importedScript();
-  }, []);
-
-  useEffect(() => {
-    document.getElementById(`${curretCellId}d`)?.classList.add("selected");
-    document.getElementById(`${curretCellId}`)?.classList.add("selected");
-    document.getElementById(`${previousCellId}`)?.classList.remove("selected");
-    document.getElementById(`${previousCellId}d`)?.classList.remove("selected");
-  }, [curretCellId]);
-
-  useEffect(() => {
-    const newString = nombrePlan+codigoPlan
-    if(newString !== previousString){
-      console.log("Change detected");
-      setNoChange(false);
+  useEffect(()=>{
+    if(navigation.state === "submitting" || navigation.state === "loading"){
+      setBtnDisabled(true);
     }else{
-      console.log("No change detected");
+      setBtnDisabled(false);
+    }
+  },[navigation.state])
+
+  useEffect(() => {
+    const newString = nombrePlan + codigoPlan
+    if (newString !== previousString) {
+      setNoChange(false);
+    } else {
       setNoChange(true);
     }
-  }, [nombrePlan,codigoPlan]);
+  }, [nombrePlan, codigoPlan]);
+  
+  useEffect(() => {
+    //setCurretCellId("");
+    if(data.cursos.length > 0){
+      setCurretCellId(String(data.cursos[data.cursos.length-1].id_curso));
+    }else{
+    setCurretCellId("");
+    }
+  }, [data.cursos]);
+  
 
-
-  let cursosLista: any = listaCursos.map((curso) => {
+  let cursosLista: any = data.cursos.map((curso) => {
     return <div
       className="noLinkDecoration dataRowLink"
       key={String(curso.id_curso)}
-      onMouseDown={handleCellClick}
-      onFocusCapture={handleFocus}>
+      onMouseDown={handleCellClick}>
       <div
         id={String(curso.id_curso) + "d"}>
-        <h5 id={String(curso.id_curso)} className={"dataRow"}>
+        <h5 id={String(curso.id_curso)} className={`${curretCellId === String(curso.id_curso)?"selected":null} dataRow`}>
           {`${curso.sigla} - ${curso.nombre}`}
         </h5>
       </div>
@@ -64,14 +59,8 @@ export default function PlanEdit() {
   })
 
   function handleCellClick(e: any) {
-    setPreviousCellId(curretCellId)
     setCurretCellId(e.target.id);
   }
-
-  function handleFocus(e: any) {
-    console.log("Event triggered!");
-  }
-
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     event.currentTarget.value !== ""
@@ -88,7 +77,7 @@ export default function PlanEdit() {
   return (
     <div className="container">
       <div>
-        <form method="post" autoComplete="off">
+        <Form autoComplete="off" method="post">
           <span className="d-block">
             <input
               id="planTitle"
@@ -115,7 +104,6 @@ export default function PlanEdit() {
                   onChange={handleCodeChange} />
               </label>
             </div>
-
             <div>
               <div>
               </div>
@@ -127,20 +115,24 @@ export default function PlanEdit() {
                 <input id="courseID" name='courseID' hidden={true} defaultValue={curretCellId}></input>
                 <Link to={`/plan/${data.plan.id_plan_estudio}/new`}
                   preventScrollReset={true}>
-                  <button type="button" className="mainButton">Agregar</button>
+                  <button
+                    type="button"
+                    disabled={btnDisabled}
+                    className={`${btnDisabled?"disabled":null} mainButton active`}>
+                      Agregar</button>
                 </Link>
                 <Link to={`/plan/${data.plan.id_plan_estudio}/${curretCellId}`}
                   preventScrollReset={true}>
                   <button type="submit"
                     disabled={curretCellId === "" ? true : false}
-                    className={curretCellId === "" ? "disabled" : ""}>
+                    className={curretCellId === "" ? "disabled" : "active"}>
                     Ver/Actualizar</button>
                 </Link>
                 <button name="intent"
-                  type="submit"
                   value="delete_course"
-                  disabled={curretCellId === "" ? true : false}
-                  className={curretCellId === "" ? "disabled" : ""}>
+                  type="submit"
+                  disabled={curretCellId === "" || btnDisabled ? true : false}
+                  className={`${curretCellId === "" || btnDisabled? "disabled":"active"}`}>
                   Eliminar</button>
               </span>
             </div>
@@ -150,33 +142,35 @@ export default function PlanEdit() {
           <Link to={"/plan"}>
             <button className="mainButton" >Regresar</button>
           </Link>
-          <button className={noChange ? "menu_bottom_btn disabled": "menu_bottom_btn"} name="intent" type="submit" value="update" disabled={noChange}>Actualizar</button>
-          <button className="menu_bottom_btn_remove"
+          <button className={`${noChange || btnDisabled ? "disabled" : "active"}`}
                   name="intent"
                   type="submit"
-                  value="delete">Eliminar plan</button>
-        </form>
+                  value="update"
+                  disabled={noChange || btnDisabled}>Actualizar</button>
+          <button className={`${data.cursos.length > 0 || btnDisabled? "disabled" : "active"} menu_bottom_btn_remove`}
+            name="intent"
+            type="submit"
+            disabled={data.cursos.length > 0 || btnDisabled}
+            value="delete">Eliminar plan</button>
+        </Form>
       </div>
-      <Outlet />
+      <Outlet/>
     </div>
   )
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  //Validar datos codigo, nombre
   const formData = await request.formData();
   const name = String(formData.get('nombre'));
   const intent = formData.get('intent');
   const code = String(formData.get('codigo'));
   const courseID = Number(formData.get('courseID'));
 
-  let goTo = "";
   if (intent == 'delete') {
     const coursesCount = await countCoursesById(Number(params.idplan));
     if (coursesCount.id_curso == 0) {
-      console.log(coursesCount);
       await removePlan(Number(params.idplan));
-      goTo = "/plan";
+      return redirect(`/plan/`)
     } else {
       let error = new Error("Plan contiene cursos")
       throw error;
@@ -184,27 +178,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
   else if (intent == "update") {
     await updatePlan(Number(params.idplan), name, code);
-    goTo = "/plan";
+    return redirect("/plan");
   }
   else if (intent == "delete_course" && courseID != 0) {
-    //This should show up a warning
     try {
       await removeCourse(courseID).then();
-      goTo = `/plan/${Number(params.idplan)}`
     } catch (error) {
-
     }
   }
-
-  return redirect(goTo);
+  return redirect(`/plan/${Number(params.idplan)}`)
 }
 
-export const loader = async ({
-  params, }: LoaderFunctionArgs) => {
+export const loader = async ({params, }: LoaderFunctionArgs) => {
   const planid = params.idplan;
   const plan = await getPlanById(Number(planid));
   const listaCursos = await getCoursesbyPlan(Number(planid));
-
 
   if (!planid || isNaN(Number(planid))) {
     throw new Response("Not found", { status: 404 });
@@ -222,9 +210,8 @@ export const links: LinksFunction = () => [
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  console.error(error);
   const navigate = useNavigate();
-  console.log(error);
-
   function goBack() {
     navigate(-1);
   }

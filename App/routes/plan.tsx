@@ -1,13 +1,11 @@
-import { ActionFunctionArgs, json, redirect } from "@remix-run/node"
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node"
+import { useLoaderData } from "@remix-run/react";
 import MainTitle from "~/old-app/Components/MainTitle";
 import PlanCard from "~/old-app/Components/PlanCard";
-import { MetaFunction } from "@remix-run/node";
 import { getPlanes } from "prisma/models/planEstudioModel";
 const ROUTE_TAG = "Planes de estudio";
 
 export default function Planes() {
-  var META_TAG_DATA = useLoaderData<typeof loader>();
   let data = useLoaderData<typeof loader>();
 
   let planesCards = data.planes.map((plan) => {
@@ -29,5 +27,3 @@ export const loader = async () => {
   const planes = await getPlanes();
   return json({ appName: process.env.APP_NAME || "Horarios", planes: planes });
 }
-
-//export const meta: MetaFunction = () => {} 

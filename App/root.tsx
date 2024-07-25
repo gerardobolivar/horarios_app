@@ -1,5 +1,5 @@
 import { Outlet, Links, Scripts, Meta, json, ScrollRestoration, useRouteError, useNavigate, } from "@remix-run/react";
-import type { LinksFunction} from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node";
 import appStyles from "./old-app/Styles/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import MainLayout from "./old-app/Layouts/Main";
@@ -9,7 +9,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: bootstrap },
 ];
 
-export default function App() {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-013">
       <head>
@@ -23,50 +23,46 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body id="body">
-        <div id="root" className="container-lg">
-          <MainLayout />
-          <Outlet />
-          <ScrollRestoration />
-          <Scripts />
-        </div>
+      <body>
+        {children}
+        <Scripts />
       </body>
     </html>
   )
 }
 
-//export const meta: MetaFunction = ({ location }) => {}
-
-export async function loader() {
-  return json({ok:true})
+export default function App() {
+  return <div>
+    <MainLayout />
+    <Outlet />
+  </div>
 }
-
 
 export function ErrorBoundary() {
   const error = useRouteError();
   const navigate = useNavigate();
-  function goBack(){
+  function goBack() {
     navigate(-1);
   }
   return (
     <html>
       <head>
         <title>Oh no!</title>
-        <Links/>
+        <Links />
       </head>
       <body>
         {/* add the UI you want your users to see */}
         <div>
-        <h1>KABOOM 💥... You made it explode!!</h1>
-        <p>This is ok, error happens sometimes.</p>
-        <p>Make sure to take note about the error and send it to the dev @ geramena102@gmail.com</p>
-        <br/>
-        <h1>Error info</h1>
-        {
-          `${error}`
-        }
+          <h1>KABOOM 💥... You made it explode!!</h1>
+          <p>This is ok, error happens sometimes.</p>
+          <p>Make sure to take note about the error and send it to the dev @ geramena102@gmail.com</p>
+          <br />
+          <h1>Error info</h1>
+          {
+            `${error}`
+          }
         </div>
-        <br/>
+        <br />
         <button onClick={goBack}>Go back</button>
         <Scripts />
       </body>
