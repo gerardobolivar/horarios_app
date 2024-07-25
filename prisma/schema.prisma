@@ -54,3 +54,13 @@ model Aula{
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
+
+model Profesor{
+  id_profesor Int @id @default(autoincrement())
+  nombre String @db.VarChar(30)
+  primer_apellido String @db.VarChar(45)
+  segundo_apellido String @db.VarChar(45)
+  email String @db.VarChar(320)
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+}
