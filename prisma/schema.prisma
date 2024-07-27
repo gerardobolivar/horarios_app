@@ -16,10 +16,16 @@ datasource db {
 model User{
   id_usuario Int @id @default(autoincrement())
   nombre_usuario String @db.VarChar(255)
-  tipo String @db.Char(3)
   planes_estudio PlanEstudio[]
+  role UserRole @default(USER)
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  GUEST
 }
 
 model PlanEstudio{
