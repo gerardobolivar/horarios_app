@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE `curso` DROP COLUMN `tipo`;
+ALTER TABLE `Curso` DROP COLUMN `tipo`;

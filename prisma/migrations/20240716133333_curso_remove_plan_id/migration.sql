@@ -5,7 +5,7 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `curso` DROP FOREIGN KEY `Curso_plan_id_fkey`;
+ALTER TABLE `Curso` DROP FOREIGN KEY `Curso_plan_id_fkey`;
 
 -- AlterTable
-ALTER TABLE `curso` DROP COLUMN `plan_id`;
+ALTER TABLE `Curso` DROP COLUMN `plan_id`;
