@@ -26,7 +26,7 @@ export default function ModalProfesor() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>Agregar Profesor</h2>
+      <h2>{isNewProfesor?"Agregar Profesor":"Ver/Actualizar Profesor"}</h2>
       <div className="body_container">
         <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
           <div className="outter_white_container">

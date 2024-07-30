@@ -25,7 +25,7 @@ export default function ModalCourse() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>Agregar aula</h2>
+      <h2>{isNewAula?"Agregar aula":"Ver/Actualizar Aula"}</h2>
       <div className="body_container">
         <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
           <div className="outter_white_container">

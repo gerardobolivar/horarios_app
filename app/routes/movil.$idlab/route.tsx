@@ -32,7 +32,7 @@ export default function ModalProfesor() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>Agregar laboratorio móvil</h2>
+      <h2>{isNewLab?"Agregar laboratorio móvil":"Ver/Actualizar laboratorio móvil"}</h2>
       <div className="body_container">
         <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
           <div className="outter_white_container">
