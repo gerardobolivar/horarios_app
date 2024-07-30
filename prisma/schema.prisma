@@ -18,7 +18,7 @@ model User{
   nombre_usuario String @db.VarChar(255)
   planes_estudio PlanEstudio[]
   role UserRole @default(USER)
-  ultima_sesion DateTime
+  ultima_sesion DateTime?
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
   hash Hash?
