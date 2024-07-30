@@ -18,8 +18,10 @@ model User{
   nombre_usuario String @db.VarChar(255)
   planes_estudio PlanEstudio[]
   role UserRole @default(USER)
+  ultima_sesion DateTime
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+  hash Hash?
 }
 
 enum UserRole {
@@ -79,5 +81,14 @@ model LaboratorioMovil{
   profesor Profesor @relation(fields: [profesor_id], references: [id_profesor])
   profesor_id Int @unique
   fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+}
+
+model Hash{
+  id_hash Int @id @default(autoincrement())
+  salt String @db.Char(32)
+  hash String @db.Char(64)
+  usuario User @relation(fields: [user_id], references: [id_usuario])
+  user_id Int @unique
   fecha_modificado DateTime @updatedAt
 }
