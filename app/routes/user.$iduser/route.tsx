@@ -94,7 +94,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const role = String(formData.get("user_role"));
   const intent = formData.get("intent");
   let user_role:UserRole;
-  console.log(`ADMIN=${role}: ${role=="ADMIN"}`);
   
   switch (role) {
     case "ADMIN": 
