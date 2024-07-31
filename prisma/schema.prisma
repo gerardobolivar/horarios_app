@@ -15,7 +15,7 @@ datasource db {
 
 model User{
   id_usuario Int @id @default(autoincrement())
-  nombre_usuario String @db.VarChar(255)
+  nombre_usuario String @unique @db.VarChar(50) @default("")
   planes_estudio PlanEstudio[]
   role UserRole @default(USER)
   ultima_sesion DateTime?

@@ -7,6 +7,15 @@ export const getUser = async (id_usuario: number) => {
   });
 };
 
+export const getUserByName = async (nombre_usuario: string) => {
+  return await prisma.user.findUnique({
+    where: { nombre_usuario:nombre_usuario},
+    select:{
+      nombre_usuario: true
+    }
+  });
+};
+
 export const getUsers = async()=>{
   return await prisma.user.findMany(
   {

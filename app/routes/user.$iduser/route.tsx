@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation} from "@remix-run/react";
-import {createUsuario, getUser, updateUsuarioRole} from "prisma/models/userModel"
+import { Form, Link, Outlet, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
+import {createUsuario, getUser, getUserByName, updateUsuarioRole} from "prisma/models/userModel"
 import { useEffect, useState } from "react";
 import { UserRole } from "@prisma/client";
 
@@ -10,10 +10,13 @@ export default function ModalUsuario() {
   const data = useLoaderData<typeof loader>();
   const isNewUser: boolean = data.isNewUser;
   const user = data.user;
+  const submit = useSubmit();
 
   useEffect(()=>{
     if(navigation.state === "submitting"){
       setBtnDisabled(true);
+    }else{
+      setBtnDisabled(false);
     }
   },[navigation.state])
 
@@ -24,11 +27,23 @@ export default function ModalUsuario() {
     return `${stringDate} a las ${stringTime}`
   }
 
+  function handleChangeForm(event:any){
+    const username = String((document.getElementById("username") as HTMLInputElement).value);
+    console.log(username);
+    
+      submit(event.currentTarget);
+
+  }
   return <div className="overlay_styles" >
     <div className="modalContainer">
       <h2>{isNewUser ? "Agregar Usuario":"Ver/Actualizar usuario"}</h2>
       <div className="body_container">
-        <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
+        <Form id="courseForm"
+              method="post"
+              autoComplete="off"
+              name="form"
+              onBlur={handleChangeForm}
+              preventScrollReset>
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
@@ -44,9 +59,10 @@ export default function ModalUsuario() {
                     required={true}
                     readOnly={isNewUser?false:true}
                     maxLength={30}
-                    defaultValue={!isNewUser && user ? user.nombre_usuario : ""}   
+                    defaultValue={!isNewUser && user ? user.nombre_usuario : ""}
                   />
                 </span>
+                  <Outlet/>
                 <span>
                   <label htmlFor="profesorLab" >Rol de usuario</label>
                   <select 
@@ -90,11 +106,11 @@ export default function ModalUsuario() {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const username = String(formData.get("username"));
+  const username = String(formData.get("username")).toLocaleLowerCase();
   const role = String(formData.get("user_role"));
   const intent = formData.get("intent");
   let user_role:UserRole;
-  
+
   switch (role) {
     case "ADMIN": 
       user_role = UserRole.ADMIN;
@@ -108,11 +124,26 @@ export async function action({ request, params }: ActionFunctionArgs) {
   
   if (intent === "create") {
     console.log(`Saving as: ${user_role}`);
-    const user = await createUsuario(username,user_role);
+    try {
+      const user = await createUsuario(username,user_role);
+      
+    } catch (errors) {
+      console.log(errors);
+    }
     
-  } else {
+  }else if (intent === "update"){
     const iduser = Number(params.iduser);
     await updateUsuarioRole(iduser,user_role)
+  }
+  else{
+    console.log("Looking for this username on db");
+    const result = await getUserByName(username)
+    console.log(result);
+    if(result?.nombre_usuario === username){
+      return redirect(`/user/new/error`)
+    }
+    return redirect(`/user/new/`)
+    
   }
   return redirect(`/user/`)
 }
