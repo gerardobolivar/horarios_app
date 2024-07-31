@@ -26,14 +26,15 @@ export const getCoursesbyPlan = async (plan_id: number) => {
   });
 };
 
-export const createCourse = async (nombre: string, sigla: string, plan_id: number, horas: string, tipoCurso: string) => {
+export const createCourse = async (nombre: string, sigla: string, plan_id: number, horas: string, tipoCurso: string,ubicacion:string) => {
   return await prisma.curso.create({
     data: {
       nombre: nombre,
       sigla: sigla,
       plan_id: plan_id,
       horas: horas,
-      tipoCurso: tipoCurso
+      tipoCurso: tipoCurso,
+      ubicacion: ubicacion
     },
   });
 };
@@ -46,14 +47,15 @@ export const removeCourse = async (id_curso: number) => {
   });
 }
 
-export const updateCourse = async (id_curso: number, nombre: string, sigla: string, horas: string, tipoCurso: string) => {
+export const updateCourse = async (id_curso: number, nombre: string, sigla: string, horas: string, tipoCurso: string, ubicacion:string) => {
   return await prisma.curso.update({
     where: { id_curso: id_curso },
     data: {
       nombre: nombre,
       sigla: sigla,
       horas: horas,
-      tipoCurso: tipoCurso
+      tipoCurso: tipoCurso,
+      ubicacion: ubicacion
     }
   })
 }

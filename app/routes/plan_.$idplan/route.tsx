@@ -146,7 +146,7 @@ export default function PlanEdit() {
                   name="intent"
                   type="submit"
                   value="update"
-                  disabled={noChange || btnDisabled}>Actualizar</button>
+                  disabled={noChange || btnDisabled}>Actualizar plan</button>
           <button className={`${data.cursos.length > 0 || btnDisabled? "disabled" : "active"} menu_bottom_btn_remove`}
             name="intent"
             type="submit"

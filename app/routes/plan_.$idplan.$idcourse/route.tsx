@@ -75,6 +75,21 @@ export default function ModalCourse() {
                   />
                 </span>
                 <span>
+                  <label htmlFor="ubicacionCurso" >Ubicación en el plan</label>
+                  <select 
+                    name="ubicacionCurso"
+                    id="ubicacionCurso"
+                    required={true}
+                    defaultValue={course?.ubicacion} >
+                    <option value={""}>Escoger</option>
+                    <option value={"1"}>1</option>
+                    <option value={"2"}>2</option>
+                    <option value={"3"}>3</option>
+                    <option value={"4"}>4</option>
+                    <option value={"5"}>5</option>
+                  </select>
+                </span>
+                <span>
                   <label htmlFor="type" >Tipo de Curso</label>
                   <select name="tipo" id="type" defaultValue={!isNewCourse && course? course.tipoCurso : "T"} >
                     <option value="T">Teórico</option>
@@ -117,14 +132,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const idplan = Number(params.idplan);
   const horas = String(formData.get("horas"));
   const tipo = String(formData.get("tipo"));
+  const ubicacion = formData.get("ubicacionCurso") as string;
   const intent = formData.get("intent");
   let status:number;
   
   if (intent === "create") {
-    const curso = await createCourse(name, sigla, idplan, horas, tipo)
+    const curso = await createCourse(name, sigla, idplan, horas, tipo, ubicacion)
   } else {
     const idcourse = Number(params.idcourse);
-    await updateCourse(idcourse, name, sigla, horas, tipo)
+    await updateCourse(idcourse, name, sigla, horas, tipo, ubicacion)
   }
   return redirect(`/plan/${idplan}/`,{
     headers: {

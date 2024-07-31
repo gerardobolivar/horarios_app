@@ -18,22 +18,34 @@ export default function NavBar() {
       <nav className="navbar navbar-expand-lg mainNavBarmenu ">
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
           <li>
-            <Link to="/plan" className="navbar-brand d-flex nav-item" >Planes de estudio</Link>
+            <Link to="/plan"
+              preventScrollReset={true}
+              className="navbar-brand d-flex nav-item" >Planes de estudio</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item" to="/aula">Aulas</Link>
+            <Link className="navbar-brand d-flex nav-item"
+              preventScrollReset={true}
+              to="/aula">Aulas</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item" to="/movil">Laboratorios móviles</Link>
+            <Link className="navbar-brand d-flex nav-item"
+              preventScrollReset={true}
+              to="/movil">Laboratorios móviles</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item" to="/report">Mi reporte</Link>
+            <Link className="navbar-brand d-flex nav-item"
+              preventScrollReset={true}
+              to="/report">Mi reporte</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item" to="profesor">Profesores</Link>
+            <Link className="navbar-brand d-flex nav-item"
+              preventScrollReset={true}
+              to="profesor">Profesores</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item" to="user">Usuarios</Link>
+            <Link className="navbar-brand d-flex nav-item"
+            preventScrollReset={true}
+            to="user">Usuarios</Link>
           </li>
         </ul>
       </nav>

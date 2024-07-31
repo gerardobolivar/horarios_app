@@ -49,6 +49,7 @@ model Curso{
   nombre String @db.VarChar(150)
   sigla String @db.VarChar(10)
   tipoCurso String @db.VarChar(2)
+  ubicacion String @db.Char(1) @default("1")
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
