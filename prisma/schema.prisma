@@ -50,6 +50,7 @@ model Curso{
   sigla String @db.VarChar(10)
   tipoCurso String @db.VarChar(2)
   ubicacion String @db.Char(1) @default("1")
+  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
@@ -60,6 +61,7 @@ model Aula{
   cupo Int
   detalle String @db.VarChar(100)
   edificio String @db.VarChar(45)
+  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
@@ -81,6 +83,7 @@ model LaboratorioMovil{
   detalle String @db.VarChar(400)
   profesor Profesor @relation(fields: [profesor_id], references: [id_profesor])
   profesor_id Int @unique
+  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
@@ -92,4 +95,46 @@ model Hash{
   usuario User @relation(fields: [user_id], references: [id_usuario])
   user_id Int @unique
   fecha_modificado DateTime @updatedAt
+}
+
+model Matricula{
+  matricula_id Int @id @default(autoincrement())
+  curso Curso @relation(fields: [curso_id], references: [id_curso])
+  aula Aula @relation(fields: [aula_id], references: [id_aula])
+  laboratorio_movil LaboratorioMovil @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
+  horario Horario @relation(fields: [horario_id],references: [horario_id])
+  hora_inicio String
+  hora_final String
+  dia Dias
+  active Boolean @default(true)
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+  curso_id Int
+  aula_id Int
+  laboratorio_movil_id Int
+  horario_id Int
+}
+
+enum Dias {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+}
+
+model Horario{
+  horario_id Int @id @default(autoincrement())
+  ciclo Ciclo @relation(fields: [ciclo_id],references: [ciclo_id])
+  matriculas Matricula[]
+  active Boolean @default(true)
+  ciclo_id Int
+}
+
+model Ciclo{
+  ciclo_id Int @id @default(autoincrement())
+  nombre String @default("Ciclo")
+  active Boolean @default(false)
+  horarios Horario[]
 }
