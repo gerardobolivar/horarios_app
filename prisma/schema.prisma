@@ -101,7 +101,7 @@ model Matricula{
   matricula_id Int @id @default(autoincrement())
   curso Curso @relation(fields: [curso_id], references: [id_curso])
   aula Aula @relation(fields: [aula_id], references: [id_aula])
-  laboratorio_movil LaboratorioMovil @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
+  laboratorio_movil LaboratorioMovil? @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
   horario Horario @relation(fields: [horario_id],references: [horario_id])
   hora_inicio String
   hora_final String
