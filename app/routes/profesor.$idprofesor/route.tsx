@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation} from "@remix-run/react";
 import { createCourse, getCourseById, updateCourse } from "prisma/models/courseModel";
-import { createProfesor, getProfesor } from "prisma/models/profesorModel";
+import { createProfesor, getProfesor, updateProfesor } from "prisma/models/profesorModel";
 import { useEffect, useState } from "react";
 
 export default function ModalProfesor() {
@@ -126,8 +126,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (intent === "create") {
     const profesor = await createProfesor(nombre,primer_apellido,segundo_apellido,email);
   } else {
-    const idprofesor = Number(params.id_profesor);
-    await updateCourse(idprofesor,nombre,primer_apellido,segundo_apellido,email)
+    const idprofesor = Number(params.idprofesor);
+    await updateProfesor(idprofesor,nombre,primer_apellido,segundo_apellido,email)
   }
   return redirect(`/profesor/`,{
     headers: {
