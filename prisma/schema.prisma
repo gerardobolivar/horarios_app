@@ -103,8 +103,8 @@ model Matricula{
   aula Aula @relation(fields: [aula_id], references: [id_aula])
   laboratorio_movil LaboratorioMovil? @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
   horario Horario @relation(fields: [horario_id],references: [horario_id])
-  hora_inicio String
-  hora_final String
+  hora_inicio Int
+  hora_final Int
   dia Dias
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
