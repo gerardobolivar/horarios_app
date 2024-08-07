@@ -1,6 +1,6 @@
 import { Matricula } from "~/types/horarioTypes";
-import { TIMESLOTS_REVERSE } from "./data";
 import CourseCell from "./courseCell";
+import TIMESLOTS_REVERSE from "./reversedTimes";
 
 type Props = {
   matriculas: Matricula[],
@@ -11,7 +11,6 @@ type Props = {
 
 const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, index }) => {
   let previous: string = "";
-  
   return <div key={nombreAula + index} className="classroom-column">
     <h3 >{nombreAula}</h3>
     {
