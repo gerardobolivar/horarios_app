@@ -9,7 +9,7 @@ export default function Filters(data: any) {
   <span>
       <label htmlFor="planEstudiosHorario" onChange={(event:any)=>{
         submit(event.currentTarget)
-      }}>Plan SubmitTargetde estudios</label>
+      }}>Plan de estudios</label>
       <select name="planEstudios">
         <option value={0}>Todos</option>
         <option value={1}>Plan2</option>

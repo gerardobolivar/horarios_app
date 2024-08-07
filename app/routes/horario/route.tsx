@@ -3,8 +3,12 @@ import { useLoaderData } from "@remix-run/react";
 import Filters from "./filters";
 import TIMES from "~/.server/allowedTimes";
 import { getAulas } from "prisma/models/aulaModel";
-import { useEffect, useState } from "react";
-
+import { useMemo } from "react";
+import { getMatriculas } from "prisma/models/matriculaModelo";
+import localStyles from "./horario.css?url";
+import { TIMESLOTS } from "./data";
+import TimeColumn from "./timeColumn";
+import ClassroomColumn from "./classroomColumn";
 
 function MainTitle({ titleText = "Horario" }) {
   return (
@@ -14,27 +18,13 @@ function MainTitle({ titleText = "Horario" }) {
   );
 };
 
-
-
-
 export default function Horario() {
   const data = useLoaderData<typeof loader>();
-
-  let fillingTDS = Object.values(data.aulas).map((aula,index) => {
-    return <td id={`${aula.identificador}-${index}`} key={aula.identificador}></td>
-  })
-
-
-  const timeColumn = data.allowedTimes.map((time, index) => {
-    return <tr key={time}>
-      <td>{time}</td>
-    </tr>
-  })
-
-  const aulaRows = data.aulas.map((aula) => {
-    return <th key={aula.id_aula} id={String(aula.id_aula)}>{aula.identificador}</th>
-  });
-
+  const timeSlotsTitle: string[] = Object.values(TIMESLOTS);
+  const timeSlots: string[] = Object.values(TIMESLOTS);
+  const classrooms = Object.values(data.aulas).map(a => a.identificador);
+  const matriculas = data.matriculas;
+  useMemo(() => timeSlotsTitle.unshift("HORAS"), [timeSlotsTitle])
 
   return (
     <>
@@ -42,8 +32,20 @@ export default function Horario() {
         <MainTitle titleText="Horario" />
       </div>
       <Filters data={data} ></Filters>
-      <div id="calendar">
-
+      <div
+        className="schedule"
+        style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
+        <TimeColumn slots={timeSlotsTitle}></TimeColumn>
+        {
+          classrooms.map((classroom, index) => {
+            return <ClassroomColumn
+              nombreAula={classroom}
+              timeSlots={timeSlots}
+              index={index}
+              matriculas={matriculas.filter(m => m.aula.identificador === classroom)}
+              key={classroom}></ClassroomColumn>
+          })
+        }
       </div>
     </>
   );
@@ -52,8 +54,12 @@ export default function Horario() {
 export const loader = async () => {
   const allowedTimes = TIMES;
   const aulas = await getAulas();
+  const matriculas = await getMatriculas();
+  console.log(matriculas);
 
-  return json({ allowedTimes: allowedTimes, aulas: aulas, ok: true });
+  return json({ allowedTimes: allowedTimes, aulas: aulas, matriculas: matriculas, ok: true });
 }
 
-export const links: LinksFunction = () => [];
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: localStyles },
+];
