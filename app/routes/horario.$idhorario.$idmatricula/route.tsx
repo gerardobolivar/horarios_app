@@ -35,9 +35,9 @@ export default function HorarioModal() {
   }
 
   function handleChangeForm(event: any) {
-    const username = String((document.getElementById("username") as HTMLInputElement).value);
-    console.log(username);
-    submit(event.currentTarget);
+    //const username = String((document.getElementById("username") as HTMLInputElement).value);
+    //console.log(username);
+    //submit(event.currentTarget);
 
   }
 

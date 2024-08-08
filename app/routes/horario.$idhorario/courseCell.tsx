@@ -1,8 +1,8 @@
 import { Curso } from "~/types/horarioTypes"
 
-const CourseCell: React.FC<{curso:Curso,classN:string}> = ({curso,classN}) =>{
+const CourseCell: React.FC<{curso:Curso,classN:string,hiddenCell:boolean}> = ({curso,classN,hiddenCell}) =>{
   return <div className={`${classN} course-cell`}>
-    <span>{curso.nombre}</span>
+    <span>{hiddenCell?null:curso.nombre}</span>
   </div>;
 }
 

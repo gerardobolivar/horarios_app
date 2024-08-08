@@ -1,5 +1,7 @@
 .schedule {
   display: grid;
+  column-gap: 1px;
+
 }
 
 .time-column, .classroom-column {
@@ -11,7 +13,7 @@
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   padding: 5px;
-  overflow: hidden;
+  overflow: hidden;  
 }
 
 .empty-slot {
@@ -26,9 +28,8 @@
 
 .merged-cell {
   position: relative;
-  border: 1px solid #000; /* Optional: border for the merged cell */
-  background-color: #eee;
-  text-overflow: ellipsis !important;
+  background-color: #eee !important;
+  
 }
 
 .time-slot {
