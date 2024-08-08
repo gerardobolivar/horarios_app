@@ -18,6 +18,10 @@
   border: 1px solid #eee;
 }
 
+.course-cell,.empty-slot{
+  cursor: pointer;
+}
+
 /**/
 
 .merged-cell {

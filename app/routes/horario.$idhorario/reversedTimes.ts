@@ -20,7 +20,7 @@ const TIMESLOTS_REVERSE: TIMESLOTS_REVERSE = {
   "19:00-19:50": 19,
   "20:00-20:50": 20,
   "21:00-21:50": 21,
-  "22:00-22:50:": 22,
+  "22:00-22:50": 22,
 };
 
 export default TIMESLOTS_REVERSE;

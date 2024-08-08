@@ -73,6 +73,7 @@ model Profesor{
   segundo_apellido String @db.VarChar(45)
   email String @db.VarChar(320)
   lab_mov LaboratorioMovil?
+  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
 }
@@ -103,14 +104,17 @@ model Matricula{
   aula Aula @relation(fields: [aula_id], references: [id_aula])
   laboratorio_movil LaboratorioMovil? @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
   horario Horario @relation(fields: [horario_id],references: [horario_id])
+  profesor Profesor @relation(fields: [profesor_id],references: [id_profesor])
   hora_inicio Int
   hora_final Int
   dia Dias
+  modalidad Modalidad @default(PRESENCIAL)
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
   curso_id Int
   aula_id Int
+  profesor_id Int
   laboratorio_movil_id Int
   horario_id Int
 }
@@ -122,6 +126,14 @@ enum Dias {
   JUEVES
   VIERNES
   SABADO
+}
+
+enum Modalidad {
+  PRESENCIAL
+  BAJOVIRTUAL
+  BIMODAL
+  ALTOVIRTUAL
+  VIRTUAL
 }
 
 model Horario{
