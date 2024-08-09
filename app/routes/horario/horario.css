@@ -24,6 +24,10 @@
   cursor: pointer;
 }
 
+.single-slot{
+  height: 50px;
+}
+
 /**/
 
 .merged-cell {

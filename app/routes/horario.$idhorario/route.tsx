@@ -33,6 +33,7 @@ export default function () {
             timeSlots={timeSlots}
             index={index}
             matriculas={matriculas.filter(m => m.aula.identificador === classroom)}
+            horarioId={data.idHorario}
             key={classroom}></ClassroomColumn>
         })
       }

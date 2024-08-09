@@ -1,9 +1,25 @@
+import { Link, redirect } from "@remix-run/react";
 import { Curso } from "~/types/horarioTypes"
 
-const CourseCell: React.FC<{curso:Curso,classN:string,hiddenCell:boolean}> = ({curso,classN,hiddenCell}) =>{
-  return <div className={`${classN} course-cell`}>
+let myEvent:any;
+function handleDoubleClick(event:any){
+  //myEvent.submit();
+  
+}
+
+function handleClick(event:any){
+  myEvent = event;
+  event.preventDefault();
+}
+
+const style = {textDecoration:"none",
+}
+
+const CourseCell: React.FC<{curso:Curso,classN:string,hiddenCell:boolean,matriculaId:number,horarioId:number}> = ({curso,classN,hiddenCell,matriculaId,horarioId}) =>{
+  return <Link style={style} to={`/horario/${horarioId}/${matriculaId}`}><div className={`${classN} course-cell`}  onDoubleClick={handleDoubleClick}>
     <span>{hiddenCell?null:curso.nombre}</span>
-  </div>;
+  </div>
+  </Link>
 }
 
 export default CourseCell;

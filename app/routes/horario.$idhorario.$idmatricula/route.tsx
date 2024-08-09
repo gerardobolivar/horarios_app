@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Link, redirect, useLoaderData, useNavigation, useSubmit } from "@remix-run/react";
+import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { createMatricula, getMatriculaById, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
@@ -18,6 +18,10 @@ export default function HorarioModal() {
   const matricula = data.matricula;
   const submit = useSubmit();
   const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
+  const location = useLocation();
+  const timePicked = location.state?.timePicked;
+  
+
   
   useEffect(() => {
     if (navigation.state === "submitting") {
@@ -91,7 +95,7 @@ export default function HorarioModal() {
                     id="cursoHorario"
                     required={true}
                     defaultValue={matricula?.curso_id} >
-                    <option value={""}>Curso</option>
+                    <option value={""}></option>
                     {cursosLista}
                   </select>
                 </span>
@@ -103,7 +107,7 @@ export default function HorarioModal() {
                     id="profesorHorario"
                     required={true}
                     defaultValue={matricula?.profesor_id} >
-                    <option value={""}>Profesor</option>
+                    <option value={""}></option>
                     {profesoresLista}
                   </select>
                 </span>
@@ -115,7 +119,7 @@ export default function HorarioModal() {
                     id="diaHorario"
                     required={true}
                     defaultValue={matricula?.dia} >
-                    <option value={""}>Día</option>
+                    <option value={""}></option>
                     <option value={"LUNES"}>Lunes</option>
                     <option value={"MARTES"}>Martes</option>
                     <option value={"MIERCOLES"}>Miércoles</option>
@@ -131,8 +135,8 @@ export default function HorarioModal() {
                     name="horaInicio"
                     id="horaInicio"
                     required={true}
-                    defaultValue={matricula?.hora_inicio} >
-                    <option value="">Inicio</option>
+                    defaultValue={matricula?.hora_inicio || timePicked} >
+                    <option value=""></option>
                     {timeList}
                   </select>
                 </span>
@@ -144,7 +148,7 @@ export default function HorarioModal() {
                     id="horaFin"
                     required={true}
                     defaultValue={(matricula ? matricula.hora_final-1:undefined)} >
-                    <option value="">Finalización</option>
+                    <option value=""></option>
                     {timeList}
                   </select>
                 </span>
@@ -156,7 +160,7 @@ export default function HorarioModal() {
                     id="modalidadHorario"
                     required={true}
                     defaultValue={matricula?.modalidad} >
-                    <option value="">Modalidad</option>
+                    <option value=""></option>
                     <option value={"PRESENCIAL"}>Presencial</option>
                     <option value={"BAJOVIRTUAL"}>Bajo virtual</option>
                     <option value={"BIMODAL"}>Bimodal</option>
@@ -171,7 +175,7 @@ export default function HorarioModal() {
                     id="aulaHorario"
                     required={true}
                     defaultValue={matricula?.aula_id} >
-                    <option value={""}>Aula</option>
+                    <option value={""}></option>
                     {aulasLista}
                   </select>
                 </span>
@@ -182,7 +186,7 @@ export default function HorarioModal() {
                     id="movilHorario"
                     required={true}
                     defaultValue={matricula?.laboratorio_movil_id} >
-                    <option value={""}>Laboratorio móvil</option>
+                    <option value={""}></option>
                     {movilesLista}
                   </select>
                 </span>
