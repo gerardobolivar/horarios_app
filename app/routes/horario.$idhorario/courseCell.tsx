@@ -1,6 +1,5 @@
-import { Link, redirect } from "@remix-run/react";
+import { Link, redirect, useSearchParams } from "@remix-run/react";
 import { Curso } from "~/types/horarioTypes"
-
 let myEvent:any;
 function handleDoubleClick(event:any){
   //myEvent.submit();

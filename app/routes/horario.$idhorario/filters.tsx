@@ -1,37 +1,76 @@
-import { Form, SubmitFunction } from "@remix-run/react";
+import { Form, SubmitFunction, useSearchParams } from "@remix-run/react";
 import { useSubmit } from "@remix-run/react";
+import { Planes } from "~/types/horarioTypes";
 
-export default function Filters(data: any) {
+type Props = {
+  horarioId: number,
+  data: any,
+  planes: Planes
+}
+const Filters: React.FC<Props> = ({ horarioId,planes, data }) => {
   const submit = useSubmit();
-  
+  const [searchParams,setSearchParams] = useSearchParams();
+
+  const planesEstudio = planes.map((plan) => {
+    return <option value={plan.id_plan_estudio} key={plan.id_plan_estudio}>
+      {`${plan.nombre_plan}`}
+    </option>
+  })
+
+function handleChangeForm(event:any){
+  const params = new URLSearchParams();   
+  let planEstudios = event.currentTarget.querySelector('select[name="planEstudios"]').value;
+  let dia = event.currentTarget.querySelector('select[name="diaHorario"]').value;
+  let ubicacion = event.currentTarget.querySelector('select[name="ubicacionHorario"]').value;
+  params.set("planEstudios",`${planEstudios}`);
+  params.set("dia",`${dia}`);
+  params.set("ubicacion",`${ubicacion}`);
+  setSearchParams(params,{preventScrollReset: true,});
+}
+
   return <>
-  <Form method="POST" preventScrollReset={true}>
-  <span>
-      <label htmlFor="planEstudiosHorario" onChange={(event:any)=>{
-        submit(event.currentTarget)
-      }}>Plan de estudios</label>
-      <select name="planEstudios">
-        <option value={0}>Todos</option>
-        <option value={1}>Plan2</option>
-        <option value={2}>Plan3</option>
-      </select>
-    </span>
-    <span>
-      <label htmlFor="diaHorario">Día</label>
-      <select name="diaHorario">
-        <option value={0}>Todos</option>
-        <option value={1}>Dia</option>
-        <option value={2}>Dia</option>
-      </select>
-    </span>
-    <span>
-      <label htmlFor="diaHorario">Ubicación</label>
-      <select name="ubicacionHorario">
-        <option>Todos</option>
-        <option value={0}>I</option>
-        <option value={1}>I</option>
-      </select>
-    </span>
-  </Form>
+    <Form
+      method="POST"
+      preventScrollReset={true}
+      onChange={(e) => { handleChangeForm(e)}}
+      action={`/horario/${horarioId}`}>
+      <span>
+        <label htmlFor="planEstudios">Plan de estudios</label>
+        <select
+          name="planEstudios"
+          defaultValue={0}>
+          <option value={0}>Todos</option>
+          {planesEstudio}
+        </select>
+      </span>
+      <span>
+        <label htmlFor="diaHorario">Día</label>
+        <select
+          name="diaHorario"
+          defaultValue={"LUNES"}>
+          <option value={"LUNES"}>Lunes</option>
+          <option value={"MARTES"}>Martes</option>
+          <option value={"MIERCOLES"}>Miércoles</option>
+          <option value={"JUEVES"}>Jueves</option>
+          <option value={"VIERNES"}>Viernes</option>
+          <option value={"SABADO"}>Sábado</option>
+        </select>
+      </span>
+      <span>
+        <label htmlFor="diaHorario">Ubicación</label>
+        <select
+          name="ubicacionHorario"
+          defaultValue={"0"}>
+          <option value={"0"}>Todos</option>
+          <option value={"1"}>1</option>
+          <option value={"2"}>2</option>
+          <option value={"3"}>3</option>
+          <option value={"4"}>4</option>
+          <option value={"5"}>5</option>
+        </select>
+      </span>
+    </Form>
   </>
 }
+
+export default Filters;

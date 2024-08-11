@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSubmit } from "@remix-run/react";
+import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { createMatricula, getMatriculaById, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
@@ -8,7 +8,7 @@ import { getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias } from "@prisma/client";
 import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
-
+import { useOutletContext } from "@remix-run/react";
 
 export default function HorarioModal() {
   const navigation = useNavigation();
@@ -20,9 +20,13 @@ export default function HorarioModal() {
   const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
   const location = useLocation();
   const timePicked = location.state?.timePicked;
+  const searchQueries = useOutletContext();
+  console.log(searchQueries);
+  
+  const [searchParams,setSearchParams] = useSearchParams();
+  console.log(searchQueries);
   
 
-  
   useEffect(() => {
     if (navigation.state === "submitting") {
       setBtnDisabled(true);
@@ -31,6 +35,11 @@ export default function HorarioModal() {
     }
   }, [navigation.state])
 
+  useEffect(()=>{
+    //const ads = document.querySelector("as").value as HTMLSelectElement;
+  })
+
+  
   function getTimeStamp(matricula_date: string) {
     let date = new Date(matricula_date);
     let stringDate = date.toLocaleDateString();
@@ -42,7 +51,9 @@ export default function HorarioModal() {
     //const username = String((document.getElementById("username") as HTMLInputElement).value);
     //console.log(username);
     //submit(event.currentTarget);
-
+  
+  
+    
   }
 
   let profesoresLista = data.listaProfesores.map((profesor) => {
@@ -147,7 +158,7 @@ export default function HorarioModal() {
                     name="horaFin"
                     id="horaFin"
                     required={true}
-                    defaultValue={(matricula ? matricula.hora_final-1:undefined)} >
+                    defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
                     <option value=""></option>
                     {timeList}
                   </select>
@@ -225,7 +236,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const profesor = Number(formData.get("profesorHorario"));
   const dia = formData.get("diaHorario") as Dias;
   const horaInicio = Number(formData.get("horaInicio"));
-  const horaFin = Number(formData.get("horaFin"))+1;
+  const horaFin = Number(formData.get("horaFin")) + 1;
   const modalidad = (formData.get("modalidadHorario"));
   const movilHorario = Number(formData.get("movilHorario"));
   const intent = formData.get("intent");
@@ -233,11 +244,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
 
-  if(intent === "create"){
-    const matricula = await createMatricula(horaInicio,horaFin,dia,curso,aula,horarioId,movilHorario,profesor);
+  if (intent === "create") {
+    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, movilHorario, profesor);
     return redirect(`/horario/${horarioId}`)
-  }else if(intent ==="update"){
-    const matricula = await updateMatricula(matriculaID,horaInicio,horaFin,dia,curso,aula,horarioId,movilHorario,profesor);
+  } else if (intent === "update") {
+    const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, movilHorario, profesor);
     return redirect(`/horario/${horarioId}`)
   }
 }
@@ -250,9 +261,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const listaProfesores = await getProfesores();
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
-  
-  
-  
+
+
+
   return json({
     horarioId: horarioId,
     isNewMatricula: isNewMatricula,
