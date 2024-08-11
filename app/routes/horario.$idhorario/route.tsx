@@ -18,10 +18,6 @@ export default function () {
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
   const matriculas = data.matriculas;
   
-  
-  const [searchParams,setSearchParams] = useSearchParams();
-  const search = {...searchParams};
-
   return <>
     <Form method="POST">
       <Link to={`/horario/${data.idHorario}/new`}>
@@ -44,7 +40,7 @@ export default function () {
             key={classroom}></ClassroomColumn>
         })
       }
-      <Outlet context={search}/>
+      <Outlet/>
     </div>
   </>
 }
@@ -67,12 +63,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const timesTitle = TIMES_TITLE;
   const planes:Planes = await getPlanes();
   let matriculas:Matricula[];
-
-  const filters = {
-    "dia":dia,
-    "planEstudios": id_plan_estudio,
-    "ubicacion":ubicacion
-  }
   
   matriculas = await filterMatriculas(idHorario,dia,id_plan_estudio,ubicacion)
   
@@ -81,7 +71,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
                 timeSlots: timeSlots,
                 aulas: aulas,
                 matriculas: matriculas,
-                filters:filters,
                 planes:planes });
 }
 

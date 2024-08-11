@@ -31,6 +31,7 @@ function handleChangeForm(event:any){
   return <>
     <Form
       method="POST"
+      id="filtersSchedule"
       preventScrollReset={true}
       onChange={(e) => { handleChangeForm(e)}}
       action={`/horario/${horarioId}`}>

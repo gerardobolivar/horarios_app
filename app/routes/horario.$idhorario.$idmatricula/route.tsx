@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createMatricula, getMatriculaById, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
@@ -8,7 +8,7 @@ import { getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias } from "@prisma/client";
 import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
-import { useOutletContext } from "@remix-run/react";
+import { scheduleFilters } from "~/types/horarioTypes";
 
 export default function HorarioModal() {
   const navigation = useNavigation();
@@ -20,12 +20,21 @@ export default function HorarioModal() {
   const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
   const location = useLocation();
   const timePicked = location.state?.timePicked;
-  const searchQueries = useOutletContext();
-  console.log(searchQueries);
-  
   const [searchParams,setSearchParams] = useSearchParams();
-  console.log(searchQueries);
   
+ let filters ={
+   "planEstudios": (document.querySelector('select[name="planEstudios"]')as HTMLSelectElement).value,
+   "dia": (document.querySelector('select[name="diaHorario"]')as HTMLSelectElement).value,
+   "ubicacion": (document.querySelector('select[name="ubicacionHorario"]')as HTMLSelectElement).value
+ }
+
+ useEffect(()=>{
+    const params = new URLSearchParams();
+    params.set("planEstudios",`${filters.planEstudios}`);
+    params.set("dia",`${filters.dia}`);
+    params.set("ubicacion",`${filters.ubicacion}`);
+    setSearchParams(params,{preventScrollReset: true,});
+  },[])
 
   useEffect(() => {
     if (navigation.state === "submitting") {
@@ -47,13 +56,8 @@ export default function HorarioModal() {
     return `${stringDate} a las ${stringTime}`
   }
 
-  function handleChangeForm(event: any) {
-    //const username = String((document.getElementById("username") as HTMLInputElement).value);
-    //console.log(username);
-    //submit(event.currentTarget);
-  
-  
-    
+  let createSearchQuery:(filters:scheduleFilters)=>string = function(filters){
+    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}`
   }
 
   let profesoresLista = data.listaProfesores.map((profesor) => {
@@ -94,8 +98,8 @@ export default function HorarioModal() {
           method="post"
           autoComplete="off"
           name="form"
-          onBlur={handleChangeForm}
           preventScrollReset>
+            <input hidden={true} defaultValue={createSearchQuery(filters)} name="filters"></input>
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
@@ -220,7 +224,13 @@ export default function HorarioModal() {
               value={isNewMatricula ? "create" : "update"}>
               {isNewMatricula ? "Guardar" : "Actualizar"}
             </button>
-            <Link to={`/horario/${data.horarioId}`} preventScrollReset={true}>
+            <Link 
+            to={{
+              pathname:`/horario/${data.horarioId}`,
+              search:createSearchQuery(filters)
+            }
+            }
+            preventScrollReset={true}>
               <button type="submit" className="mainButton">Cancelar</button>
             </Link>
           </div>
@@ -243,13 +253,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const aula = Number(formData.get("aulaHorario"));
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
+  const searchQueries = formData.get("filters")  
 
   if (intent === "create") {
     const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, movilHorario, profesor);
-    return redirect(`/horario/${horarioId}`)
+    return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent === "update") {
     const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, movilHorario, profesor);
-    return redirect(`/horario/${horarioId}`)
+    return redirect(`/horario/${horarioId}/${searchQueries}`)
   }
 }
 

@@ -37,4 +37,10 @@ interface Matricula {
 
 type Matriculas = Matricula[];
 
-export type {Curso, Plan, Planes, Matricula, Matriculas}
+interface scheduleFilters {
+  planEstudios: string,
+  dia: string,
+  ubicacion: string
+}
+
+export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters}
