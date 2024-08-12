@@ -1,4 +1,4 @@
-import { Dias } from "@prisma/client";
+import { Dias, Modalidad } from "@prisma/client";
 import prisma from "prisma/client";
 import { Matricula } from "~/types/horarioTypes";
 
@@ -65,7 +65,8 @@ export const createMatricula = async(hora_inicio:number,
                                     aula_id:number,
                                     horario_id:number,
                                     profesor_id:number,
-                                    laboratorio_movil_id?:number,
+                                    modalidad: Modalidad,
+                                    laboratorio_movil_id?:number|null,
                                     )=>{
   await prisma.matricula.create({
     data:{
@@ -76,7 +77,8 @@ export const createMatricula = async(hora_inicio:number,
       aula_id:aula_id,
       horario_id:horario_id,
       laboratorio_movil_id:laboratorio_movil_id,
-      profesor_id:profesor_id
+      profesor_id:profesor_id,
+      modalidad:modalidad
     }
   });
 
@@ -91,7 +93,8 @@ export const updateMatricula = async(matricula_id:number,
                                     aula_id:number,
                                     horario_id:number,
                                     profesor_id:number,
-                                    laboratorio_movil_id?:number
+                                    modalidad: Modalidad,
+                                    laboratorio_movil_id?:number | null
                                     )=>{
   return await prisma.matricula.update({
     where:{matricula_id:matricula_id},
@@ -103,7 +106,14 @@ export const updateMatricula = async(matricula_id:number,
       aula_id:aula_id,
       horario_id:horario_id,
       laboratorio_movil_id:laboratorio_movil_id,
-      profesor_id:profesor_id
+      profesor_id:profesor_id,
+      modalidad:modalidad
     }
+  })
+}
+
+export const removeMatricula = async(matricula_id:number) =>{
+  return await prisma.matricula.delete({
+    where:{matricula_id:matricula_id}
   })
 }

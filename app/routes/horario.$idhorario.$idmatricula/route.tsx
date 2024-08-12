@@ -1,12 +1,12 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { useEffect, useMemo, useState } from "react";
-import { createMatricula, getMatriculaById, updateMatricula } from "prisma/models/matriculaModelo";
+import { createMatricula, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
 import { getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
-import { Dias } from "@prisma/client";
+import { Dias, Modalidad } from "@prisma/client";
 import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
 import { scheduleFilters } from "~/types/horarioTypes";
 
@@ -35,6 +35,9 @@ export default function HorarioModal() {
     params.set("dia",`${filters.dia}`);
     params.set("ubicacion",`${filters.ubicacion}`);
     setSearchParams(params,{preventScrollReset: true,});
+    if(data.matricula?.modalidad === "VIRTUAL"){
+      setIsVirtual(true);
+    }
   },[])
 
   useEffect(() => {
@@ -53,13 +56,14 @@ export default function HorarioModal() {
   }
 
   function handleModalidadChange(event:any){
-    const modalidad = event.currentTarget.value;    
+    const modalidad = event.currentTarget.value;
     if(modalidad === "VIRTUAL"){
       setIsVirtual(true);
       const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
       const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
       aulaSelector.value = virtualClassroomValue;
     }else{
+      (document.getElementById("aulaHorario") as HTMLSelectElement).value = "";
       setIsVirtual(false);
     }
   }
@@ -186,14 +190,14 @@ export default function HorarioModal() {
                     onChange={(e)=>{handleModalidadChange(e)}}
                     defaultValue={matricula?.modalidad} >
                     <option value=""></option>
-                    <option value={"PRESENCIAL"}>Presencial</option>
-                    <option value={"BAJOVIRTUAL"}>Bajo virtual</option>
-                    <option value={"BIMODAL"}>Bimodal</option>
-                    <option value={"ALTOVIRTUAL"}>Alto virtual</option>
-                    <option value={"VIRTUAL"}>Virtual</option>
+                    <option value={"PRESENCIAL"}>PRESENCIAL</option>
+                    <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
+                    <option value={"BIMODAL"}>BIMODAL</option>
+                    <option value={"ALTOVIRTUAL"}>ALTO VIRTUAL</option>
+                    <option value={"VIRTUAL"}>VIRTUAL</option>
                   </select>
                 </span>
-                <span hidden={isVirtual}>
+                <span hidden={isVirtual }>
                   <label htmlFor="aulaHorario" >Aula:</label>
                   <select
                     name="aulaHorario"
@@ -242,6 +246,10 @@ export default function HorarioModal() {
             preventScrollReset={true}>
               <button type="submit" className="mainButton">Cancelar</button>
             </Link>
+            <button
+              name="intent"
+              value="eliminar"
+              className="mainButton">Eliminar</button>
           </div>
         </Form>
       </div>
@@ -256,8 +264,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const dia = formData.get("diaHorario") as Dias;
   const horaInicio = Number(formData.get("horaInicio"));
   const horaFin = Number(formData.get("horaFin")) + 1;
-  const modalidad = (formData.get("modalidadHorario"));
-  const movilHorario = Number(formData.get("movilHorario")) === 0 ? undefined: Number(formData.get("movilHorario"));
+  const modalidad = (formData.get("modalidadHorario")) as Modalidad;
+  const movilHorario = Number(formData.get("movilHorario")) === 0 ? null: Number(formData.get("movilHorario"));
   const intent = formData.get("intent");
   const aula = Number(formData.get("aulaHorario"));
   const horarioId = Number(params.idhorario);
@@ -266,10 +274,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   
 
   if (intent === "create") {
-    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor,movilHorario);
+    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad,movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent === "update") {
-    const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, profesor, movilHorario);
+    const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario);
+    return redirect(`/horario/${horarioId}/${searchQueries}`)
+  }else if(intent == "eliminar"){
+    const matricula = await removeMatricula(matriculaID);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   }
 }
