@@ -116,7 +116,7 @@ model Matricula{
   curso_id Int
   aula_id Int
   profesor_id Int
-  laboratorio_movil_id Int
+  laboratorio_movil_id Int?
   horario_id Int
 }
 

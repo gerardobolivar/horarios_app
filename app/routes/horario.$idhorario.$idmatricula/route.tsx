@@ -57,8 +57,8 @@ export default function HorarioModal() {
     if(modalidad === "VIRTUAL"){
       setIsVirtual(true);
       const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
-      const virtuaClasstroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
-      aulaSelector.value = virtuaClasstroomValue;
+      const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
+      aulaSelector.value = virtualClassroomValue;
     }else{
       setIsVirtual(false);
     }
@@ -209,9 +209,8 @@ export default function HorarioModal() {
                   <select
                     name="movilHorario"
                     id="movilHorario"
-                    required={true}
-                    defaultValue={matricula?.laboratorio_movil_id} >
-                    <option value={""}></option>
+                    defaultValue={matricula?.laboratorio_movil_id ? matricula.laboratorio_movil_id : ""} >
+                    <option value={"0"}>No</option>
                     {movilesLista}
                   </select>
                 </span>
@@ -258,18 +257,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horaInicio = Number(formData.get("horaInicio"));
   const horaFin = Number(formData.get("horaFin")) + 1;
   const modalidad = (formData.get("modalidadHorario"));
-  const movilHorario = Number(formData.get("movilHorario"));
+  const movilHorario = Number(formData.get("movilHorario")) === 0 ? undefined: Number(formData.get("movilHorario"));
   const intent = formData.get("intent");
   const aula = Number(formData.get("aulaHorario"));
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
-  const searchQueries = formData.get("filters")  
+  const searchQueries = formData.get("filters")
+  
 
   if (intent === "create") {
-    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, movilHorario, profesor);
+    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor,movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent === "update") {
-    const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, movilHorario, profesor);
+    const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, profesor, movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   }
 }
