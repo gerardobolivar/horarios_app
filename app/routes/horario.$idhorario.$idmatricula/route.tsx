@@ -21,6 +21,7 @@ export default function HorarioModal() {
   const location = useLocation();
   const timePicked = location.state?.timePicked;
   const [searchParams,setSearchParams] = useSearchParams();
+  const [isVirtual,setIsVirtual] = useState(false);
   
  let filters ={
    "planEstudios": (document.querySelector('select[name="planEstudios"]')as HTMLSelectElement).value,
@@ -43,17 +44,24 @@ export default function HorarioModal() {
       setBtnDisabled(false);
     }
   }, [navigation.state])
-
-  useEffect(()=>{
-    //const ads = document.querySelector("as").value as HTMLSelectElement;
-  })
-
   
   function getTimeStamp(matricula_date: string) {
     let date = new Date(matricula_date);
     let stringDate = date.toLocaleDateString();
     let stringTime = date.toLocaleTimeString();
     return `${stringDate} a las ${stringTime}`
+  }
+
+  function handleModalidadChange(event:any){
+    const modalidad = event.currentTarget.value;    
+    if(modalidad === "VIRTUAL"){
+      setIsVirtual(true);
+      const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
+      const virtuaClasstroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
+      aulaSelector.value = virtuaClasstroomValue;
+    }else{
+      setIsVirtual(false);
+    }
   }
 
   let createSearchQuery:(filters:scheduleFilters)=>string = function(filters){
@@ -73,9 +81,10 @@ export default function HorarioModal() {
   })
 
   let aulasLista = data.listaAulas.map((aula) => {
-    return <option value={aula.id_aula} key={aula.id_aula}>
-      {`${aula.identificador}`}
-    </option>
+    let isVirtual = aula.identificador === 999
+      return <option hidden={isVirtual} value={aula.id_aula} key={aula.id_aula}>
+        {`${aula.identificador < 10 ? "Aula 0" + aula.identificador: "Aula "+ aula.identificador}`}
+      </option>
   })
 
   let movilesLista = data.listaMoviles.map((movil) => {
@@ -174,6 +183,7 @@ export default function HorarioModal() {
                     name="modalidadHorario"
                     id="modalidadHorario"
                     required={true}
+                    onChange={(e)=>{handleModalidadChange(e)}}
                     defaultValue={matricula?.modalidad} >
                     <option value=""></option>
                     <option value={"PRESENCIAL"}>Presencial</option>
@@ -183,7 +193,7 @@ export default function HorarioModal() {
                     <option value={"VIRTUAL"}>Virtual</option>
                   </select>
                 </span>
-                <span>
+                <span hidden={isVirtual}>
                   <label htmlFor="aulaHorario" >Aula:</label>
                   <select
                     name="aulaHorario"
