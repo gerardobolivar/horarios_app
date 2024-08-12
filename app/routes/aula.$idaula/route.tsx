@@ -25,23 +25,26 @@ export default function ModalCourse() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>{isNewAula?"Agregar aula":"Ver/Actualizar Aula"}</h2>
+      <h2>{isNewAula?"Agregar aula":`Aula ${Number(aula?.identificador) < 10 ? "0"+aula?.identificador:
+                                    aula?.identificador === 999 ? "Virtual":
+                                    aula?.identificador}`}</h2>
       <div className="body_container">
         <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
                 <span>
-                  <label htmlFor="ident">Identificador</label>
+                  <label htmlFor="ident">Número</label>
                   <input
                     id="identificador"
                     title="Indentifcador del aula"
-                    type="text"
+                    type="number"
                     name="ident"
                     placeholder=""
                     className=""
                     required={true}
-                    maxLength={45}
+                    min="1"
+                    max="999"
                     defaultValue={!isNewAula && aula ? aula.identificador : ""}   
                   />
                 </span>
@@ -118,7 +121,7 @@ export default function ModalCourse() {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const identificador = String(formData.get("ident")).toUpperCase();
+  const identificador = Number(formData.get("ident"));
   const detalle = String(formData.get("detalle")).toUpperCase();
   const edificio = String(formData.get("edificio")).toUpperCase();
   const cupo = Number(formData.get("cupo"))

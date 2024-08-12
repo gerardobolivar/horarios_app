@@ -25,7 +25,7 @@ export const removeAula = async (id_aula:number) =>{
   })
 }
 
-export const updateAula = async (id_aula:number, identificador:string, cupo:number, detalle:string, edificio:string ) =>{
+export const updateAula = async (id_aula:number, identificador:number, cupo:number, detalle:string, edificio:string ) =>{
   return await prisma.aula.update({
     where:{
       id_aula: id_aula
@@ -40,7 +40,7 @@ export const updateAula = async (id_aula:number, identificador:string, cupo:numb
   })
 }
 
-export const createAula = async (identificador:string, cupo:number, detalle:string, edificio:string ) =>{
+export const createAula = async (identificador:number, cupo:number, detalle:string, edificio:string ) =>{
   return await prisma.aula.create({
     data:{
       identificador: identificador,

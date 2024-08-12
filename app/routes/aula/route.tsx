@@ -24,7 +24,9 @@ export default function Aulas() {
       <div
         id={String(aula.id_aula) + "d"}>
         <h5 id={String(aula.id_aula)} className={`${curretCellId === String(aula.id_aula) ? "selected" : null} dataRow`}>
-          {`${aula.identificador}`}
+          {`Aula ${Number(aula?.identificador) < 10 ?
+            "0"+aula?.identificador:
+            aula?.identificador === 999 ? "Virtual" : aula?.identificador}`}
         </h5>
       </div>
     </div>

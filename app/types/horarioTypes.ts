@@ -11,7 +11,7 @@ import { Dias } from "@prisma/client"
 }
 interface Aula{
   id_aula: number;
-  identificador: string;
+  identificador: number;
   cupo: number;
   detalle: string;
   edificio: string;

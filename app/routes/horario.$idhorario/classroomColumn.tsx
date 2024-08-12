@@ -5,7 +5,7 @@ import { Link } from "@remix-run/react";
 
 type Props = {
   matriculas: Matricula[],
-  nombreAula: string,
+  nombreAula: number,
   timeSlots: string[],
   horarioId: number,
   index: number
@@ -16,7 +16,7 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
   let cont: number = 1;
 
   return <div key={nombreAula + index} className="classroom-column">
-    <h3 >{nombreAula}</h3>
+    <h3 >{`${nombreAula < 10 ? "Aula 0" + nombreAula:  nombreAula === 999 ? "Virtual" : "Aula "+nombreAula}`}</h3>
     {
       timeSlots.map((slot) => {
         const matricula = matriculas.find(m => m.hora_inicio <= TIMESLOTS_REVERSE[slot] && m.hora_final > TIMESLOTS_REVERSE[slot]);
