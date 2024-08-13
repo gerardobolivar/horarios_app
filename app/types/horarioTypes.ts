@@ -9,6 +9,14 @@ import { Dias } from "@prisma/client"
   ubicacion:string,
   sigla: string
 }
+type SCHEDULE_ERROR = {
+  [key:string]: string;
+};
+
+const SCHEDULE_ERRORS: SCHEDULE_ERROR = {
+  INAVALID_TIME_RANGE : "Rango de horas inválido",
+}
+
 interface Aula{
   id_aula: number;
   identificador: number;
@@ -44,3 +52,4 @@ interface scheduleFilters {
 }
 
 export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters}
+export {SCHEDULE_ERRORS};

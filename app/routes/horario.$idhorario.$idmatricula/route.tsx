@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
-import { useEffect, useMemo, useState } from "react";
+import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { createMatricula, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
@@ -8,7 +8,7 @@ import { getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias, Modalidad } from "@prisma/client";
 import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
-import { scheduleFilters } from "~/types/horarioTypes";
+import { SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
 
 export default function HorarioModal() {
   const navigation = useNavigation();
@@ -16,29 +16,30 @@ export default function HorarioModal() {
   const data = useLoaderData<typeof loader>();
   const isNewMatricula: boolean = data.isNewMatricula;
   const matricula = data.matricula;
-  const submit = useSubmit();
   const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
   const location = useLocation();
   const timePicked = location.state?.timePicked;
-  const [searchParams,setSearchParams] = useSearchParams();
-  const [isVirtual,setIsVirtual] = useState(false);
-  
- let filters ={
-   "planEstudios": (document.querySelector('select[name="planEstudios"]')as HTMLSelectElement).value,
-   "dia": (document.querySelector('select[name="diaHorario"]')as HTMLSelectElement).value,
-   "ubicacion": (document.querySelector('select[name="ubicacionHorario"]')as HTMLSelectElement).value
- }
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isVirtual, setIsVirtual] = useState(false);
+  let [errorList,setErrorList] = useState<string[]>([]);
+  const [areThereErrors, setAreThereErrors] = useState(false);
 
- useEffect(()=>{
+  let filters = {
+    "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
+    "dia": (document.querySelector('select[name="diaHorario"]') as HTMLSelectElement).value,
+    "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value
+  }
+
+  useEffect(() => {
     const params = new URLSearchParams();
-    params.set("planEstudios",`${filters.planEstudios}`);
-    params.set("dia",`${filters.dia}`);
-    params.set("ubicacion",`${filters.ubicacion}`);
-    setSearchParams(params,{preventScrollReset: true,});
-    if(data.matricula?.modalidad === "VIRTUAL"){
+    params.set("planEstudios", `${filters.planEstudios}`);
+    params.set("dia", `${filters.dia}`);
+    params.set("ubicacion", `${filters.ubicacion}`);
+    setSearchParams(params, { preventScrollReset: true, });
+    if (data.matricula?.modalidad === "VIRTUAL") {
       setIsVirtual(true);
     }
-  },[])
+  }, [])
 
   useEffect(() => {
     if (navigation.state === "submitting") {
@@ -47,7 +48,7 @@ export default function HorarioModal() {
       setBtnDisabled(false);
     }
   }, [navigation.state])
-  
+
   function getTimeStamp(matricula_date: string) {
     let date = new Date(matricula_date);
     let stringDate = date.toLocaleDateString();
@@ -55,20 +56,51 @@ export default function HorarioModal() {
     return `${stringDate} a las ${stringTime}`
   }
 
-  function handleModalidadChange(event:any){
+  function handleModalidadChange(event: any) {
     const modalidad = event.currentTarget.value;
-    if(modalidad === "VIRTUAL"){
+    if (modalidad === "VIRTUAL") {
       setIsVirtual(true);
       const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
       const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
       aulaSelector.value = virtualClassroomValue;
-    }else{
+    } else {
       (document.getElementById("aulaHorario") as HTMLSelectElement).value = "";
       setIsVirtual(false);
     }
   }
 
-  let createSearchQuery:(filters:scheduleFilters)=>string = function(filters){
+  function validateTimeSpans(): boolean {
+    const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
+    const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
+    let approvedValidation = false;
+    const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
+
+    if (initialTime > endTime) {
+      if (!hasRangeError) {
+        const newList = [...errorList];
+        newList.push("INAVALID_TIME_RANGE")
+        setErrorList(newList)
+        setAreThereErrors(true);
+      }
+    } else if(hasRangeError){
+      const newList = errorList.filter(e=>e!=="INAVALID_TIME_RANGE")
+      setErrorList(newList);
+      if(newList.length < 1){setAreThereErrors(false)}
+    }
+     else {
+      approvedValidation = true;
+  
+    }
+    return approvedValidation;
+  }
+
+  function checkForErrors(event: any) {
+    if (!validateTimeSpans()) {
+      event.preventDefault();
+    }
+  }
+
+  let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}`
   }
 
@@ -86,9 +118,9 @@ export default function HorarioModal() {
 
   let aulasLista = data.listaAulas.map((aula) => {
     let isVirtual = aula.identificador === 999
-      return <option hidden={isVirtual} value={aula.id_aula} key={aula.id_aula}>
-        {`${aula.identificador < 10 ? "Aula 0" + aula.identificador: "Aula "+ aula.identificador}`}
-      </option>
+    return <option hidden={isVirtual} value={aula.id_aula} key={aula.id_aula}>
+      {`${aula.identificador < 10 ? "Aula 0" + aula.identificador : "Aula " + aula.identificador}`}
+    </option>
   })
 
   let movilesLista = data.listaMoviles.map((movil) => {
@@ -103,6 +135,8 @@ export default function HorarioModal() {
     </option>
   })
 
+  const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) :null
+
   return <div className="overlay_styles" >
     <div className="modalContainer">
       <h2>{isNewMatricula ? "Registrar curso" : "Ver/Actualizar registro"}</h2>
@@ -111,8 +145,9 @@ export default function HorarioModal() {
           method="post"
           autoComplete="off"
           name="form"
+          onSubmit={checkForErrors}
           preventScrollReset>
-            <input hidden={true} defaultValue={createSearchQuery(filters)} name="filters"></input>
+          <input hidden={true} defaultValue={createSearchQuery(filters)} name="filters"></input>
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
@@ -163,6 +198,7 @@ export default function HorarioModal() {
                     name="horaInicio"
                     id="horaInicio"
                     required={true}
+                    onClick={validateTimeSpans}
                     defaultValue={matricula?.hora_inicio || timePicked} >
                     <option value=""></option>
                     {timeList}
@@ -175,6 +211,7 @@ export default function HorarioModal() {
                     name="horaFin"
                     id="horaFin"
                     required={true}
+                    onClick={validateTimeSpans}
                     defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
                     <option value=""></option>
                     {timeList}
@@ -187,7 +224,7 @@ export default function HorarioModal() {
                     name="modalidadHorario"
                     id="modalidadHorario"
                     required={true}
-                    onChange={(e)=>{handleModalidadChange(e)}}
+                    onChange={(e) => { handleModalidadChange(e) }}
                     defaultValue={matricula?.modalidad} >
                     <option value=""></option>
                     <option value={"PRESENCIAL"}>PRESENCIAL</option>
@@ -197,7 +234,7 @@ export default function HorarioModal() {
                     <option value={"VIRTUAL"}>VIRTUAL</option>
                   </select>
                 </span>
-                <span hidden={isVirtual }>
+                <span hidden={isVirtual}>
                   <label htmlFor="aulaHorario" >Aula:</label>
                   <select
                     name="aulaHorario"
@@ -218,7 +255,9 @@ export default function HorarioModal() {
                     {movilesLista}
                   </select>
                 </span>
-
+                <div className="errorBlock" style={{color:"red"}}>
+                  {renderErrors}
+                </div>
                 <span hidden={isNewMatricula}>
                   <p><strong>Modificado:</strong>
                     {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
@@ -231,19 +270,19 @@ export default function HorarioModal() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled" : ""}
+              className={btnDisabled || areThereErrors? "disabled" : ""}
               name="intent"
-              disabled={btnDisabled}
+              disabled={btnDisabled || areThereErrors}
               value={isNewMatricula ? "create" : "update"}>
               {isNewMatricula ? "Guardar" : "Actualizar"}
             </button>
-            <Link 
-            to={{
-              pathname:`/horario/${data.horarioId}`,
-              search:createSearchQuery(filters)
-            }
-            }
-            preventScrollReset={true}>
+            <Link
+              to={{
+                pathname: `/horario/${data.horarioId}`,
+                search: createSearchQuery(filters)
+              }
+              }
+              preventScrollReset={true}>
               <button type="submit" className="mainButton">Cancelar</button>
             </Link>
             <button
@@ -265,21 +304,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horaInicio = Number(formData.get("horaInicio"));
   const horaFin = Number(formData.get("horaFin")) + 1;
   const modalidad = (formData.get("modalidadHorario")) as Modalidad;
-  const movilHorario = Number(formData.get("movilHorario")) === 0 ? null: Number(formData.get("movilHorario"));
+  const movilHorario = Number(formData.get("movilHorario")) === 0 ? null : Number(formData.get("movilHorario"));
   const intent = formData.get("intent");
   const aula = Number(formData.get("aulaHorario"));
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
   const searchQueries = formData.get("filters")
-  
 
   if (intent === "create") {
-    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad,movilHorario);
+    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent === "update") {
     const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
-  }else if(intent == "eliminar"){
+  } else if (intent == "eliminar") {
     const matricula = await removeMatricula(matriculaID);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   }
@@ -293,8 +331,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const listaProfesores = await getProfesores();
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
-
-
 
   return json({
     horarioId: horarioId,
