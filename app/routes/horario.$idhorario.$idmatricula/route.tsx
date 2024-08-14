@@ -288,6 +288,7 @@ export default function HorarioModal() {
             <button
               name="intent"
               value="eliminar"
+              hidden={isNewMatricula}
               className="mainButton">Eliminar</button>
           </div>
         </Form>
