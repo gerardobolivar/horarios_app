@@ -191,33 +191,6 @@ export default function HorarioModal() {
                     <option value={"SABADO"}>Sábado</option>
                   </select>
                 </span>
-
-                <span>
-                  <label htmlFor="horaInicio" >Hora de inicio:</label>
-                  <select
-                    name="horaInicio"
-                    id="horaInicio"
-                    required={true}
-                    onClick={validateTimeSpans}
-                    defaultValue={matricula?.hora_inicio || timePicked} >
-                    <option value=""></option>
-                    {timeList}
-                  </select>
-                </span>
-
-                <span>
-                  <label htmlFor="horaFin" >Hora de finalización:</label>
-                  <select
-                    name="horaFin"
-                    id="horaFin"
-                    required={true}
-                    onClick={validateTimeSpans}
-                    defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
-                    <option value=""></option>
-                    {timeList}
-                  </select>
-                </span>
-
                 <span>
                   <label htmlFor="modalidadHorario" >Modalidad:</label>
                   <select
@@ -243,6 +216,31 @@ export default function HorarioModal() {
                     defaultValue={matricula?.aula_id} >
                     <option value={""}></option>
                     {aulasLista}
+                  </select>
+                </span>
+                <span>
+                  <label htmlFor="horaInicio" >Hora de inicio:</label>
+                  <select
+                    name="horaInicio"
+                    id="horaInicio"
+                    required={true}
+                    onClick={validateTimeSpans}
+                    defaultValue={matricula?.hora_inicio || timePicked} >
+                    <option value=""></option>
+                    {timeList}
+                  </select>
+                </span>
+
+                <span>
+                  <label htmlFor="horaFin" >Hora de finalización:</label>
+                  <select
+                    name="horaFin"
+                    id="horaFin"
+                    required={true}
+                    onClick={validateTimeSpans}
+                    defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
+                    <option value=""></option>
+                    {timeList}
                   </select>
                 </span>
                 <span>
