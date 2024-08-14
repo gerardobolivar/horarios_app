@@ -9,6 +9,8 @@ import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias, Modalidad } from "@prisma/client";
 import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
 import { SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
+import { createLockedTime } from "prisma/models/lockedTimeModel";
+import { TIMESLOTS } from "~/.server/allowedTimes";
 
 export default function HorarioModal() {
   const navigation = useNavigation();
@@ -21,7 +23,7 @@ export default function HorarioModal() {
   const timePicked = location.state?.timePicked;
   const [searchParams, setSearchParams] = useSearchParams();
   const [isVirtual, setIsVirtual] = useState(false);
-  let [errorList,setErrorList] = useState<string[]>([]);
+  let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
 
   let filters = {
@@ -82,14 +84,14 @@ export default function HorarioModal() {
         setErrorList(newList)
         setAreThereErrors(true);
       }
-    } else if(hasRangeError){
-      const newList = errorList.filter(e=>e!=="INAVALID_TIME_RANGE")
+    } else if (hasRangeError) {
+      const newList = errorList.filter(e => e !== "INAVALID_TIME_RANGE")
       setErrorList(newList);
-      if(newList.length < 1){setAreThereErrors(false)}
+      if (newList.length < 1) { setAreThereErrors(false) }
     }
-     else {
+    else {
       approvedValidation = true;
-  
+
     }
     return approvedValidation;
   }
@@ -135,7 +137,7 @@ export default function HorarioModal() {
     </option>
   })
 
-  const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) :null
+  const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
@@ -181,6 +183,7 @@ export default function HorarioModal() {
                     name="diaHorario"
                     id="diaHorario"
                     required={true}
+                    hidden={!isNewMatricula}
                     defaultValue={matricula?.dia} >
                     <option value={""}></option>
                     <option value={"LUNES"}>Lunes</option>
@@ -190,6 +193,7 @@ export default function HorarioModal() {
                     <option value={"VIERNES"}>Viernes</option>
                     <option value={"SABADO"}>Sábado</option>
                   </select>
+                  <h6 hidden={isNewMatricula}>{matricula ? matricula.dia : null}</h6>
                 </span>
                 <span>
                   <label htmlFor="modalidadHorario" >Modalidad:</label>
@@ -197,6 +201,7 @@ export default function HorarioModal() {
                     name="modalidadHorario"
                     id="modalidadHorario"
                     required={true}
+                    hidden={!isNewMatricula}
                     onChange={(e) => { handleModalidadChange(e) }}
                     defaultValue={matricula?.modalidad} >
                     <option value=""></option>
@@ -206,6 +211,7 @@ export default function HorarioModal() {
                     <option value={"ALTOVIRTUAL"}>ALTO VIRTUAL</option>
                     <option value={"VIRTUAL"}>VIRTUAL</option>
                   </select>
+                  <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
                 </span>
                 <span hidden={isVirtual}>
                   <label htmlFor="aulaHorario" >Aula:</label>
@@ -213,10 +219,14 @@ export default function HorarioModal() {
                     name="aulaHorario"
                     id="aulaHorario"
                     required={true}
+                    hidden={!isNewMatricula}
                     defaultValue={matricula?.aula_id} >
                     <option value={""}></option>
                     {aulasLista}
                   </select>
+                  <h6 hidden={isNewMatricula}>{matricula ?
+                    `${matricula.aula_id < 10 ? "Aula 0" + matricula.aula_id : matricula.aula_id === 999 ? "Virtual" : "Aula " + matricula.aula_id}`
+                    : null}</h6>
                 </span>
                 <span>
                   <label htmlFor="horaInicio" >Hora de inicio:</label>
@@ -225,10 +235,13 @@ export default function HorarioModal() {
                     id="horaInicio"
                     required={true}
                     onClick={validateTimeSpans}
+                    hidden={!isNewMatricula}
                     defaultValue={matricula?.hora_inicio || timePicked} >
                     <option value=""></option>
                     {timeList}
                   </select>
+                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_inicio] : null}</h6>
+
                 </span>
 
                 <span>
@@ -238,10 +251,12 @@ export default function HorarioModal() {
                     id="horaFin"
                     required={true}
                     onClick={validateTimeSpans}
+                    hidden={!isNewMatricula}
                     defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
                     <option value=""></option>
                     {timeList}
                   </select>
+                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_final] : null}</h6>
                 </span>
                 <span>
                   <label htmlFor="movilHorario" >Laboratorio móvil</label>
@@ -253,7 +268,7 @@ export default function HorarioModal() {
                     {movilesLista}
                   </select>
                 </span>
-                <div className="errorBlock" style={{color:"red"}}>
+                <div className="errorBlock" style={{ color: "red" }}>
                   {renderErrors}
                 </div>
                 <span hidden={isNewMatricula}>
@@ -268,7 +283,7 @@ export default function HorarioModal() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled || areThereErrors? "disabled" : ""}
+              className={btnDisabled || areThereErrors ? "disabled" : ""}
               name="intent"
               disabled={btnDisabled || areThereErrors}
               value={isNewMatricula ? "create" : "update"}>
@@ -309,12 +324,24 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
   const searchQueries = formData.get("filters")
+  //const availableTimesDay = getAvailableTimePerDay(); 
 
   if (intent === "create") {
-    const matricula = await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario);
+    if (modalidad == "VIRTUAL") {
+      await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
+    } else {
+      await createLockedTime(dia, aula, horaInicio, horaFin, horarioId).then(
+        async () => {
+          await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
+        },
+        (e) => {
+          console.error(e);
+          console.error("Time span is not available");
+        })
+    }
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent === "update") {
-    const matricula = await updateMatricula(matriculaID, horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario);
+    await updateMatricula(matriculaID, curso, horarioId, profesor, movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
     const matricula = await removeMatricula(matriculaID);
@@ -338,6 +365,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     listaProfesores: listaProfesores,
     listaAulas: listaAulas,
     listaMoviles: listaMoviles,
+    times: TIMESLOTS,
     matricula: isNewMatricula ? null : await getMatriculaById(matriculaId)
   })
 }

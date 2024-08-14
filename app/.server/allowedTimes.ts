@@ -39,11 +39,11 @@ const TIMES_TITLE = [
   "22:00-22:50"
 ]
 
-interface TIMESLOTS {
+interface TIMESLOTS_ {
   [key:number] : string
 }
 
-const TIMESLOTS: TIMESLOTS = {
+const TIMESLOTS: TIMESLOTS_ = {
   6: "06:00-06:50",
   7: "07:00-07:50",
   8: "08:00-08:50",
@@ -65,4 +65,4 @@ const TIMESLOTS: TIMESLOTS = {
 
 
 export default TIMES;
-export {TIMES_TITLE, TIMESLOTS}
+export {TIMES_TITLE, TIMESLOTS }

@@ -86,28 +86,18 @@ export const createMatricula = async(hora_inicio:number,
 }
 
 export const updateMatricula = async(matricula_id:number,
-                                    hora_inicio:number,
-                                    hora_final:number,
-                                    dia:Dias,
                                     curso_id:number,
-                                    aula_id:number,
                                     horario_id:number,
                                     profesor_id:number,
-                                    modalidad: Modalidad,
                                     laboratorio_movil_id?:number | null
                                     )=>{
   return await prisma.matricula.update({
     where:{matricula_id:matricula_id},
     data:{
-      hora_inicio:hora_inicio,
-      hora_final:hora_final,
-      dia:dia,
       curso_id:curso_id,
-      aula_id:aula_id,
       horario_id:horario_id,
       laboratorio_movil_id:laboratorio_movil_id,
-      profesor_id:profesor_id,
-      modalidad:modalidad
+      profesor_id:profesor_id
     }
   })
 }

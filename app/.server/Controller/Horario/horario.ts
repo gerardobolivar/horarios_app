@@ -10,4 +10,9 @@ function isScheduleAvailable(fecha_inicio:number,fecha_final:number):Boolean {
 }
 
 
+function getAvailableTimePerDay(day:Dias){
+  //Obtain the times where there is not courses in Monday
+}
+
+
 export {isScheduleAvailable}
