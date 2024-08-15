@@ -30,14 +30,15 @@ export default function () {
       style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
       <TimeColumn slots={timeSlotsTitle}></TimeColumn>
       {
-        classrooms.map((classroom, index) => {
+        data.aulas.map((classroom, index) => {
           return <ClassroomColumn
-            nombreAula={classroom}
+            nombreAula={classroom.identificador}
             timeSlots={timeSlots}
             index={index}
-            matriculas={matriculas.filter(m => m.aula.identificador === classroom)}
+            matriculas={matriculas.filter(m => m.aula.identificador === classroom.identificador)}
             horarioId={data.idHorario}
-            key={classroom}></ClassroomColumn>
+            aula_id={classroom.id_aula}
+            key={classroom.identificador}></ClassroomColumn>
         })
       }
       <Outlet/>

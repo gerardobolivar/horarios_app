@@ -1,17 +1,18 @@
 import { Matricula } from "~/types/horarioTypes";
 import CourseCell from "./courseCell";
 import TIMESLOTS_REVERSE from "./reversedTimes";
-import { Link } from "@remix-run/react";
+import { Link, useLocation, useSearchParams } from "@remix-run/react";
 
 type Props = {
   matriculas: Matricula[],
   nombreAula: number,
   timeSlots: string[],
   horarioId: number,
+  aula_id: number,
   index: number
 }
 
-const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, index, horarioId }) => {
+const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, index, horarioId, aula_id }) => {
   let isCellMerged: boolean = false;
   let cont: number = 1;
 
@@ -66,7 +67,7 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
           </CourseCell> :
             <Link
               key={crypto.randomUUID()}
-              state={{ timePicked: TIMESLOTS_REVERSE[slot] }}
+              state={{ timePicked: TIMESLOTS_REVERSE[slot],aula_id: aula_id}}
               to={`/horario/${horarioId}/new`}>
                 <div className="single-slot empty-slot"></div>
             </Link>

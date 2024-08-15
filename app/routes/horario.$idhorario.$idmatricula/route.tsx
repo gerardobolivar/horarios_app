@@ -8,11 +8,13 @@ import { getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias, Modalidad } from "@prisma/client";
 import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
-import { SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
-import { createLockedTime } from "prisma/models/lockedTimeModel";
+import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
+import { createLockedTime, getLockedTimesByHorario } from "prisma/models/lockedTimeModel";
 import { TIMESLOTS } from "~/.server/allowedTimes";
 
 export default function HorarioModal() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const navigation = useNavigation();
   const [btnDisabled, setBtnDisabled] = useState(false);
   const data = useLoaderData<typeof loader>();
@@ -21,7 +23,10 @@ export default function HorarioModal() {
   const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
   const location = useLocation();
   const timePicked = location.state?.timePicked;
-  const [searchParams, setSearchParams] = useSearchParams();
+  const dia = searchParams.get("dia");
+  const aula = location.state?.aula_id;
+
+
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
@@ -41,7 +46,18 @@ export default function HorarioModal() {
     if (data.matricula?.modalidad === "VIRTUAL") {
       setIsVirtual(true);
     }
+    const aulaCode = (document.getElementById("aulaHorario") as HTMLSelectElement).selectedOptions[0].innerText.split(" ")[1]
+    
+    if(aulaCode === "999"){
+      (document.getElementById("modalidadHorario") as HTMLSelectElement).value = "VIRTUAL"
+      setIsVirtual(true);
+    }
+    
   }, [])
+
+  useEffect(()=>{
+    (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
+  },[dia])
 
   useEffect(() => {
     if (navigation.state === "submitting") {
@@ -60,13 +76,13 @@ export default function HorarioModal() {
 
   function handleModalidadChange(event: any) {
     const modalidad = event.currentTarget.value;
+    const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
+    const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
     if (modalidad === "VIRTUAL") {
       setIsVirtual(true);
-      const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
-      const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
       aulaSelector.value = virtualClassroomValue;
     } else {
-      (document.getElementById("aulaHorario") as HTMLSelectElement).value = "";
+      aulaSelector.value = ""
       setIsVirtual(false);
     }
   }
@@ -137,7 +153,7 @@ export default function HorarioModal() {
     </option>
   })
 
-  const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null
+  const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
@@ -184,7 +200,7 @@ export default function HorarioModal() {
                     id="diaHorario"
                     required={true}
                     hidden={!isNewMatricula}
-                    defaultValue={matricula?.dia} >
+                    defaultValue={matricula?.dia}>
                     <option value={""}></option>
                     <option value={"LUNES"}>Lunes</option>
                     <option value={"MARTES"}>Martes</option>
@@ -203,7 +219,7 @@ export default function HorarioModal() {
                     required={true}
                     hidden={!isNewMatricula}
                     onChange={(e) => { handleModalidadChange(e) }}
-                    defaultValue={matricula?.modalidad} >
+                    defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
                     <option value=""></option>
                     <option value={"PRESENCIAL"}>PRESENCIAL</option>
                     <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
@@ -220,7 +236,7 @@ export default function HorarioModal() {
                     id="aulaHorario"
                     required={true}
                     hidden={!isNewMatricula}
-                    defaultValue={matricula?.aula_id} >
+                    defaultValue={matricula ? matricula?.aula_id : aula} >
                     <option value={""}></option>
                     {aulasLista}
                   </select>
@@ -236,7 +252,7 @@ export default function HorarioModal() {
                     required={true}
                     onClick={validateTimeSpans}
                     hidden={!isNewMatricula}
-                    defaultValue={matricula?.hora_inicio || timePicked} >
+                    defaultValue={matricula ? matricula?.hora_inicio : timePicked}>
                     <option value=""></option>
                     {timeList}
                   </select>
@@ -349,7 +365,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 }
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params,request }: LoaderFunctionArgs) => {
+
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
@@ -357,6 +374,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const listaProfesores = await getProfesores();
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
+  const lockedTimes:LockTime[] = await getLockedTimesByHorario(horarioId);
+  //const time_white_list = generateTimeWhiteList(lockedTimes,dia,aula);
+  //console.log(time_white_list);
+  //const url = new URL(request.url);
+  //const dia = url.searchParams.get("dia") as Dias || Dias.LUNES;
+   
+ 
+ 
+  
 
   return json({
     horarioId: horarioId,
