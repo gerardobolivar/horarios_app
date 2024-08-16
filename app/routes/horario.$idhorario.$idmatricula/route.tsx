@@ -7,10 +7,11 @@ import { getProfesores } from "prisma/models/profesorModel";
 import { getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias, Modalidad } from "@prisma/client";
-import TIMESLOTS_REVERSE from "../horario.$idhorario/reversedTimes";
 import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
 import { createLockedTime, getLockedTimesByHorario } from "prisma/models/lockedTimeModel";
 import { TIMESLOTS } from "~/.server/allowedTimes";
+import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
+import { TIMES, TIMESLOTS_REVERSE } from "../horario.$idhorario/reversedTimes";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,13 +21,14 @@ export default function HorarioModal() {
   const data = useLoaderData<typeof loader>();
   const isNewMatricula: boolean = data.isNewMatricula;
   const matricula = data.matricula;
-  const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
+  //const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
+  const timeSlots: string[] = Object.keys(data.time_white_list)
   const location = useLocation();
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
   const aula = location.state?.aula_id;
-
-
+  //"aula": (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value
+  
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
@@ -34,7 +36,7 @@ export default function HorarioModal() {
   let filters = {
     "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
     "dia": (document.querySelector('select[name="diaHorario"]') as HTMLSelectElement).value,
-    "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value
+    "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value,
   }
 
   useEffect(() => {
@@ -42,6 +44,8 @@ export default function HorarioModal() {
     params.set("planEstudios", `${filters.planEstudios}`);
     params.set("dia", `${filters.dia}`);
     params.set("ubicacion", `${filters.ubicacion}`);
+    params.set("aula", `${aula}`);
+
     setSearchParams(params, { preventScrollReset: true, });
     if (data.matricula?.modalidad === "VIRTUAL") {
       setIsVirtual(true);
@@ -148,9 +152,14 @@ export default function HorarioModal() {
   })
 
   let timeList = timeSlots.map((time) => {
-    return <option value={TIMESLOTS_REVERSE[time]} key={time}>
+    
+     return <option value={Number(time)} key={Number(time)}>
+    {`${TIMES[Number(time)]}`}
+  </option>
+
+/*     return <option value={TIMESLOTS_REVERSE[time]} key={time}>
       {`${time}`}
-    </option>
+    </option> */
   })
 
   const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
@@ -366,7 +375,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export const loader = async ({ params,request }: LoaderFunctionArgs) => {
-
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
@@ -375,13 +383,12 @@ export const loader = async ({ params,request }: LoaderFunctionArgs) => {
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
   const lockedTimes:LockTime[] = await getLockedTimesByHorario(horarioId);
-  //const time_white_list = generateTimeWhiteList(lockedTimes,dia,aula);
-  //console.log(time_white_list);
-  //const url = new URL(request.url);
-  //const dia = url.searchParams.get("dia") as Dias || Dias.LUNES;
-   
- 
- 
+
+  const url = new URL(request.url);
+  const dia = url.searchParams.get("dia") as Dias;
+  const aula = Number(url.searchParams.get("aula"));
+  const time_white_list = generateTimeWhiteList(lockedTimes,dia,aula);
+  
   
 
   return json({
@@ -392,6 +399,7 @@ export const loader = async ({ params,request }: LoaderFunctionArgs) => {
     listaAulas: listaAulas,
     listaMoviles: listaMoviles,
     times: TIMESLOTS,
+    time_white_list: time_white_list,
     matricula: isNewMatricula ? null : await getMatriculaById(matriculaId)
   })
 }

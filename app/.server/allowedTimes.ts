@@ -66,3 +66,4 @@ const TIMESLOTS: TIMESLOTS_ = {
 
 export default TIMES;
 export {TIMES_TITLE, TIMESLOTS }
+export type {TIMESLOTS_}

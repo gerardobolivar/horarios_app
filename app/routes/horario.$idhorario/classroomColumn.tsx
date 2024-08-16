@@ -1,7 +1,7 @@
 import { Matricula } from "~/types/horarioTypes";
 import CourseCell from "./courseCell";
-import TIMESLOTS_REVERSE from "./reversedTimes";
 import { Link, useLocation, useSearchParams } from "@remix-run/react";
+import { TIMESLOTS_REVERSE } from "./reversedTimes";
 
 type Props = {
   matriculas: Matricula[],

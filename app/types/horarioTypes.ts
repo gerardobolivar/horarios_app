@@ -51,5 +51,14 @@ interface scheduleFilters {
   ubicacion: string
 }
 
-export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters}
+interface LockTime{  
+  id_locked_time: number;
+  dia: Dias;
+  aula_id: number;
+  hora_inicio: number;
+  hora_final: number;
+  horario_id: number;
+}
+
+export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters, LockTime}
 export {SCHEDULE_ERRORS};
