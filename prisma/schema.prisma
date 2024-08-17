@@ -143,7 +143,6 @@ model Horario{
   matriculas Matricula[]
   active Boolean @default(true)
   ciclo_id Int
-  lokedTimes LockedTimes[]
 }
 
 model Ciclo{
@@ -151,15 +150,4 @@ model Ciclo{
   nombre String @default("Ciclo")
   active Boolean @default(false)
   horarios Horario[]
-}
-
-model LockedTimes{
-  id_locked_time Int @id @default(autoincrement())
-  matricula Horario @relation(fields: [horario_id], references: [horario_id])
-  dia Dias
-  aula_id Int
-  hora_inicio Int
-  hora_final Int
-  horario_id Int
-  @@unique([dia,aula_id,hora_inicio,hora_final,horario_id])
 }

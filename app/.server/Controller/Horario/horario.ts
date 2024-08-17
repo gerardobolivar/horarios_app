@@ -16,8 +16,6 @@ function generateTimeWhiteList(lockedTimes: LockTime[], dia: Dias, aula: number)
 
   let blackList: TIMESLOTS_ = {};
   let filteredTimes: TIMESLOTS_ = {};
-
-
   lockedTimes.map((lt) => {
 
     const currentStartTime = lt.hora_inicio
@@ -35,9 +33,6 @@ function generateTimeWhiteList(lockedTimes: LockTime[], dia: Dias, aula: number)
       filteredTimes[Number(t)] = TIMES[Number(t)]
     }
   })
-
-  console.log(filteredTimes);
-  
 
   return filteredTimes;
 }

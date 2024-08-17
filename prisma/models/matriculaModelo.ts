@@ -107,3 +107,22 @@ export const removeMatricula = async(matricula_id:number) =>{
     where:{matricula_id:matricula_id}
   })
 }
+
+export const getLockedTimesByHorarioDay = async (horario_id:number,dia?:Dias) => {
+  return await prisma.matricula.findMany({
+    where:{
+      NOT:{
+        modalidad: "VIRTUAL"
+      },
+      horario_id: horario_id,
+      dia:dia
+    },
+    select:{
+      dia:true,
+      aula_id:true,
+      hora_inicio: true,
+      hora_final: true,
+      horario_id: true
+    }
+  });
+};

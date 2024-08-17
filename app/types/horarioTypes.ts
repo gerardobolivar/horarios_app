@@ -52,11 +52,10 @@ interface scheduleFilters {
 }
 
 interface LockTime{  
-  id_locked_time: number;
-  dia: Dias;
-  aula_id: number;
   hora_inicio: number;
   hora_final: number;
+  dia: Dias;
+  aula_id: number;
   horario_id: number;
 }
 

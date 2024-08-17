@@ -1,14 +1,13 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { createMatricula, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
+import { createMatricula, getLockedTimesByHorarioDay, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
-import { getAulas } from "prisma/models/aulaModel";
+import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias, Modalidad } from "@prisma/client";
 import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
-import { createLockedTime, getLockedTimesByHorario } from "prisma/models/lockedTimeModel";
 import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { TIMES, TIMESLOTS_REVERSE } from "../horario.$idhorario/reversedTimes";
@@ -21,24 +20,22 @@ export default function HorarioModal() {
   const data = useLoaderData<typeof loader>();
   const isNewMatricula: boolean = data.isNewMatricula;
   const matricula = data.matricula;
-  //const timeSlots: string[] = Object.keys(TIMESLOTS_REVERSE)
   const timeSlots: string[] = Object.keys(data.time_white_list)
   const location = useLocation();
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
   const aula = location.state?.aula_id;
-  //"aula": (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value
   
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
-
+  
   let filters = {
     "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
     "dia": (document.querySelector('select[name="diaHorario"]') as HTMLSelectElement).value,
     "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value,
   }
-
+  
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("planEstudios", `${filters.planEstudios}`);
@@ -85,6 +82,10 @@ export default function HorarioModal() {
     if (modalidad === "VIRTUAL") {
       setIsVirtual(true);
       aulaSelector.value = virtualClassroomValue;
+      const params = new URLSearchParams();
+      params.set("aula", `${aula}`);
+      setSearchParams(params)
+
     } else {
       aulaSelector.value = ""
       setIsVirtual(false);
@@ -122,6 +123,22 @@ export default function HorarioModal() {
     }
   }
 
+  function handleAulaChange(event:any){
+    const params = new URLSearchParams();
+    params.set("dia", `${filters.dia}`);
+    params.set("aula", `${event.currentTarget.value}`)
+    setSearchParams(params)
+    
+  }
+
+  function handleDiaChange(event:any){
+    const params = new URLSearchParams();
+    params.set("dia", `${event.currentTarget.value}`);
+    const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value
+    params.set("aula",aula)
+    setSearchParams(params)
+  }
+
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}`
   }
@@ -157,9 +174,6 @@ export default function HorarioModal() {
     {`${TIMES[Number(time)]}`}
   </option>
 
-/*     return <option value={TIMESLOTS_REVERSE[time]} key={time}>
-      {`${time}`}
-    </option> */
   })
 
   const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
@@ -208,6 +222,7 @@ export default function HorarioModal() {
                     name="diaHorario"
                     id="diaHorario"
                     required={true}
+                    onChange={handleDiaChange}
                     hidden={!isNewMatricula}
                     defaultValue={matricula?.dia}>
                     <option value={""}></option>
@@ -245,6 +260,7 @@ export default function HorarioModal() {
                     id="aulaHorario"
                     required={true}
                     hidden={!isNewMatricula}
+                    onChange={handleAulaChange}
                     defaultValue={matricula ? matricula?.aula_id : aula} >
                     <option value={""}></option>
                     {aulasLista}
@@ -262,7 +278,7 @@ export default function HorarioModal() {
                     onClick={validateTimeSpans}
                     hidden={!isNewMatricula}
                     defaultValue={matricula ? matricula?.hora_inicio : timePicked}>
-                    <option value=""></option>
+                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles":null}</option>
                     {timeList}
                   </select>
                   <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_inicio] : null}</h6>
@@ -278,10 +294,10 @@ export default function HorarioModal() {
                     onClick={validateTimeSpans}
                     hidden={!isNewMatricula}
                     defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
-                    <option value=""></option>
+                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles":null}</option>
                     {timeList}
                   </select>
-                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_final] : null}</h6>
+                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_final-1] : null}</h6>
                 </span>
                 <span>
                   <label htmlFor="movilHorario" >Laboratorio móvil</label>
@@ -349,21 +365,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
   const searchQueries = formData.get("filters")
+  
   //const availableTimesDay = getAvailableTimePerDay(); 
+  
+  
 
   if (intent === "create") {
-    if (modalidad == "VIRTUAL") {
-      await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
-    } else {
-      await createLockedTime(dia, aula, horaInicio, horaFin, horarioId).then(
-        async () => {
-          await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
-        },
-        (e) => {
-          console.error(e);
-          console.error("Time span is not available");
-        })
-    }
+    await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent === "update") {
     await updateMatricula(matriculaID, curso, horarioId, profesor, movilHorario);
@@ -382,15 +390,26 @@ export const loader = async ({ params,request }: LoaderFunctionArgs) => {
   const listaProfesores = await getProfesores();
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
-  const lockedTimes:LockTime[] = await getLockedTimesByHorario(horarioId);
-
+  
   const url = new URL(request.url);
-  const dia = url.searchParams.get("dia") as Dias;
-  const aula = Number(url.searchParams.get("aula"));
-  const time_white_list = generateTimeWhiteList(lockedTimes,dia,aula);
+  const dia = url.searchParams.get("dia") as Dias || "LUNES";
+  const aula = Number(url.searchParams.get("aula")) || 999;
+  console.log(aula);
   
-  
+  const time_white_list = await getAula(aula).then(
+    async (result)=>{
+      if(result?.identificador === 999){
+        return TIMES;
+      }
+      else{
+        const lockedTimesByHorario:LockTime[] = await getLockedTimesByHorarioDay(horarioId,dia);
+        return generateTimeWhiteList(lockedTimesByHorario,dia,aula);
+      }
+    },
+    ()=>{})
 
+  // const lockedTimesByHorario:LockTime[] = await getLockedTimesByHorarioDay(horarioId,dia);
+  // const time_white_list = generateTimeWhiteList(lockedTimesByHorario, dia, aula);
   return json({
     horarioId: horarioId,
     isNewMatricula: isNewMatricula,
