@@ -3,13 +3,14 @@ import { Form, Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/r
 import Filters from "./filters";
 import { TIMES_TITLE,TIMESLOTS} from "~/.server/allowedTimes";
 import { getAulas } from "prisma/models/aulaModel";
-import { filterMatriculas } from "prisma/models/matriculaModelo";
+import { filterMatriculas, getVirtualMatriculas } from "prisma/models/matriculaModelo";
 import TimeColumn from "./timeColumn";
 import ClassroomColumn from "./classroomColumn";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import { getPlanes } from "prisma/models/planEstudioModel";
 import { Matricula, Planes } from "~/types/horarioTypes";
 import { Dias } from "@prisma/client";
+import VirtualCourses from "./VirtualCourses";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -17,6 +18,7 @@ export default function () {
   const timeSlots: string[] = Object.values(data.timeSlots);
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
   const matriculas = data.matriculas;
+  const showVirtual = data.cursosVirtuales.length > 0 ? true : false
   
   return <>
     <Form method="POST">
@@ -30,18 +32,23 @@ export default function () {
       style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
       <TimeColumn slots={timeSlotsTitle}></TimeColumn>
       {
-        data.aulas.map((classroom, index) => {
-          return <ClassroomColumn
+        data.aulas.map((classroom, index) => { 
+          return classroom.identificador !== 999 ? <ClassroomColumn
             nombreAula={classroom.identificador}
             timeSlots={timeSlots}
             index={index}
             matriculas={matriculas.filter(m => m.aula.identificador === classroom.identificador)}
             horarioId={data.idHorario}
             aula_id={classroom.id_aula}
-            key={classroom.identificador}></ClassroomColumn>
+            key={classroom.identificador}></ClassroomColumn> : null
         })
       }
       <Outlet/>
+    </div>
+    <div className="virtualCoursesContainer">
+      {
+        showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales}/> : null 
+      }
     </div>
   </>
 }
@@ -63,8 +70,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const timeSlots = TIMESLOTS;
   const timesTitle = TIMES_TITLE;
   const planes:Planes = await getPlanes();
-  let matriculas:Matricula[];
-  
+  const showVirtual:Boolean = url.searchParams.get("showvirtual") === "true" ? true : false; 
+  const cursosVirtuales:Matricula[] = showVirtual ? await getVirtualMatriculas(idHorario) : []
+  let matriculas:Matricula[];  
   matriculas = await filterMatriculas(idHorario,dia,id_plan_estudio,ubicacion)
   
   return json({ idHorario: idHorario,
@@ -72,6 +80,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
                 timeSlots: timeSlots,
                 aulas: aulas,
                 matriculas: matriculas,
+                cursosVirtuales: cursosVirtuales,
                 planes:planes });
 }
 

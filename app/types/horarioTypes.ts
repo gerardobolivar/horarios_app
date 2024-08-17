@@ -1,4 +1,4 @@
-import { Dias } from "@prisma/client"
+import { Dias, Modalidad } from "@prisma/client"
 
  interface Curso{
   id_curso: number,
@@ -39,6 +39,7 @@ interface Matricula {
   matricula_id: number,
   dia: Dias,
   curso: Curso,
+  modalidad: Modalidad;
   hora_inicio: number;
   hora_final: number; 
 }

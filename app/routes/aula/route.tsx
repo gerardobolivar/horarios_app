@@ -107,9 +107,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const currentAula = Number(formData.get("aulaID"))
 
   if(intent === "delete_aula"){
-    await removeAula(currentAula);
+    return await removeAula(currentAula).then(()=>{
+      return redirect("/aula")
+    },(e)=>{
+      switch (e.code) {
+        case "P2003":
+          console.error(`A constraint failed on in the field: ${e.meta.field_name}, in the model ${e.meta.modelName}`);
+          throw redirect("/aula",405)
+        default:
+
+      }
+    })
   }
-  return redirect("/aula")
 }
 
 export const loader = async ({ params, }: LoaderFunctionArgs) => {

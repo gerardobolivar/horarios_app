@@ -14,7 +14,6 @@ import { TIMES } from "../horario.$idhorario/reversedTimes";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
-  
   const navigation = useNavigation();
   const [btnDisabled, setBtnDisabled] = useState(false);
   const data = useLoaderData<typeof loader>();
@@ -25,7 +24,6 @@ export default function HorarioModal() {
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
   const aula = location.state?.aula_id;
-  
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
@@ -373,10 +371,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula)
   const searchQueries = formData.get("filters")
-  
-  //const availableTimesDay = getAvailableTimePerDay(); 
-  
-  
 
   if (intent === "create") {
     await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
@@ -398,12 +392,9 @@ export const loader = async ({ params,request }: LoaderFunctionArgs) => {
   const listaProfesores = await getProfesores();
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
-  
   const url = new URL(request.url);
   const dia = url.searchParams.get("dia") as Dias || "LUNES";
   const aula = Number(url.searchParams.get("aula")) || 999;
-  console.log(aula);
-  
   const time_white_list = await getAula(aula).then(
     async (result)=>{
       if(result?.identificador === 999){
@@ -416,8 +407,6 @@ export const loader = async ({ params,request }: LoaderFunctionArgs) => {
     },
     ()=>{})
 
-  // const lockedTimesByHorario:LockTime[] = await getLockedTimesByHorarioDay(horarioId,dia);
-  // const time_white_list = generateTimeWhiteList(lockedTimesByHorario, dia, aula);
   return json({
     horarioId: horarioId,
     isNewMatricula: isNewMatricula,

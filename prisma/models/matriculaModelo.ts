@@ -38,6 +38,9 @@ export const filterMatriculas = async (horario_id: number, dia:Dias, id_plan_est
         ubicacion:ubicacion,
       },
       dia: dia,
+      NOT:{
+        modalidad: "VIRTUAL"
+      }
     },
     select: {
       matricula_id: true,
@@ -46,10 +49,28 @@ export const filterMatriculas = async (horario_id: number, dia:Dias, id_plan_est
       hora_final: true,
       curso:true,
       aula:true,
+      modalidad: true
     }
   });
 }
 
+export const getVirtualMatriculas = async (horario_id: number) => {
+  return await prisma.matricula.findMany({
+    where: {
+      horario_id: horario_id,
+      modalidad: "VIRTUAL"
+    },
+    select: {
+      matricula_id: true,
+      dia:true,
+      hora_inicio: true,
+      hora_final: true,
+      curso:true,
+      aula:true,
+      modalidad:true
+    }
+  });
+}
 
 
 export const getMatriculaById = async (matricula_id:number) =>{

@@ -7,9 +7,9 @@ type Props = {
   data: any,
   planes: Planes
 }
-const Filters: React.FC<Props> = ({ horarioId,planes, data }) => {
+const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
   const submit = useSubmit();
-  const [searchParams,setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const planesEstudio = planes.map((plan) => {
     return <option value={plan.id_plan_estudio} key={plan.id_plan_estudio}>
@@ -17,23 +17,34 @@ const Filters: React.FC<Props> = ({ horarioId,planes, data }) => {
     </option>
   })
 
-function handleChangeForm(event:any){
-  const params = new URLSearchParams();   
-  let planEstudios = event.currentTarget.querySelector('select[name="planEstudios"]').value;
-  let dia = event.currentTarget.querySelector('select[name="diaHorarioFilter"]').value;
-  let ubicacion = event.currentTarget.querySelector('select[name="ubicacionHorario"]').value;
-  params.set("planEstudios",`${planEstudios}`);
-  params.set("dia",`${dia}`);
-  params.set("ubicacion",`${ubicacion}`);
-  setSearchParams(params,{preventScrollReset: true,});
-}
+  function handleChangeForm(event: any) {
+    
+    const params = new URLSearchParams();
+    let planEstudios = event.currentTarget.querySelector('select[name="planEstudios"]').value;
+    let dia = event.currentTarget.querySelector('select[name="diaHorarioFilter"]').value;
+    let ubicacion = event.currentTarget.querySelector('select[name="ubicacionHorario"]').value;
+    const showVirtual = event.currentTarget.querySelector('input[name="show_virtual"]').checked;
+    
+    
+    
+    params.set("planEstudios", `${planEstudios}`);
+    params.set("dia", `${dia}`);
+    params.set("ubicacion", `${ubicacion}`);
+    params.set("showvirtual", `${showVirtual}`);
+    
+    if(showVirtual){
+      submit(event.currentTarget)
+    }
+    
+    setSearchParams(params, { preventScrollReset: true, });
+  }
 
   return <>
     <Form
       method="POST"
       id="filtersSchedule"
       preventScrollReset={true}
-      onChange={(e) => { handleChangeForm(e)}}
+      onChange={(e) => { handleChangeForm(e) }}
       action={`/horario/${horarioId}`}>
       <span>
         <label htmlFor="planEstudios">Plan de estudios</label>
@@ -70,6 +81,18 @@ function handleChangeForm(event:any){
           <option value={"5"}>5</option>
         </select>
       </span>
+      <div>
+        <span>
+          <label htmlFor="show_virtual">Mostrar cursos virtuales</label>
+          <input
+            type="checkbox"
+            id="shVirt"
+            name="show_virtual"
+            onChange={()=>{}}
+            checked={searchParams.get("showvirtual") === "true" ? true:false}
+            value="true"></input>
+        </span>
+      </div>
     </Form>
   </>
 }
