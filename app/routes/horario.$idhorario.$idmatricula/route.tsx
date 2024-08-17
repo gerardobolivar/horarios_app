@@ -10,7 +10,7 @@ import { Dias, Modalidad } from "@prisma/client";
 import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
 import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
-import { TIMES, TIMESLOTS_REVERSE } from "../horario.$idhorario/reversedTimes";
+import { TIMES } from "../horario.$idhorario/reversedTimes";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +32,7 @@ export default function HorarioModal() {
   
   let filters = {
     "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
-    "dia": (document.querySelector('select[name="diaHorario"]') as HTMLSelectElement).value,
+    "dia": (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
     "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value,
   }
   
@@ -79,13 +79,17 @@ export default function HorarioModal() {
     const modalidad = event.currentTarget.value;
     const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
     const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
+    const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
+    const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
+    diaForm.value =  diaFilters
+
     if (modalidad === "VIRTUAL") {
       setIsVirtual(true);
       aulaSelector.value = virtualClassroomValue;
       const params = new URLSearchParams();
       params.set("aula", `${aula}`);
+      params.set("dia", `${diaFilters}`);
       setSearchParams(params)
-
     } else {
       aulaSelector.value = ""
       setIsVirtual(false);
@@ -133,11 +137,15 @@ export default function HorarioModal() {
 
   function handleDiaChange(event:any){
     const params = new URLSearchParams();
-    params.set("dia", `${event.currentTarget.value}`);
-    const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value
+    const selectedDay = event.currentTarget.value
+    const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value;
+    const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
+    diaFilters.value = selectedDay 
+    params.set("dia", `${selectedDay}`);
     params.set("aula",aula)
     setSearchParams(params)
   }
+  
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}`

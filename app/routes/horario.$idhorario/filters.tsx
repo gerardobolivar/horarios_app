@@ -20,7 +20,7 @@ const Filters: React.FC<Props> = ({ horarioId,planes, data }) => {
 function handleChangeForm(event:any){
   const params = new URLSearchParams();   
   let planEstudios = event.currentTarget.querySelector('select[name="planEstudios"]').value;
-  let dia = event.currentTarget.querySelector('select[name="diaHorario"]').value;
+  let dia = event.currentTarget.querySelector('select[name="diaHorarioFilter"]').value;
   let ubicacion = event.currentTarget.querySelector('select[name="ubicacionHorario"]').value;
   params.set("planEstudios",`${planEstudios}`);
   params.set("dia",`${dia}`);
@@ -45,9 +45,9 @@ function handleChangeForm(event:any){
         </select>
       </span>
       <span>
-        <label htmlFor="diaHorario">Día</label>
+        <label htmlFor="diaHorarioFilter">Día</label>
         <select
-          name="diaHorario"
+          name="diaHorarioFilter"
           defaultValue={"LUNES"}>
           <option value={"LUNES"}>Lunes</option>
           <option value={"MARTES"}>Martes</option>
@@ -58,7 +58,7 @@ function handleChangeForm(event:any){
         </select>
       </span>
       <span>
-        <label htmlFor="diaHorario">Ubicación</label>
+        <label htmlFor="ubicacionHorario">Ubicación</label>
         <select
           name="ubicacionHorario"
           defaultValue={"0"}>
