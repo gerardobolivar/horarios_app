@@ -1,0 +1,27 @@
+.filtersHorario form{
+  margin-bottom: 25px;
+  margin-top: 25px;
+}
+.filtersHorario form span{
+  display: inline-block !important;
+  margin-right: 25px
+}
+
+.modalContainer form span input, label {
+  display: inherit !important;
+}
+
+.filtersHorario form span label{
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.filtersHorario input[type="checkbox"]{
+  background-color: red;
+
+}
+
+.largerCheckBox{
+  width: 22px;
+  height: 22px;
+}

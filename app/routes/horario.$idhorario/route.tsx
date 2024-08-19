@@ -7,6 +7,7 @@ import { filterMatriculas, getVirtualMatriculas } from "prisma/models/matriculaM
 import TimeColumn from "./timeColumn";
 import ClassroomColumn from "./classroomColumn";
 import appStyles from '~/stylesheets/plan_.new.css?url';
+import horarioStyles from './horarioStyles.css?url';
 import { getPlanes } from "prisma/models/planEstudioModel";
 import { Matricula, Planes } from "~/types/horarioTypes";
 import { Dias } from "@prisma/client";
@@ -21,12 +22,14 @@ export default function () {
   const showVirtual = data.cursosVirtuales.length > 0 ? true : false
   
   return <>
+    <div className="filtersHorario">
+    <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
+    </div>
     <Form method="POST">
       <Link to={`/horario/${data.idHorario}/new`}>
-        <button className="mainButton">Agregar</button>
+        <button className="mainButton">Registrar</button>
       </Link>
     </Form>
-    <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
     <div
       className="schedule"
       style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
@@ -85,5 +88,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 }
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: appStyles }
+  { rel: "stylesheet", href: appStyles },
+  { rel: "stylesheet", href: horarioStyles },
+
 ];

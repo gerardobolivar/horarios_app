@@ -47,7 +47,7 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
       onChange={(e) => { handleChangeForm(e) }}
       action={`/horario/${horarioId}`}>
       <span>
-        <label htmlFor="planEstudios">Plan de estudios</label>
+        <label htmlFor="planEstudios">Plan de estudios:</label>
         <select
           name="planEstudios"
           defaultValue={0}>
@@ -56,7 +56,7 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
         </select>
       </span>
       <span>
-        <label htmlFor="diaHorarioFilter">Día</label>
+        <label htmlFor="diaHorarioFilter">Día:</label>
         <select
           name="diaHorarioFilter"
           defaultValue={"LUNES"}>
@@ -69,7 +69,7 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
         </select>
       </span>
       <span>
-        <label htmlFor="ubicacionHorario">Ubicación</label>
+        <label htmlFor="ubicacionHorario">Ubicación:</label>
         <select
           name="ubicacionHorario"
           defaultValue={"0"}>
@@ -81,7 +81,6 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
           <option value={"5"}>5</option>
         </select>
       </span>
-      <div>
         <span>
           <label htmlFor="show_virtual">Mostrar cursos virtuales</label>
           <input
@@ -89,10 +88,10 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
             id="shVirt"
             name="show_virtual"
             onChange={()=>{}}
+            className="largerCheckBox"
             checked={searchParams.get("showvirtual") === "true" ? true:false}
             value="true"></input>
         </span>
-      </div>
     </Form>
   </>
 }
