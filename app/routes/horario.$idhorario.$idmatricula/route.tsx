@@ -24,6 +24,7 @@ export default function HorarioModal() {
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
   const aula = location.state?.aula_id;
+  const showVirtual:boolean = location.state?.showVirtual;
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
@@ -32,6 +33,7 @@ export default function HorarioModal() {
     "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
     "dia": (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
     "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value,
+    "show_virtual":(document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
   }
   
   useEffect(() => {
@@ -40,6 +42,7 @@ export default function HorarioModal() {
     params.set("dia", `${filters.dia}`);
     params.set("ubicacion", `${filters.ubicacion}`);
     params.set("aula", `${aula}`);
+    params.set("showvirtual",`${showVirtual}`)
 
     setSearchParams(params, { preventScrollReset: true, });
     if (data.matricula?.modalidad === "VIRTUAL") {
@@ -146,7 +149,7 @@ export default function HorarioModal() {
   
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
-    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}`
+    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}`
   }
 
   let profesoresLista = data.listaProfesores.map((profesor) => {

@@ -50,6 +50,7 @@ interface scheduleFilters {
   planEstudios: string,
   dia: string,
   ubicacion: string
+  show_virtual: string
 }
 
 interface LockTime{  

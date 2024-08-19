@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
+import { Form, Link, Outlet, useLoaderData, useLocation, useSearchParams } from "@remix-run/react";
 import Filters from "./filters";
 import { TIMES_TITLE,TIMESLOTS} from "~/.server/allowedTimes";
 import { getAulas } from "prisma/models/aulaModel";
@@ -19,7 +19,8 @@ export default function () {
   const timeSlots: string[] = Object.values(data.timeSlots);
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
   const matriculas = data.matriculas;
-  const showVirtual = data.cursosVirtuales.length > 0 ? true : false
+  const showVirtual = data.cursosVirtuales.length > 0 ? true : false;
+  const location = useLocation();
   
   return <>
     <div className="filtersHorario">
@@ -50,7 +51,7 @@ export default function () {
     </div>
     <div className="virtualCoursesContainer">
       {
-        showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales}/> : null 
+        showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual}/> : null 
       }
     </div>
   </>

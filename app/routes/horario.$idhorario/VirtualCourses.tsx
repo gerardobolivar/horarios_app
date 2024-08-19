@@ -1,11 +1,14 @@
 import { Matricula } from "~/types/horarioTypes"
 import { TIMES } from "./reversedTimes"
+import { Link } from "@remix-run/react"
 
 interface Props {
-  matriculas: Matricula[]
+  matriculas: Matricula[],
+  horarioId: number,
+  showVirtual: boolean
 }
 
-const VirtualCourses: React.FC<Props> = ({ matriculas }) => {
+const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual }) => {
   const listaCursos = matriculas.map((m) => {
     return <tr key={m.hora_inicio}>
       <td>{m.dia}</td>
@@ -14,10 +17,10 @@ const VirtualCourses: React.FC<Props> = ({ matriculas }) => {
       <td>{TIMES[Number(m.hora_final) - 1]}</td>
       <td>{m.modalidad}</td>
       <td>
+        <Link to={`/horario/${horarioId}/${m.matricula_id}/`}
+              state={{showVirtual: showVirtual}}>
         <button>🖉</button>
-      </td>
-      <td>
-        <button>🗑</button>
+        </Link>
       </td>
     </tr>
   })
@@ -31,7 +34,6 @@ const VirtualCourses: React.FC<Props> = ({ matriculas }) => {
           <th>Fin</th>
           <th>Modalidad</th>
           <th>Actualizar</th>
-          <th>Eliminar</th>
         </tr>
       </thead>
       <tbody>
