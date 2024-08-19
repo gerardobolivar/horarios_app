@@ -11,6 +11,7 @@ import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes
 import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { TIMES } from "../horario.$idhorario/reversedTimes";
+import { getTimeStamp, handleModalidadChange } from "./utils";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -69,33 +70,7 @@ export default function HorarioModal() {
     }
   }, [navigation.state])
 
-  function getTimeStamp(matricula_date: string) {
-    let date = new Date(matricula_date);
-    let stringDate = date.toLocaleDateString();
-    let stringTime = date.toLocaleTimeString();
-    return `${stringDate} a las ${stringTime}`
-  }
 
-  function handleModalidadChange(event: any) {
-    const modalidad = event.currentTarget.value;
-    const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
-    const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
-    const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
-    const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
-    diaForm.value =  diaFilters
-
-    if (modalidad === "VIRTUAL") {
-      setIsVirtual(true);
-      aulaSelector.value = virtualClassroomValue;
-      const params = new URLSearchParams();
-      params.set("aula", `${aula}`);
-      params.set("dia", `${diaFilters}`);
-      setSearchParams(params)
-    } else {
-      aulaSelector.value = ""
-      setIsVirtual(false);
-    }
-  }
 
   function validateTimeSpans(): boolean {
     const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
@@ -251,7 +226,7 @@ export default function HorarioModal() {
                     id="modalidadHorario"
                     required={true}
                     hidden={!isNewMatricula}
-                    onChange={(e) => { handleModalidadChange(e) }}
+                    onChange={(e) => { handleModalidadChange(e,setIsVirtual,setSearchParams,aula) }}
                     defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
                     <option value=""></option>
                     <option value={"PRESENCIAL"}>PRESENCIAL</option>
