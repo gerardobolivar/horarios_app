@@ -11,7 +11,7 @@ import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes
 import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { TIMES } from "../horario.$idhorario/reversedTimes";
-import { getTimeStamp, handleModalidadChange } from "./utils";
+import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,42 +25,42 @@ export default function HorarioModal() {
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
   const aula = location.state?.aula_id;
-  const showVirtual:boolean = location.state?.showVirtual;
+  const showVirtual: boolean = location.state?.showVirtual;
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
-  
+
   let filters = {
     "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
     "dia": (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
     "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value,
-    "show_virtual":(document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
+    "show_virtual": (document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
   }
-  
+
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("planEstudios", `${filters.planEstudios}`);
     params.set("dia", `${filters.dia}`);
     params.set("ubicacion", `${filters.ubicacion}`);
     params.set("aula", `${aula}`);
-    params.set("showvirtual",`${showVirtual}`)
+    params.set("showvirtual", `${showVirtual}`)
 
     setSearchParams(params, { preventScrollReset: true, });
     if (data.matricula?.modalidad === "VIRTUAL") {
       setIsVirtual(true);
     }
     const aulaCode = (document.getElementById("aulaHorario") as HTMLSelectElement).selectedOptions[0].innerText.split(" ")[1]
-    
-    if(aulaCode === "999"){
+
+    if (aulaCode === "999") {
       (document.getElementById("modalidadHorario") as HTMLSelectElement).value = "VIRTUAL"
       setIsVirtual(true);
     }
-    
+
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
-  },[dia])
+  }, [dia])
 
   useEffect(() => {
     if (navigation.state === "submitting") {
@@ -72,13 +72,18 @@ export default function HorarioModal() {
 
 
 
-  function validateTimeSpans(): boolean {
+  async function validateTimeSpans(): Promise<boolean> {
     const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
     const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
-    let approvedValidation = false;
     const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
+    
+    const whiteListKeys = Object.keys(data.time_white_list);
+    const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia as Dias, aula, whiteListKeys);
 
-    if (initialTime > endTime) {
+    let approvedValidation = false;
+
+
+    if (initialTime > endTime || !edgesSafe) {
       if (!hasRangeError) {
         const newList = [...errorList];
         newList.push("INAVALID_TIME_RANGE")
@@ -97,31 +102,31 @@ export default function HorarioModal() {
     return approvedValidation;
   }
 
-  function checkForErrors(event: any) {
+  async function checkForErrors(event: any) {
     if (!validateTimeSpans()) {
       event.preventDefault();
     }
   }
 
-  function handleAulaChange(event:any){
+  function handleAulaChange(event: any) {
     const params = new URLSearchParams();
     params.set("dia", `${filters.dia}`);
     params.set("aula", `${event.currentTarget.value}`)
     setSearchParams(params)
-    
+
   }
 
-  function handleDiaChange(event:any){
+  function handleDiaChange(event: any) {
     const params = new URLSearchParams();
     const selectedDay = event.currentTarget.value
     const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value;
     const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
-    diaFilters.value = selectedDay 
+    diaFilters.value = selectedDay
     params.set("dia", `${selectedDay}`);
-    params.set("aula",aula)
+    params.set("aula", aula)
     setSearchParams(params)
   }
-  
+
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}`
@@ -153,10 +158,9 @@ export default function HorarioModal() {
   })
 
   let timeList = timeSlots.map((time) => {
-    
-     return <option value={Number(time)} key={Number(time)}>
-    {`${TIMES[Number(time)]}`}
-  </option>
+    return <option value={Number(time)} key={Number(time)}>
+      {`${TIMES[Number(time)]}`}
+    </option>
 
   })
 
@@ -226,7 +230,7 @@ export default function HorarioModal() {
                     id="modalidadHorario"
                     required={true}
                     hidden={!isNewMatricula}
-                    onChange={(e) => { handleModalidadChange(e,setIsVirtual,setSearchParams,aula) }}
+                    onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
                     defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
                     <option value=""></option>
                     <option value={"PRESENCIAL"}>PRESENCIAL</option>
@@ -262,7 +266,7 @@ export default function HorarioModal() {
                     onClick={validateTimeSpans}
                     hidden={!isNewMatricula}
                     defaultValue={matricula ? matricula?.hora_inicio : timePicked}>
-                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles":null}</option>
+                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                     {timeList}
                   </select>
                   <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_inicio] : null}</h6>
@@ -278,10 +282,10 @@ export default function HorarioModal() {
                     onClick={validateTimeSpans}
                     hidden={!isNewMatricula}
                     defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
-                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles":null}</option>
+                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                     {timeList}
                   </select>
-                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_final-1] : null}</h6>
+                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_final - 1] : null}</h6>
                 </span>
                 <span>
                   <label htmlFor="movilHorario" >Laboratorio móvil</label>
@@ -347,12 +351,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const intent = formData.get("intent");
   const aula = Number(formData.get("aulaHorario"));
   const horarioId = Number(params.idhorario);
-  const matriculaID = Number(params.idmatricula)
-  const searchQueries = formData.get("filters")
+  const matriculaID = Number(params.idmatricula);
+  const searchQueries = formData.get("filters");
 
   if (intent === "create") {
-    await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario)
-    return redirect(`/horario/${horarioId}/${searchQueries}`)
+    try {
+      return await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario).then(() => { return redirect(`/horario/${horarioId}/${searchQueries}`) })
+    } catch (error) {
+      console.error(error);
+      return redirect("/error")      
+    }
+
+
   } else if (intent === "update") {
     await updateMatricula(matriculaID, curso, horarioId, profesor, movilHorario);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
@@ -362,7 +372,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 }
 
-export const loader = async ({ params,request }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
@@ -374,16 +384,17 @@ export const loader = async ({ params,request }: LoaderFunctionArgs) => {
   const dia = url.searchParams.get("dia") as Dias || "LUNES";
   const aula = Number(url.searchParams.get("aula")) || 999;
   const time_white_list = await getAula(aula).then(
-    async (result)=>{
-      if(result?.identificador === 999){
+    async (result) => {
+      if (result?.identificador === 999) {
         return TIMES;
       }
-      else{
-        const lockedTimesByHorario:LockTime[] = await getLockedTimesByHorarioDay(horarioId,dia);
-        return generateTimeWhiteList(lockedTimesByHorario,dia,aula);
+      else {
+        const lockedTimesByHorario: LockTime[] = await getLockedTimesByHorarioDay(horarioId, dia);
+        return generateTimeWhiteList(lockedTimesByHorario, dia, aula);
       }
     },
-    ()=>{})
+    () => { })
+
 
   return json({
     horarioId: horarioId,

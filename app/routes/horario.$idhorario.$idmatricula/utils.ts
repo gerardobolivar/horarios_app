@@ -1,3 +1,8 @@
+import { Dias } from "@prisma/client";
+import { TIMES } from "~/routes/horario.$idhorario/reversedTimes";
+import { getLockedTimesByHorarioDay } from "prisma/models/matriculaModelo";
+import { LockTime } from "~/types/horarioTypes";
+
 export function getTimeStamp(matricula_date: string) {
   let date = new Date(matricula_date);
   let stringDate = date.toLocaleDateString();
@@ -5,13 +10,13 @@ export function getTimeStamp(matricula_date: string) {
   return `${stringDate} a las ${stringTime}`
 }
 
-export function handleModalidadChange(event: any, setIsVirtual:any, setSearchParams:any, aula:string) {
+export function handleModalidadChange(event: any, setIsVirtual: any, setSearchParams: any, aula: string) {
   const modalidad = event.currentTarget.value;
   const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
   const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
   const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
   const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
-  diaForm.value =  diaFilters
+  diaForm.value = diaFilters
 
   if (modalidad === "VIRTUAL") {
     setIsVirtual(true);
@@ -24,6 +29,23 @@ export function handleModalidadChange(event: any, setIsVirtual:any, setSearchPar
     aulaSelector.value = ""
     setIsVirtual(false);
   }
+}
+
+export async function validEdgeTimeSpans(startTime: number, endTime: number, horarioId: number, dia: Dias, aula: number, whiteListKeys: string[]) {
+  let result: boolean = true;
+  if (endTime - startTime <= 1) {
+    result = true;
+  }
+  else {
+    const lockedTimesByHorario: LockTime[] = await getLockedTimesByHorarioDay(horarioId, dia).then((r) => { return r }, () => { return [] })
+    for (let time = startTime + 1; time < endTime; time++) {
+      if (!whiteListKeys.includes(String(time))) {
+        result = false;
+        break;
+      }
+    }
+  }
+  return result;
 }
 
 //Migrating functions to this file.
