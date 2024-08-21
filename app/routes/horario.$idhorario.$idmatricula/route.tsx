@@ -8,7 +8,7 @@ import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { Dias, Modalidad } from "@prisma/client";
 import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
-import { TIMESLOTS } from "~/.server/allowedTimes";
+import { TIMESLOTS, TIMESLOTS_ } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { TIMES } from "../horario.$idhorario/reversedTimes";
 import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
@@ -20,7 +20,7 @@ export default function HorarioModal() {
   const data = useLoaderData<typeof loader>();
   const isNewMatricula: boolean = data.isNewMatricula;
   const matricula = data.matricula;
-  const timeSlots: string[] = Object.keys(data.time_white_list)
+  const timeSlots: string[] = data.time_white_list ? Object.keys(data.time_white_list) : [];
   const location = useLocation();
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
@@ -382,19 +382,25 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const listaMoviles = await getMovileLabs();
   const url = new URL(request.url);
   const dia = url.searchParams.get("dia") as Dias || "LUNES";
-  const aula = Number(url.searchParams.get("aula")) || 999;
-  const time_white_list = await getAula(aula).then(
-    async (result) => {
-      if (result?.identificador === 999) {
-        return TIMES;
-      }
-      else {
-        const lockedTimesByHorario: LockTime[] = await getLockedTimesByHorarioDay(horarioId, dia);
-        return generateTimeWhiteList(lockedTimesByHorario, dia, aula);
-      }
-    },
-    () => { })
-
+  const aula = Number(url.searchParams.get("aula"));
+  
+  let time_white_list;
+  if(aula !== 0){
+    time_white_list = await getAula(aula).then(
+      async (result) => {
+        if (result?.identificador === 999) {
+          return generateTimeWhiteList([], dia, aula);
+        }
+        else {
+          const lockedTimesByHorario: LockTime[] = await getLockedTimesByHorarioDay(horarioId, dia);
+          return generateTimeWhiteList(lockedTimesByHorario, dia, aula);
+        }
+      },
+      (e) => {
+        //console.log(e);
+       })
+  }
+  time_white_list = time_white_list === undefined ? {} : time_white_list  
 
   return json({
     horarioId: horarioId,

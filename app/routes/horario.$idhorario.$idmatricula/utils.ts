@@ -17,12 +17,20 @@ export function handleModalidadChange(event: any, setIsVirtual: any, setSearchPa
   const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
   const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
   diaForm.value = diaFilters
-
+  
+  
   if (modalidad === "VIRTUAL") {
+    const xpath = "//option[text()='Aula 999']";
+    const selectorAula = document.getElementById("aulaHorario");
+    (document.getElementById("horaInicio") as HTMLSelectElement).value = "";
+    (document.getElementById("horaFin") as HTMLSelectElement).value = "";
+
+    const valorAulaVirtual = document.evaluate(xpath, selectorAula as Node, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue as HTMLOptionElement;
+    
     setIsVirtual(true);
     aulaSelector.value = virtualClassroomValue;
     const params = new URLSearchParams();
-    params.set("aula", `${aula}`);
+    params.set("aula", `${valorAulaVirtual.value}`);
     params.set("dia", `${diaFilters}`);
     setSearchParams(params)
   } else {
