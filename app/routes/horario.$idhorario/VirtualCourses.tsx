@@ -10,7 +10,7 @@ interface Props {
 
 const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual }) => {
   const listaCursos = matriculas.map((m) => {
-    return <tr key={m.hora_inicio}>
+    return <tr key={m.hora_inicio+m.dia}>
       <td>{m.dia}</td>
       <td>{m.curso.nombre}</td>
       <td>{TIMES[Number(m.hora_inicio)]}</td>

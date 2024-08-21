@@ -103,7 +103,7 @@ export default function HorarioModal() {
   }
 
   async function checkForErrors(event: any) {
-    if (!validateTimeSpans()) {
+    if (areThereErrors) {
       event.preventDefault();
     }
   }
@@ -126,7 +126,6 @@ export default function HorarioModal() {
     params.set("aula", aula)
     setSearchParams(params)
   }
-
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}`
@@ -157,11 +156,14 @@ export default function HorarioModal() {
     </option>
   })
 
-  let timeList = timeSlots.map((time) => {
+  let timeList = matricula ? Object.keys(TIMES).map((time) => {
     return <option value={Number(time)} key={Number(time)}>
       {`${TIMES[Number(time)]}`}
     </option>
-
+  }) : timeSlots.map((time) => {
+    return <option value={Number(time)} key={Number(time)}>
+      {`${TIMES[Number(time)]}`}
+    </option>
   })
 
   const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
