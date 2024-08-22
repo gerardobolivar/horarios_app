@@ -30,6 +30,9 @@ export default function () {
       <Link to={`/horario/${data.idHorario}/new`}>
         <button className="mainButton">Registrar</button>
       </Link>
+      <Link to={`/horario/${data.idHorario}/config`}>
+        <button className="mainButton">Configurar | Botón temporal </button>
+      </Link>
     </Form>
     <div
       className="schedule"
