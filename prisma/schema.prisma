@@ -139,15 +139,19 @@ enum Modalidad {
 
 model Horario{
   horario_id Int @id @default(autoincrement())
-  ciclo Ciclo @relation(fields: [ciclo_id],references: [ciclo_id])
   matriculas Matricula[]
   active Boolean @default(true)
-  ciclo_id Int
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+  ciclo Ciclo? 
 }
 
 model Ciclo{
   ciclo_id Int @id @default(autoincrement())
   nombre String @default("Ciclo")
+  horario Horario? @relation(fields: [horario_id],references: [horario_id])
+  horario_id Int? @unique
   active Boolean @default(false)
-  horarios Horario[]
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt 
 }

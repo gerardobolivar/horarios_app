@@ -1,22 +1,28 @@
-import { json } from "@remix-run/node";
+import { json, LoaderFunctionArgs } from "@remix-run/node";
 import MainTitle from "../shared/MainTitle";
 import CicleCard from "./CicleCard";
+import { bindCicloByHorario, getCiclos } from "prisma/models/cicloModel";
+import { useLoaderData } from "@remix-run/react";
 
 export default function HomeAdmin(){
-  //Some relevant logic in here
+  const data = useLoaderData<typeof loader>();
 
+  const cicleList = data.ciclos.map((c)=>{
+    return <CicleCard key={c?.ciclo_id} innerText={c?.nombre} url={`/horario/${c?.horario_id}`} active={c?.active} ></CicleCard>
+  }) 
+  
 return (
   <div className="">
     <MainTitle innerText="Horarios"/>
     <div className="planCardContainer">
-      <CicleCard innerText="Ciclo I" url="form" active={false} ></CicleCard>
-      <CicleCard innerText="Ciclo II" url="/horario/2" active={true} ></CicleCard>
-      <CicleCard innerText="Ciclo III" url="form" active={false} ></CicleCard>
+      {cicleList}
     </div>
   </div>
 )
 } 
 
-export const loader = async () => {
-  return json({ ok: true });
+export const loader = async ({ params }:LoaderFunctionArgs) => {
+  const ciclos = await getCiclos().then((r)=>{return r}).catch((error)=>{return []})
+  //await bindCicloByHorario(2,2);
+  return json({ ciclos: ciclos});
 };
