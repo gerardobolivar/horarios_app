@@ -50,3 +50,12 @@ export const getBindedHorario = async (horario_id:number) => {
     }
   })
 }
+
+export const updateUpdateDate = async (horario_id: number) => {
+  return await prisma.horario.update({
+    where:{horario_id: horario_id},
+    data:{
+      fecha_modificado: new Date()
+    }
+  })
+}
