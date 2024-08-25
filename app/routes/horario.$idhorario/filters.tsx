@@ -24,13 +24,14 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
     let dia = event.currentTarget.querySelector('select[name="diaHorarioFilter"]').value;
     let ubicacion = event.currentTarget.querySelector('select[name="ubicacionHorario"]').value;
     const showVirtual = event.currentTarget.querySelector('input[name="show_virtual"]').checked;
-    
+    const hideEmpty = event.currentTarget.querySelector('input[name="show_empty"]').checked;
     
     
     params.set("planEstudios", `${planEstudios}`);
     params.set("dia", `${dia}`);
     params.set("ubicacion", `${ubicacion}`);
     params.set("showvirtual", `${showVirtual}`);
+    params.set("hideempty", `${hideEmpty}`);
     
     if(showVirtual){
       submit(event.currentTarget)
@@ -90,6 +91,17 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
             onChange={()=>{}}
             className="largerCheckBox"
             checked={searchParams.get("showvirtual") === "true" ? true:false}
+            value="true"></input>
+        </span>
+        <span>
+          <label htmlFor="show_empty">Ocultar aulas vacías</label>
+          <input
+            type="checkbox"
+            id="shEmpty"
+            name="show_empty"
+            onChange={()=>{}}
+            className="largerCheckBox"
+            checked={searchParams.get("hideempty") === "true" ? true:false}
             value="true"></input>
         </span>
     </Form>
