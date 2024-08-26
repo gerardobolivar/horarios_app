@@ -1,5 +1,6 @@
 .confirmationModal{
   text-align: center;
+  border: 5px solid #204C6F !important ;
 }
 
 .confirmationModal p{
@@ -14,4 +15,12 @@ dialog{
 #cancelBtn:focus{
   border: 2px solid black !important;
 
+}
+
+dialog p{
+  color: #204C6F;
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 3vh;
+  margin-bottom: 3vh;
 }

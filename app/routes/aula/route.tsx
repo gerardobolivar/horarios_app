@@ -102,7 +102,12 @@ export default function Aulas() {
         </Link>
       </Form>
       <Outlet/>
-      {show ? <ConfirmationModal show={true} currentCellId={curretCellId} btnDisabled={btnDisabled} setShow={setShow}/> : null}
+      {show ? <ConfirmationModal 
+                show={true} 
+                currentCellId={curretCellId} 
+                btnDisabled={btnDisabled}
+                text="¿Está seguro que desea eliminar el aula?" 
+                setShow={setShow}/> : null}
     </div>
   )
 }

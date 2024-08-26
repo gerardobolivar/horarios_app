@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 //import "~/Scripts/FrontEnd/confirmationModal.js";
-const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDisabled: boolean, setShow: any }> = ({ show, currentCellId, btnDisabled, setShow }) => {
+const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDisabled: boolean, setShow: any, text:string }> = ({ show, currentCellId, btnDisabled, setShow, text }) => {
 
   function handleCancelar(event: any) {
     event.preventDefault();
@@ -20,7 +20,8 @@ const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDis
   return <dialog open={show}>
     <div className="overlay_styles">
       <div className="modalContainer confirmationModal">
-        <p>¿Está seguro que desea eliminar el aula?</p>
+        <img src="/images/warning.svg" width="250px"/>
+        <p>{text}</p>
         <form method="POST" action="/aula">
           <input id="aulaID" name='aulaID' hidden={true} defaultValue={currentCellId}></input>
           <button name="intent"
