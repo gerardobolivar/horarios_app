@@ -4,8 +4,10 @@ import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getProfesores, removeProfesor } from "prisma/models/profesorModel";
 import { getUsers, removeUsuario } from "prisma/models/userModel";
+import ConfirmationModal from "~/modals/ConfirmationModal";
+import modalStyles from "~/modals/modalStyles.css?url";
+
 const ROUTE_TAG = "Usuarios";
 
 export default function Usuarios() {
@@ -13,7 +15,9 @@ export default function Usuarios() {
   const [curretCellId, setCurretCellId] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
   const navigation = useNavigation();
+  const [show,setShow] = useState(false);
   let usuariosLista: any = data.listaUsuarios.map((usuario) => {
+
     return <div
       className="noLinkDecoration dataRowLink"
       key={String(usuario.id_usuario)}
@@ -29,6 +33,10 @@ export default function Usuarios() {
 
   function handleCellClick(e: any) {
     setCurretCellId(e.target.id);
+  }
+
+  function handleEliminar(){
+    setShow(true);
   }
 
   useEffect(() => {
@@ -76,9 +84,9 @@ export default function Usuarios() {
                   className={curretCellId === "" ? "disabled" : "active"}>
                   Ver/Actualizar</button>
               </Link>
-              <button name="intent"
-                value="delete_usuario"
-                type="submit"
+              <button
+                type="button"
+                onClick={handleEliminar}
                 disabled={curretCellId === "" || btnDisabled ? true : false}
                 className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
                 Eliminar</button>
@@ -92,6 +100,14 @@ export default function Usuarios() {
         </Link>
       </Form>
       <Outlet/>
+      {show ? <ConfirmationModal 
+                show={true} 
+                currentCellId={curretCellId} 
+                btnDisabled={btnDisabled}
+                text={`¿Está seguro que desea eliminar el usuario?`}
+                action="/user"
+                value="delete_usuario" 
+                setShow={setShow}/> : null}
     </div>
   )
 }
@@ -99,7 +115,7 @@ export default function Usuarios() {
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const currentUsuario = Number(formData.get("currentUserID"))
+  const currentUsuario = Number(formData.get("elementID"))
 
   if(intent === "delete_usuario"){
     await removeUsuario(currentUsuario);
@@ -116,4 +132,5 @@ export const loader = async ({ params, }: LoaderFunctionArgs) => {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: icons },
+  { rel: "stylesheet", href: modalStyles },
 ];

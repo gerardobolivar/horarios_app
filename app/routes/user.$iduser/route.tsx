@@ -29,9 +29,7 @@ export default function ModalUsuario() {
 
   function handleChangeForm(event:any){
     const username = String((document.getElementById("username") as HTMLInputElement).value);
-    console.log(username);
-    
-      submit(event.currentTarget);
+    submit(event.currentTarget);
 
   }
   return <div className="overlay_styles" >
@@ -123,10 +121,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
   
   if (intent === "create") {
-    console.log(`Saving as: ${user_role}`);
     try {
       const user = await createUsuario(username,user_role);
-      
     } catch (errors) {
       console.log(errors);
     }
@@ -136,9 +132,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     await updateUsuarioRole(iduser,user_role)
   }
   else{
-    console.log("Looking for this username on db");
     const result = await getUserByName(username)
-    console.log(result);
     if(result?.nombre_usuario === username){
       return redirect(`/user/new/error`)
     }

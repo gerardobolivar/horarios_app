@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 //import "~/Scripts/FrontEnd/confirmationModal.js";
-const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDisabled: boolean, setShow: any, text:string }> = ({ show, currentCellId, btnDisabled, setShow, text }) => {
+const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDisabled: boolean, setShow: any, text:string, action:string, value:string }> = ({ show, currentCellId, btnDisabled, setShow, text, action, value }) => {
 
   function handleCancelar(event: any) {
     event.preventDefault();
@@ -22,10 +22,10 @@ const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDis
       <div className="modalContainer confirmationModal">
         <img src="/images/warning.svg" width="250px"/>
         <p>{text}</p>
-        <form method="POST" action="/aula">
-          <input id="aulaID" name='aulaID' hidden={true} defaultValue={currentCellId}></input>
+        <form method="POST" action={action}>
+          <input id="elementID" name='elementID' hidden={true} defaultValue={currentCellId}></input>
           <button name="intent"
-            value="delete_aula"
+            value={value}
             type="submit"
             className={`${currentCellId === "" || btnDisabled ? "disabled" : "active"}`}>
             Aceptar</button>

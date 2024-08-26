@@ -70,7 +70,7 @@ export default function Aulas() {
               {aulasLista}
             </div>
             <span className="horarios-plan-new-listacursos-buttons">
-              <input id="aulaID" name='aulaID' hidden={true} defaultValue={curretCellId}></input>
+              <input id="elementID" name='elementID' hidden={true} defaultValue={curretCellId}></input>
               <Link to={`/aula/new`}
                 preventScrollReset={true}>
                 <button
@@ -86,8 +86,8 @@ export default function Aulas() {
                   className={curretCellId === "" ? "disabled" : "active"}>
                   Ver/Actualizar</button>
               </Link>
-              <button name="intent"
-              onClick={handleEliminar}
+              <button
+                onClick={handleEliminar}
                 type="button"
                 disabled={curretCellId === "" || btnDisabled ? true : false}
                 className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
@@ -106,7 +106,9 @@ export default function Aulas() {
                 show={true} 
                 currentCellId={curretCellId} 
                 btnDisabled={btnDisabled}
-                text="¿Está seguro que desea eliminar el aula?" 
+                text="¿Está seguro que desea eliminar el aula?"
+                action="/aula"
+                value="delete_aula" 
                 setShow={setShow}/> : null}
     </div>
   )
@@ -115,7 +117,7 @@ export default function Aulas() {
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const currentAula = Number(formData.get("aulaID"))
+  const currentAula = Number(formData.get("elementID"))
   
   if(intent === "delete_aula"){
     return await removeAula(currentAula).then(()=>{
