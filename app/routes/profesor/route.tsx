@@ -5,13 +5,18 @@ import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getProfesores, removeProfesor } from "prisma/models/profesorModel";
+import ConfirmationModal from "~/modals/ConfirmationModal";
+import modalStyles from "~/modals/modalStyles.css?url";
+
 const ROUTE_TAG = "Profesores";
 
 export default function Profesor() {
   let data = useLoaderData<typeof loader>();
   const [curretCellId, setCurretCellId] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [show, setShow] = useState(false);
   const navigation = useNavigation();
+
   let profesoresLista: any = data.listaProfesores.map((profesor) => {
     return <div
       className="noLinkDecoration dataRowLink"
@@ -28,6 +33,10 @@ export default function Profesor() {
 
   function handleCellClick(e: any) {
     setCurretCellId(e.target.id);
+  }
+
+  function handleEliminar(){
+    setShow(true);
   }
 
   useEffect(() => {
@@ -75,9 +84,9 @@ export default function Profesor() {
                   className={curretCellId === "" ? "disabled" : "active"}>
                   Ver/Actualizar</button>
               </Link>
-              <button name="intent"
-                value="delete_profesor"
-                type="submit"
+              <button
+                onClick={handleEliminar}
+                type="button"
                 disabled={curretCellId === "" || btnDisabled ? true : false}
                 className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
                 Eliminar</button>
@@ -91,6 +100,14 @@ export default function Profesor() {
         </Link>
       </Form>
       <Outlet/>
+      {show ? <ConfirmationModal 
+                show={true} 
+                currentCellId={curretCellId} 
+                btnDisabled={btnDisabled}
+                text="¿Está seguro que desea eliminar el profesor?"
+                action="/profesor"
+                value="delete_profesor" 
+                setShow={setShow}/> : null}
     </div>
   )
 }
@@ -98,7 +115,7 @@ export default function Profesor() {
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const currentProfesor = Number(formData.get("profesorID"))
+  const currentProfesor = Number(formData.get("elementID"))
 
   if(intent === "delete_profesor"){
     await removeProfesor(currentProfesor);
@@ -115,4 +132,5 @@ export const loader = async ({ params, }: LoaderFunctionArgs) => {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: icons },
+  { rel: "stylesheet", href: modalStyles },
 ];
