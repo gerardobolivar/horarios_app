@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { getAulas, removeAula } from "prisma/models/aulaModel";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
+import modalStyles from "~/modals/modalStyles.css?url";
+import ConfirmationModal from "~/modals/ConfirmationModal";
 
 const ROUTE_TAG = "Aulas";
 
@@ -13,8 +15,7 @@ export default function Aulas() {
   const [curretCellId, setCurretCellId] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
   const navigation = useNavigation();
-
-
+  const [show, setShow] = useState(false);
 
   let aulasLista: any = data.listaAulas.map((aula) => {
     return <div
@@ -34,6 +35,10 @@ export default function Aulas() {
 
   function handleCellClick(e: any) {
     setCurretCellId(e.target.id);
+  }
+
+  function handleEliminar(){
+    setShow(true);
   }
 
   useEffect(() => {
@@ -82,8 +87,8 @@ export default function Aulas() {
                   Ver/Actualizar</button>
               </Link>
               <button name="intent"
-                value="delete_aula"
-                type="submit"
+              onClick={handleEliminar}
+                type="button"
                 disabled={curretCellId === "" || btnDisabled ? true : false}
                 className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
                 Eliminar</button>
@@ -97,6 +102,7 @@ export default function Aulas() {
         </Link>
       </Form>
       <Outlet/>
+      {show ? <ConfirmationModal show={true} currentCellId={curretCellId} btnDisabled={btnDisabled} setShow={setShow}/> : null}
     </div>
   )
 }
@@ -105,7 +111,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
   const currentAula = Number(formData.get("aulaID"))
-
+  
   if(intent === "delete_aula"){
     return await removeAula(currentAula).then(()=>{
       return redirect("/aula")
@@ -115,7 +121,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
           console.error(`A constraint failed on in the field: ${e.meta.field_name}, in the model ${e.meta.modelName}`);
           throw redirect("/aula",405)
         default:
-
+          return console.error(e);
       }
     })
   }
@@ -131,4 +137,5 @@ export const loader = async ({ params, }: LoaderFunctionArgs) => {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: icons },
+  { rel: "stylesheet", href: modalStyles },
 ];

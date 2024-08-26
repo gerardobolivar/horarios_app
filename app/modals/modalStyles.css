@@ -1,0 +1,17 @@
+.confirmationModal{
+  text-align: center;
+}
+
+.confirmationModal p{
+  font-size: 1.3em;
+}
+
+dialog{
+  position: fixed;
+  top: 50%;
+}
+
+#cancelBtn:focus{
+  border: 2px solid black !important;
+
+}
