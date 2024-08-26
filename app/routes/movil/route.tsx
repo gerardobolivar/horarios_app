@@ -4,8 +4,10 @@ import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getProfesores, removeProfesor } from "prisma/models/profesorModel";
 import { getMovileLabs, removeMobileLab } from "prisma/models/movileLab";
+import ConfirmationModal from "~/modals/ConfirmationModal";
+import modalStyles from "~/modals/modalStyles.css?url";
+
 const ROUTE_TAG = "Laboratorios Móviles";
 
 export default function Profesor() {
@@ -13,6 +15,7 @@ export default function Profesor() {
   const [curretCellId, setCurretCellId] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
   const navigation = useNavigation();
+  const [show,setShow] = useState(false);
 
   
   let laboratoriosLista: any = data.listaMovileLabs.map((laboratorio) => {
@@ -31,6 +34,10 @@ export default function Profesor() {
 
   function handleCellClick(e: any) {
     setCurretCellId(e.target.id);
+  }
+
+  function handleEliminar(){
+    setShow(true);
   }
 
   useEffect(() => {
@@ -78,9 +85,9 @@ export default function Profesor() {
                   className={curretCellId === "" ? "disabled" : "active"}>
                   Ver/Actualizar</button>
               </Link>
-              <button name="intent"
-                value="delete_laboratorio"
-                type="submit"
+              <button
+                type="button"
+                onClick={handleEliminar}
                 disabled={curretCellId === "" || btnDisabled ? true : false}
                 className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
                 Eliminar</button>
@@ -94,6 +101,14 @@ export default function Profesor() {
         </Link>
       </Form>
       <Outlet/>
+      {show ? <ConfirmationModal 
+                show={true} 
+                currentCellId={curretCellId} 
+                btnDisabled={btnDisabled}
+                text="¿Está seguro que desea eliminar el laboratorio móvil?"
+                action="/movil"
+                value="delete_laboratorio" 
+                setShow={setShow}/> : null}
     </div>
   )
 }
@@ -101,7 +116,7 @@ export default function Profesor() {
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const currentLab = Number(formData.get("labID"))
+  const currentLab = Number(formData.get("elementID"))
 
   if(intent === "delete_laboratorio"){
     await removeMobileLab(currentLab);
@@ -117,4 +132,5 @@ export const loader = async ({ params, }: LoaderFunctionArgs) => {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: icons },
+  { rel: "stylesheet", href: modalStyles },
 ];
