@@ -2,11 +2,13 @@ import { Outlet, Links, Scripts, Meta, json, ScrollRestoration, useRouteError, u
 import type { LinksFunction } from "@remix-run/node";
 import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
+import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import MainLayout from "./routes/shared/Main";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   { rel: "stylesheet", href: bootstrap },
+  { rel: "stylesheet", href: icons },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
