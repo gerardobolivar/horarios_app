@@ -8,6 +8,20 @@ export const getHorario = async (horarioId:number) => {
   })
 }
 
+export const createHorario = async () => {
+  return await prisma.horario.create({
+    data:{
+      active: true
+    }
+  })
+}
+
+export const getHorarios = async () =>{
+  return await prisma.horario.findMany({
+    select:{horario_id:true}
+  })
+}
+
 export const getBindedHorarioByCicle = async (horario_id:number) => {
   return await prisma.horario.findUnique({
     where: {
@@ -33,6 +47,15 @@ export const deactivateHorarioById = async (horario_id: number) =>{
     where: {horario_id: horario_id},
     data:{
       active: false
+    }
+  })
+}
+
+export const updateUpdateDate = async (horario_id: number) => {
+  return await prisma.horario.update({
+    where:{horario_id: horario_id},
+    data:{
+      fecha_modificado: new Date()
     }
   })
 }

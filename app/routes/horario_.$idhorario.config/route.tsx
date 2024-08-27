@@ -2,8 +2,8 @@ import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs } from "@re
 import { Form, redirect, useLoaderData } from "@remix-run/react";
 import scheduleConfigPageStyles from './scheduleConfigPageStyles.css?url';
 import appStyles from '~/stylesheets/plan_.new.css?url';
-import { getBindedHorario, unBindCicloByHorario, updateUpdateDate } from "prisma/models/cicloModel";
-import { activateHorarioById, deactivateHorarioById, getHorario } from "prisma/models/horarioModel";
+import { getBindedHorario, unBindCicloByHorario} from "prisma/models/cicloModel";
+import { deactivateHorarioById, getHorario } from "prisma/models/horarioModel";
 import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
 
 

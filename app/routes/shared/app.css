@@ -162,6 +162,19 @@ body{
   }
 }
 
+.gear-icon {
+  position: relative;
+  top: 90px;
+  left: 180px;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 25px;
+  z-index: 100;
+}
+.gear-icon:hover{
+  color:#00C0F3
+}
+
 /*Development purposes*/
 .red{
   background-color: red !important;
@@ -170,4 +183,8 @@ body{
 .yellow{
   background-color: yellow !important;
   color: blue !important;
+}
+
+.no-select{
+  user-select: none;
 }

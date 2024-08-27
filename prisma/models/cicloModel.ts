@@ -14,11 +14,18 @@ export const getCiclos = async () => {
   })
 };
 
+export const getCiclo = async (ciclo_id:number) => {
+  return await prisma.ciclo.findUnique({
+    where:{ ciclo_id: ciclo_id}
+  })
+}
+
 export const updateCiclo = async (ciclo_id: number, horario_id: number) => {
   return await prisma.ciclo.update({
     where:{ciclo_id:ciclo_id},
     data:{
-      horario_id: horario_id
+      horario_id: horario_id,
+      active: true
     }
   })
 };
@@ -51,11 +58,31 @@ export const getBindedHorario = async (horario_id:number) => {
   })
 }
 
-export const updateUpdateDate = async (horario_id: number) => {
-  return await prisma.horario.update({
-    where:{horario_id: horario_id},
+export const unBindByCiclo = async (ciclo_id:number) =>{
+  return prisma.ciclo.update({
+    where: {ciclo_id: ciclo_id},
     data:{
-      fecha_modificado: new Date()
+      horario_id: null,
+      active: false
     }
   })
+}
+
+export const getBindedHorarioByCicle = async (cicle_id:number) => {
+  return await prisma.ciclo.findUnique({
+    where:{ciclo_id: cicle_id},
+    select:{
+      horario: true
+    }
+  })
+}
+
+export const createCicles = async ()=>{
+return await prisma.ciclo.createMany({
+  data:[
+    {nombre:"CICLO I"},
+    {nombre:"CICLO II"},
+    {nombre:"CICLO III"},
+  ]
+})
 }

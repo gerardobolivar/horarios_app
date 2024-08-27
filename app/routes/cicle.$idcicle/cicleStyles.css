@@ -1,0 +1,49 @@
+.main-section header{
+  font-size: 1.5em;
+}
+
+.main-section p{
+  font-size: 1em;
+  color: #323030;
+  text-align: justify;
+}
+
+#main-doc{
+  position: absolute;
+  margin-left: 50px;
+  padding-top: 30px;
+}
+
+#main-doc header {
+  font-weight : bold;
+}
+
+.tooltip_ {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip_ .tooltiptext{
+  visibility: hidden;
+  width: 300px;
+  background-color: rgb(32, 76, 111,90%);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip_:hover .tooltiptext {
+  visibility: visible;
+}
+
+@media (max-width: 800px){
+  #main-doc{
+ 
+}
+}
