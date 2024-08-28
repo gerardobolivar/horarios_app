@@ -153,5 +153,12 @@ model Ciclo{
   horario_id Int? @unique
   active Boolean @default(false)
   fecha_creado DateTime @default(now())
-  fecha_modificado DateTime @updatedAt 
+  fecha_modificado DateTime @updatedAt
+  active_cycle ActiveCycle?
+}
+
+model ActiveCycle{
+  active_cycle_id Int @id @default(1)
+  ciclo Ciclo? @relation(fields: [ciclo_id],references: [ciclo_id])
+  ciclo_id Int? @unique
 }
