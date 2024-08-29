@@ -18,17 +18,11 @@ model User{
   id_usuario Int @id @default(autoincrement())
   nombre_usuario String @unique @db.VarChar(50) @default("")
   planes_estudio PlanEstudio[]
-  role UserRole @default(USER)
+  role String @db.VarChar(50) @default("USER")
   ultima_sesion DateTime?
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
   hash Hash?
-}
-
-enum UserRole {
-  ADMIN
-  USER
-  GUEST
 }
 
 model PlanEstudio{

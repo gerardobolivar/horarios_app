@@ -1,4 +1,3 @@
-import { UserRole } from "@prisma/client";
 import prisma from "prisma/client";
 
 export const getUser = async (id_usuario: number) => {
@@ -35,18 +34,18 @@ export const removeUsuario = async (id_usuario:number) =>{
   })
 }
 
-export const updateUsuarioRole = async (id_usuario:number, role: UserRole) =>{
+export const updateUsuarioRole = async (id_usuario:number, role: string) =>{
   return await prisma.user.update({
     where:{
       id_usuario: id_usuario
     },
     data:{
-      role: UserRole[role]
+      role: role
     }
   })
 }
 
-export const createUsuario = async (nombre_usuario:string, role:UserRole) =>{
+export const createUsuario = async (nombre_usuario:string, role:string) =>{
   return await prisma.user.create({
     data:{
       nombre_usuario: nombre_usuario,

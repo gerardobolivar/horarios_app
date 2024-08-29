@@ -2,7 +2,6 @@ import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-r
 import { Form, Link, Outlet, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
 import {createUsuario, getUser, getUserByName, updateUsuarioRole} from "prisma/models/userModel"
 import { useEffect, useState } from "react";
-import { UserRole } from "@prisma/client";
 
 export default function ModalUsuario() {
   const navigation = useNavigation()
@@ -69,9 +68,9 @@ export default function ModalUsuario() {
                     required={true}
                     defaultValue={user?.role} >
                     <option value={""}>Rol</option>
-                    <option value={String(UserRole.ADMIN)}>ADMIN</option>
-                    <option value={String(UserRole.USER)}>USER</option>
-                    <option value={String(UserRole.GUEST)}>GUEST</option>
+                    <option value={"ADMIN"}>ADMIN</option>
+                    <option value={"USER"}>USER</option>
+                    <option value={"GUEST"}>GUEST</option>
                   </select>
                 </span>
                 <span hidden={isNewUser}>
@@ -107,17 +106,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const username = String(formData.get("username")).toLocaleLowerCase();
   const role = String(formData.get("user_role"));
   const intent = formData.get("intent");
-  let user_role:UserRole;
+  let user_role:string;
 
   switch (role) {
     case "ADMIN": 
-      user_role = UserRole.ADMIN;
+      user_role = "ADMIN";
       break;
     case "USER":
-      user_role = UserRole.USER;
+      user_role = "USER";
       break;
     default:
-      user_role = UserRole.GUEST
+      user_role = "GUEST"
   }
   
   if (intent === "create") {
