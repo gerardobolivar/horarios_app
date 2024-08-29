@@ -1,6 +1,6 @@
 import prisma from "prisma/client"
 
-export const createActiveCycle = async(ciclo_id:number)  => {
+export const createActiveCycle = async(ciclo_id:number|null)  => {
   return await prisma.activeCycle.create({
     data:{
       ciclo_id: ciclo_id

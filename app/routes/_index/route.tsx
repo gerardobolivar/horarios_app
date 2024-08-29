@@ -3,7 +3,8 @@ import MainTitle from "../shared/MainTitle";
 import CicleCard from "./CicleCard";
 import { createCicles, getCiclos } from "prisma/models/cicloModel";
 import { useLoaderData } from "@remix-run/react";
-import { getActiveCycle } from "prisma/models/activeCycles";
+import { createActiveCycle, getActiveCycle } from "prisma/models/activeCycles";
+import { createAula } from "prisma/models/aulaModel";
 
 export default function HomeAdmin(){
   const data = useLoaderData<typeof loader>();
@@ -32,7 +33,14 @@ export const loader = async ({ params }:LoaderFunctionArgs) => {
   
   if(ciclos.length < 1){
     return await createCicles().then(async ()=>{
-       const createdCicles = await getCiclos().then((r)=>{return r}).catch((error)=>{return []});
+       const createdCicles = await getCiclos().then(async (r)=>{
+        await createActiveCycle(null).catch(e=>{
+          console.error(e);
+        });
+        await createAula(999,50,"Espacio Virtual", "Espacio virtual").catch(e=>{
+          console.error(e);
+        });
+        return r}).catch((error)=>{return []});
        return json({ ciclos: createdCicles, activeCycle: activeCycle}); 
     }).catch((e)=>{
       console.log("Could not create cicles");

@@ -2,9 +2,10 @@ import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs } from "@re
 import { Form, redirect, useLoaderData } from "@remix-run/react";
 import scheduleConfigPageStyles from './scheduleConfigPageStyles.css?url';
 import appStyles from '~/stylesheets/plan_.new.css?url';
-import { getBindedHorario, unBindCicloByHorario} from "prisma/models/cicloModel";
+import { getBindedHorario, unBindCicloByHorario } from "prisma/models/cicloModel";
 import { deactivateHorarioById, getHorario } from "prisma/models/horarioModel";
 import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
+import { clearActiveCycle } from "prisma/models/activeCycles";
 
 
 export default function HorarioConfigPage() {
@@ -93,8 +94,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario)
 
   if (intent === "archivar") {
-    return await unBindCicloByHorario(horarioId).then( async () => {
-      await deactivateHorarioById(horarioId);
+    return await unBindCicloByHorario(horarioId).then(async () => {
+      await deactivateHorarioById(horarioId).then(async () => {
+        await clearActiveCycle().catch(e => {
+          console.error(e);})
+      }).catch(e => {
+          console.error(e);});
       return redirect(`/horario/${horarioId}/config`)
     }).catch((e) => { return redirect(`/error`) })
   } else {
