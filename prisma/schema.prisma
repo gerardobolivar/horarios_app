@@ -103,7 +103,7 @@ model Matricula{
   hora_inicio Int
   hora_final Int
   dia String
-  modalidad Modalidad @default(PRESENCIAL)
+  modalidad String @default("PRESENCIAL")
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
@@ -112,14 +112,6 @@ model Matricula{
   profesor_id Int
   laboratorio_movil_id Int?
   horario_id Int
-}
-
-enum Modalidad {
-  PRESENCIAL
-  BAJOVIRTUAL
-  BIMODAL
-  ALTOVIRTUAL
-  VIRTUAL
 }
 
 model Horario{

@@ -1,4 +1,3 @@
-import { Modalidad } from "@prisma/client"
 
  interface Curso{
   id_curso: number,
@@ -41,7 +40,7 @@ interface Matricula {
   matricula_id: number,
   dia: String,
   curso: Curso,
-  modalidad: Modalidad;
+  modalidad: string;
   hora_inicio: number;
   hora_final: number; 
 }

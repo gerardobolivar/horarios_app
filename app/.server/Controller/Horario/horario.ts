@@ -1,6 +1,5 @@
 // This is the place where the system is going to validate wether an schedule can be saved in the system.
 
-import { Dias } from "@prisma/client";
 import { TIMESLOTS, TIMESLOTS_ } from "~/.server/allowedTimes";
 import { TIMES } from "~/routes/horario.$idhorario/reversedTimes";
 import { LockTime } from "~/types/horarioTypes";
@@ -12,7 +11,7 @@ function isScheduleAvailable(fecha_inicio: number, fecha_final: number): Boolean
 }
 
 
-function generateTimeWhiteList(lockedTimes: LockTime[], dia: Dias, aula: number) {
+function generateTimeWhiteList(lockedTimes: LockTime[], dia: string, aula: number) {
 
   let blackList: TIMESLOTS_ = {};
   const filteredTimes: TIMESLOTS_ = {};

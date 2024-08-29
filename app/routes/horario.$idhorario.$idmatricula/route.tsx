@@ -6,9 +6,8 @@ import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
-import { Dias, Modalidad } from "@prisma/client";
 import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
-import { TIMESLOTS, TIMESLOTS_ } from "~/.server/allowedTimes";
+import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { TIMES } from "../horario.$idhorario/reversedTimes";
 import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
@@ -78,7 +77,7 @@ export default function HorarioModal() {
     const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
     
     const whiteListKeys = Object.keys(data.time_white_list);
-    const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia as Dias, aula, whiteListKeys);
+    const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia, aula, whiteListKeys);
 
     let approvedValidation = false;
 
@@ -345,10 +344,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const curso = Number(formData.get("cursoHorario"));
   const profesor = Number(formData.get("profesorHorario"));
-  const dia = formData.get("diaHorario") as Dias;
+  const dia = String(formData.get("diaHorario"));
   const horaInicio = Number(formData.get("horaInicio"));
   const horaFin = Number(formData.get("horaFin")) + 1;
-  const modalidad = (formData.get("modalidadHorario")) as Modalidad;
+  const modalidad = (formData.get("modalidadHorario")) as string;
   const movilHorario = Number(formData.get("movilHorario")) === 0 ? null : Number(formData.get("movilHorario"));
   const intent = formData.get("intent");
   const aula = Number(formData.get("aulaHorario"));
@@ -383,7 +382,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
   const url = new URL(request.url);
-  const dia = url.searchParams.get("dia") as Dias || "LUNES";
+  const dia = url.searchParams.get("dia") || "LUNES";
   const aula = Number(url.searchParams.get("aula"));
   
   let time_white_list;

@@ -1,4 +1,3 @@
-import { Dias } from "@prisma/client";
 import { TIMES } from "~/routes/horario.$idhorario/reversedTimes";
 import { getLockedTimesByHorarioDay } from "prisma/models/matriculaModelo";
 import { LockTime } from "~/types/horarioTypes";
@@ -39,7 +38,7 @@ export function handleModalidadChange(event: any, setIsVirtual: any, setSearchPa
   }
 }
 
-export async function validEdgeTimeSpans(startTime: number, endTime: number, horarioId: number, dia: Dias, aula: number, whiteListKeys: string[]) {
+export async function validEdgeTimeSpans(startTime: number, endTime: number, horarioId: number, dia: string, aula: number, whiteListKeys: string[]) {
   let result: boolean = true;
   if (endTime - startTime <= 1) {
     result = true;
