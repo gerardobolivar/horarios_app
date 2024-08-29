@@ -216,6 +216,11 @@
 a:nth-child(even) h5 {
   /* background-color: rgb(0, 192, 243,0.1) !important; */
 }
+
+.dataRowLink{
+  cursor: pointer;
+}
+
 .dataRowLink:nth-child(even){
   background-color: rgb(0, 192, 243,0.1);
 }
