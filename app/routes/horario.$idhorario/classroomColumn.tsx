@@ -66,7 +66,7 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
             curso={matricula.curso}>
           </CourseCell> :
             <Link
-              key={crypto.randomUUID()}
+              key={slot+aula_id}
               state={{ timePicked: TIMESLOTS_REVERSE[slot],aula_id: aula_id}}
               to={`/horario/${horarioId}/new`}>
                 <div className="single-slot empty-slot"></div>
