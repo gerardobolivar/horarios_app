@@ -1,4 +1,4 @@
-import { Dias, Modalidad } from "@prisma/client"
+import { Modalidad } from "@prisma/client"
 
  interface Curso{
   id_curso: number,
@@ -39,7 +39,7 @@ type Planes = Plan[]
 interface Matricula {
   aula:Aula,
   matricula_id: number,
-  dia: Dias,
+  dia: String,
   curso: Curso,
   modalidad: Modalidad;
   hora_inicio: number;
@@ -58,7 +58,7 @@ interface scheduleFilters {
 interface LockTime{  
   hora_inicio: number;
   hora_final: number;
-  dia: Dias;
+  dia: String;
   aula_id: number;
   horario_id: number;
 }

@@ -1,4 +1,4 @@
-import { Dias, Modalidad } from "@prisma/client";
+import { Modalidad } from "@prisma/client";
 import prisma from "prisma/client";
 import { Matricula } from "~/types/horarioTypes";
 
@@ -29,7 +29,7 @@ export const getMatriculasByHorario = async (horario_id:number) =>{
   })
 }
 
-export const filterMatriculas = async (horario_id: number, dia:Dias, id_plan_estudio?: number, ubicacion?:string) => {
+export const filterMatriculas = async (horario_id: number, dia:string, id_plan_estudio?: number, ubicacion?:string) => {
   return await prisma.matricula.findMany({
     where: {
       horario_id: horario_id,
@@ -81,7 +81,7 @@ export const getMatriculaById = async (matricula_id:number) =>{
 
 export const createMatricula = async(hora_inicio:number,
                                     hora_final:number,
-                                    dia:Dias,
+                                    dia:string,
                                     curso_id:number,
                                     aula_id:number,
                                     horario_id:number,
@@ -129,7 +129,7 @@ export const removeMatricula = async(matricula_id:number) =>{
   })
 }
 
-export const getLockedTimesByHorarioDay = async (horario_id:number,dia?:Dias) => {
+export const getLockedTimesByHorarioDay = async (horario_id:number,dia?:string) => {
   return await prisma.matricula.findMany({
     where:{
       NOT:{

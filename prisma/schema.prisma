@@ -102,7 +102,7 @@ model Matricula{
   profesor Profesor @relation(fields: [profesor_id],references: [id_profesor])
   hora_inicio Int
   hora_final Int
-  dia Dias
+  dia String
   modalidad Modalidad @default(PRESENCIAL)
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
@@ -112,15 +112,6 @@ model Matricula{
   profesor_id Int
   laboratorio_movil_id Int?
   horario_id Int
-}
-
-enum Dias {
-  LUNES
-  MARTES
-  MIERCOLES
-  JUEVES
-  VIERNES
-  SABADO
 }
 
 enum Modalidad {

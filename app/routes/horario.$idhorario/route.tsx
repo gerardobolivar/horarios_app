@@ -10,7 +10,6 @@ import appStyles from '~/stylesheets/plan_.new.css?url';
 import horarioStyles from './horarioStyles.css?url';
 import { getPlanes } from "prisma/models/planEstudioModel";
 import { Matricula, Planes } from "~/types/horarioTypes";
-import { Dias } from "@prisma/client";
 import VirtualCourses from "./VirtualCourses";
 
 export default function () {
@@ -84,7 +83,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const id_plan_estudioParam = url.searchParams.get("planEstudios");
   const id_plan_estudio = Number(id_plan_estudioParam) === 0 ? undefined : id_plan_estudioParam !== null ? Number(id_plan_estudioParam) : undefined;
-  const dia = url.searchParams.get("dia") as Dias || Dias.LUNES;
+  const dia = url.searchParams.get("dia") || "LUNES";
   const ubicacionParam = url.searchParams.get("ubicacion");
   const ubicacion = ubicacionParam === null ? undefined : (ubicacionParam != null && ubicacionParam != "0" ? ubicacionParam : undefined);
   const idHorario: number = Number(params.idhorario);
