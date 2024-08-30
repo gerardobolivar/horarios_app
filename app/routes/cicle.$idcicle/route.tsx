@@ -1,9 +1,9 @@
 import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, redirect, useLoaderData } from "@remix-run/react";
-import { bindCicloByHorario, getBindedHorarioByCicle, getCiclo, unBindByCiclo, unBindCicloByHorario, updateCiclo } from "prisma/models/cicloModel";
-import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
+import { bindCicloByHorario, getBindedHorarioByCicle, getCiclo, unBindByCiclo, updateCiclo } from "prisma/models/cicloModel";
+import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";//Common import with matricula
 import configPageStyles from "./cicleStyles.css?url";
-import { createHorario, getHorarios } from "prisma/models/horarioModel";
+import { createHorario, getHorarios } from "prisma/models/horarioModel";//"prisma/models/horarioModel"
 import { clearActiveCycle, getActiveCycle, updateActiveCycle } from "prisma/models/activeCycles";
 
 export default function Cicle() {

@@ -1,7 +1,3 @@
-import { TIMES } from "~/routes/horario.$idhorario/reversedTimes";
-import { getLockedTimesByHorarioDay } from "prisma/models/matriculaModelo";
-import { LockTime } from "~/types/horarioTypes";
-
 export function getTimeStamp(matricula_date: string) {
   let date = new Date(matricula_date);
   let stringDate = date.toLocaleDateString();
@@ -44,7 +40,6 @@ export async function validEdgeTimeSpans(startTime: number, endTime: number, hor
     result = true;
   }
   else {
-    const lockedTimesByHorario: LockTime[] = await getLockedTimesByHorarioDay(horarioId, dia).then((r) => { return r }, () => { return [] })
     for (let time = startTime + 1; time < endTime; time++) {
       if (!whiteListKeys.includes(String(time))) {
         result = false;

@@ -1,5 +1,4 @@
 import prisma from "prisma/client";
-import { Matricula } from "~/types/horarioTypes";
 
 export const getMatriculas = async () => {
   return await prisma.matricula.findMany({
