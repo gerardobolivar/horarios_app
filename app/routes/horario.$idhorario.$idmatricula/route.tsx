@@ -30,10 +30,19 @@ export default function HorarioModal() {
   const [areThereErrors, setAreThereErrors] = useState(false);
 
   let filters = {
-    "planEstudios": (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value,
-    "dia": (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
-    "ubicacion": (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value,
-    "show_virtual": (document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
+    "planEstudios": "",
+    "dia":"",
+    "ubicacion":"",
+    "show_virtual":""
+  }
+
+  try {
+    filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value; 
+    filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
+    filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value;
+    filters.show_virtual = (document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
+  } catch (error) {
+    console.log(error);
   }
 
   useEffect(() => {
