@@ -175,6 +175,31 @@ body{
   color:#00C0F3
 }
 
+.tooltip_ {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip_ .tooltiptext{
+  visibility: hidden;
+  width: 300px;
+  background-color: rgb(32, 76, 111,90%);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip_:hover .tooltiptext {
+  visibility: visible;
+}
+
+
 /*Development purposes*/
 .red{
   background-color: red !important;
