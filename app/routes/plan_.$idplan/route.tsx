@@ -147,11 +147,17 @@ export default function PlanEdit() {
                   type="submit"
                   value="update"
                   disabled={noChange || btnDisabled}>Actualizar plan</button>
-          <button className={`${data.cursos.length > 0 || btnDisabled? "disabled" : "active"} menu_bottom_btn_remove`}
+          <button className={`${data.cursos.length > 0 || btnDisabled? "disabled" : "active"} menu_bottom_btn_remove tooltip_`}
             name="intent"
             type="submit"
             disabled={data.cursos.length > 0 || btnDisabled}
-            value="delete">Eliminar plan</button>
+            value="delete">
+              Eliminar plan
+              <span
+                className="tooltiptext no-select"
+                style={{left:"100px"}}
+                hidden={!(data.cursos.length > 0)}>No se puede eliminar un plan con cursos asociados.</span>
+              </button>
         </Form>
       </div>
       <Outlet/>
