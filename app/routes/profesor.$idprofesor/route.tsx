@@ -1,6 +1,5 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation} from "@remix-run/react";
-import { createCourse, getCourseById, updateCourse } from "prisma/models/courseModel";
 import { createProfesor, getProfesor, updateProfesor } from "prisma/models/profesorModel";
 import { useEffect, useState } from "react";
 

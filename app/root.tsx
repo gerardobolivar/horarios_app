@@ -1,4 +1,4 @@
-import { Outlet, Links, Scripts, Meta, json, ScrollRestoration, useRouteError, useNavigate, } from "@remix-run/react";
+import { Outlet, Links, Scripts, Meta , useRouteError, useNavigate, } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
