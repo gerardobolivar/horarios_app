@@ -1,4 +1,40 @@
+interface Time_span{
+  //time_span_id: number;
+    //matricula_id: number;
+    aula: Aula;
+    hora_inicio: number;
+    hora_final: number;
+    dia: string;
+    //fecha_creado: Date;
+    //fecha_modificado: Date;
+}
 
+interface ScheduleTimeSpans{
+  time_span_id: number,
+  matricula_id: number,
+  aula_id: number,
+  hora_inicio: number,
+  hora_final: number,
+  dia: string,
+  fecha_creado: Date,
+  fecha_modificado: Date,
+  matricula: Matricula,
+  aula:Aula,
+}
+
+interface Group_{
+  group_id: number;
+  // course_id: number;
+  curso: Curso
+  // matricula_id: number;
+  // profesor_id: number;
+  // Ahours: number;
+  // completed: boolean;
+  // fecha_creado: Date;
+  // fecha_modificado: Date;
+}
+
+type Group = Group_ | null;
  interface Curso{
   id_curso: number,
   nombre: string,
@@ -8,6 +44,8 @@
   ubicacion:string,
   sigla: string
 }
+
+
 type SCHEDULE_ERROR = {
   [key:string]: string;
 };
@@ -36,13 +74,10 @@ interface Plan{
 type Planes = Plan[]
 
 interface Matricula {
-  aula:Aula,
   matricula_id: number,
-  dia: String,
-  curso: Curso,
-  modalidad: string;
-  hora_inicio: number;
-  hora_final: number; 
+  time_spans: Time_span[]
+  group: Group,
+  modalidad: string; 
 }
 
 type Matriculas = Matricula[];
@@ -59,8 +94,7 @@ interface LockTime{
   hora_final: number;
   dia: String;
   aula_id: number;
-  horario_id: number;
 }
 
-export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters, LockTime}
+export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters, LockTime, Time_span, ScheduleTimeSpans}
 export {SCHEDULE_ERRORS};
