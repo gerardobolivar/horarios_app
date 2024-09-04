@@ -1,13 +1,22 @@
 interface Time_span{
-  //time_span_id: number;
-    //matricula_id: number;
     aula: Aula;
+    hora_inicio: number;
+    hora_final: number;
+    dia: string;
+}
+interface TimeSpan{
+  //time_span_id: number;
+    matricula_id: number;
+    aula_id: number
     hora_inicio: number;
     hora_final: number;
     dia: string;
     //fecha_creado: Date;
     //fecha_modificado: Date;
 }
+
+type Time_spans = Time_span[];
+type TimeSpans = TimeSpan[] | null;
 
 interface ScheduleTimeSpans{
   time_span_id: number,
@@ -96,5 +105,17 @@ interface LockTime{
   aula_id: number;
 }
 
-export type {Curso, Plan, Planes, Matricula, Matriculas, scheduleFilters, LockTime, Time_span, ScheduleTimeSpans}
+export type {
+  Curso,
+  Plan,
+  Planes,
+  Matricula,
+  Matriculas,
+  scheduleFilters,
+  LockTime,
+  Time_span,
+  Time_spans,
+  TimeSpan,
+  TimeSpans,
+  ScheduleTimeSpans}
 export {SCHEDULE_ERRORS};
