@@ -123,6 +123,7 @@
   width: 30%;
   background-color: #d9d9d9;
   border-radius: 10px;
+  width: fit-content;
 }
 
 .modalContainer h2 {
@@ -137,6 +138,7 @@
   padding-bottom: 20px;
   margin: 15px;
   border-radius: 10px;
+  width: fit-content;
 }
 
 .modalContainer form span{
@@ -146,6 +148,7 @@
   background-color: #d9d9d9;
   border-radius: 10px;
   padding: 40px;
+  width: fit-content;
   
 }
 

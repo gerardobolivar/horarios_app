@@ -13,7 +13,6 @@ export function handleModalidadChange(event: any, setIsVirtual: any, setSearchPa
   const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
   diaForm.value = diaFilters
   
-  
   if (modalidad === "VIRTUAL") {
     const xpath = "//option[text()='Aula 999']";
     const selectorAula = document.getElementById("aulaHorario");

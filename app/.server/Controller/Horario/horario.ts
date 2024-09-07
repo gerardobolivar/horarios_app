@@ -40,7 +40,6 @@ function generateTimeWhiteList(lockedTimes: LockTime[], dia: string, aula: numbe
     })
   }
   
-  console.log(filteredTimes);
   
   
   return filteredTimes;
