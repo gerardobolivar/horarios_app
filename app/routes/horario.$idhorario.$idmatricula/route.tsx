@@ -1,16 +1,18 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
+import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { createMatricula, getLockedTimesByHorarioDay, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
-import { LockTime, SCHEDULE_ERRORS, scheduleFilters } from "~/types/horarioTypes";
+import { LockTime, SCHEDULE_ERRORS, scheduleFilters, Time_span, TimeSpan, TimeSpans } from "~/types/horarioTypes";
 import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
-import { TIMES } from "../horario.$idhorario/reversedTimes";
+import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
 import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
+import { getTimeSpanByMatricula, getTimeSpanSByHorarioDia } from "prisma/models/timeSpanModel";
+import rstyles from "./styles.css?url"
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,16 +30,20 @@ export default function HorarioModal() {
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
+  const [timeSpanList, setTimeSpanList] = useState<TimeSpan[]>(!!data.matriculaTimeSpans ? data.matriculaTimeSpans : []);
+  const [warningShown, setWarningShown] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const submit = useSubmit();
 
   let filters = {
     "planEstudios": "",
-    "dia":"",
-    "ubicacion":"",
-    "show_virtual":""
+    "dia": "",
+    "ubicacion": "",
+    "show_virtual": ""
   }
 
   try {
-    filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value; 
+    filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value;
     filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
     filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value;
     filters.show_virtual = (document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
@@ -84,7 +90,6 @@ export default function HorarioModal() {
     const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
     const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
     const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
-    
     const whiteListKeys = Object.keys(data.time_white_list);
     const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia, aula, whiteListKeys);
 
@@ -110,9 +115,22 @@ export default function HorarioModal() {
     return approvedValidation;
   }
 
-  async function checkForErrors(event: any) {
+  async function checkForErrors(event: React.FormEvent<HTMLFormElement>) {
     if (areThereErrors) {
       event.preventDefault();
+      throw "INVALID_FORM_STATE"
+    } else {
+      event.preventDefault();
+
+
+      if (formRef.current) {
+        const formData = new FormData(formRef.current);
+        formData.append("time_spans", JSON.stringify(timeSpanList));
+        const submitter = (event.nativeEvent as SubmitEvent).submitter
+        const intent = (submitter as HTMLButtonElement).value
+        formData.append("intent", intent);
+        submit(formData, { method: "POST" });
+      }
     }
   }
 
@@ -133,6 +151,38 @@ export default function HorarioModal() {
     params.set("dia", `${selectedDay}`);
     params.set("aula", aula)
     setSearchParams(params)
+  }
+
+  function addTimeSpanToList(timeSpans: TimeSpan[], timeSpan: TimeSpan) {
+    const timeSPanObject: TimeSpan = {
+      matricula_id: timeSpan.matricula_id,
+      aula_id: timeSpan.aula_id,
+      dia: timeSpan.dia,
+      hora_inicio: timeSpan.hora_inicio,
+      hora_final: ++timeSpan.hora_final
+    }
+    const oldList = [...timeSpans];
+    oldList.push(timeSPanObject);
+    setTimeSpanList(oldList);
+  }
+
+  function handleTimeSpanAdd() {
+    const timeSpan: TimeSpan = {
+      aula_id: Number((document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value),
+      matricula_id: data.matricula?.matricula_id as number,
+      hora_inicio: Number((document.getElementById("horaInicio") as HTMLSelectElement).value),
+      hora_final: Number((document.getElementById("horaFin") as HTMLSelectElement).value),
+      dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value
+    }
+    addTimeSpanToList(timeSpanList, timeSpan);
+  }
+
+  function handleModalidadClick(event: FormEvent) {
+    if (!warningShown && timeSpanList.length > 0) {
+      setWarningShown(true);
+      event.preventDefault()
+      alert("Your time spans will be deleted");
+    }
   }
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
@@ -174,6 +224,18 @@ export default function HorarioModal() {
     </option>
   })
 
+  let timeSpanListRender = timeSpanList.map(t => {
+    const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
+    const formattedClassroom: string = Number(aula?.identificador) < 10 ? `0${aula?.identificador}` : `${aula?.identificador}`;
+    return <tr key={t.dia + t.aula_id + t.hora_inicio}>
+      <td>{`${DIAS[t.dia]}`}</td>
+      <td>{formattedClassroom}</td>
+      <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final-1].split("-")[1]}`}</td>
+    </tr>
+  })
+
+
+
   const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
 
   return <div className="overlay_styles" >
@@ -185,136 +247,177 @@ export default function HorarioModal() {
           autoComplete="off"
           name="form"
           onSubmit={checkForErrors}
+          ref={formRef}
           preventScrollReset>
           <input hidden={true} defaultValue={createSearchQuery(filters)} name="filters"></input>
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
-                <span>
-                  <label htmlFor="cursoHorario" >Curso:</label>
-                  <select
-                    name="cursoHorario"
-                    id="cursoHorario"
-                    required={true}
-                    defaultValue={matricula?.curso_id} >
-                    <option value={""}></option>
-                    {cursosLista}
-                  </select>
-                </span>
+                <div className="grid-container">
 
-                <span>
-                  <label htmlFor="profesorHorario" >Profesor:</label>
-                  <select
-                    name="profesorHorario"
-                    id="profesorHorario"
-                    required={true}
-                    defaultValue={matricula?.profesor_id} >
-                    <option value={""}></option>
-                    {profesoresLista}
-                  </select>
-                </span>
+                  <div className="section">
+                    <span>
+                      <label htmlFor="cursoHorario" >Curso:</label>
+                      <select
+                        name="cursoHorario"
+                        id="cursoHorario"
+                        required={true}
+                        defaultValue={matricula?.group?.curso.id_curso} >
+                        <option value={""}></option>
+                        {cursosLista}
+                      </select>
+                    </span>
 
-                <span>
-                  <label htmlFor="diaHorario" >Día:</label>
-                  <select
-                    name="diaHorario"
-                    id="diaHorario"
-                    required={true}
-                    onChange={handleDiaChange}
-                    hidden={!isNewMatricula}
-                    defaultValue={matricula?.dia}>
-                    <option value={""}></option>
-                    <option value={"LUNES"}>Lunes</option>
-                    <option value={"MARTES"}>Martes</option>
-                    <option value={"MIERCOLES"}>Miércoles</option>
-                    <option value={"JUEVES"}>Jueves</option>
-                    <option value={"VIERNES"}>Viernes</option>
-                    <option value={"SABADO"}>Sábado</option>
-                  </select>
-                  <h6 hidden={isNewMatricula}>{matricula ? matricula.dia : null}</h6>
-                </span>
-                <span>
-                  <label htmlFor="modalidadHorario" >Modalidad:</label>
-                  <select
-                    name="modalidadHorario"
-                    id="modalidadHorario"
-                    required={true}
-                    hidden={!isNewMatricula}
-                    onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
-                    defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
-                    <option value=""></option>
-                    <option value={"PRESENCIAL"}>PRESENCIAL</option>
-                    <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
-                    <option value={"BIMODAL"}>BIMODAL</option>
-                    <option value={"ALTOVIRTUAL"}>ALTO VIRTUAL</option>
-                    <option value={"VIRTUAL"}>VIRTUAL</option>
-                  </select>
-                  <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
-                </span>
-                <span hidden={isVirtual}>
-                  <label htmlFor="aulaHorario" >Aula:</label>
-                  <select
-                    name="aulaHorario"
-                    id="aulaHorario"
-                    required={true}
-                    hidden={!isNewMatricula}
-                    onChange={handleAulaChange}
-                    defaultValue={matricula ? matricula?.aula_id : aula} >
-                    <option value={""}></option>
-                    {aulasLista}
-                  </select>
-                  <h6 hidden={isNewMatricula}>{matricula ?
-                    `${matricula.aula_id < 10 ? "Aula 0" + matricula.aula_id : matricula.aula_id === 999 ? "Virtual" : "Aula " + matricula.aula_id}`
-                    : null}</h6>
-                </span>
-                <span>
-                  <label htmlFor="horaInicio" >Hora de inicio:</label>
-                  <select
-                    name="horaInicio"
-                    id="horaInicio"
-                    required={true}
-                    onClick={validateTimeSpans}
-                    hidden={!isNewMatricula}
-                    defaultValue={matricula ? matricula?.hora_inicio : timePicked}>
-                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
-                    {timeList}
-                  </select>
-                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_inicio] : null}</h6>
+                    <span>
+                      <label htmlFor="profesorHorario" >Profesor:</label>
+                      <select
+                        name="profesorHorario"
+                        id="profesorHorario"
+                        required={true}
+                        defaultValue={matricula?.group?.profesor_id} >
+                        <option value={""}></option>
+                        {profesoresLista}
+                      </select>
+                    </span>
 
-                </span>
+                    <span>
+                      <label htmlFor="modalidadHorario" >Modalidad:</label>
+                      <select
+                        name="modalidadHorario"
+                        id="modalidadHorario"
+                        required={true}
+                        hidden={!isNewMatricula}
+                        onMouseDown={handleModalidadClick}
+                        onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
+                        defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
+                        <option value=""></option>
+                        <option value={"PRESENCIAL"}>PRESENCIAL</option>
+                        <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
+                        <option value={"BIMODAL"}>BIMODAL</option>
+                        <option value={"ALTOVIRTUAL"}>ALTO VIRTUAL</option>
+                        <option value={"VIRTUAL"}>VIRTUAL</option>
+                      </select>
+                      <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
+                    </span>
 
-                <span>
-                  <label htmlFor="horaFin" >Hora de finalización:</label>
-                  <select
-                    name="horaFin"
-                    id="horaFin"
-                    required={true}
-                    onClick={validateTimeSpans}
-                    hidden={!isNewMatricula}
-                    defaultValue={(matricula ? matricula.hora_final - 1 : undefined)} >
-                    <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
-                    {timeList}
-                  </select>
-                  <h6 hidden={isNewMatricula}>{matricula ? data.times[matricula.hora_final - 1] : null}</h6>
-                </span>
-                <span>
-                  <label htmlFor="movilHorario" >Laboratorio móvil</label>
-                  <select
-                    name="movilHorario"
-                    id="movilHorario"
-                    defaultValue={matricula?.laboratorio_movil_id ? matricula.laboratorio_movil_id : ""} >
-                    <option value={"0"}>No</option>
-                    {movilesLista}
-                  </select>
-                </span>
-                <div className="errorBlock" style={{ color: "red" }}>
-                  {renderErrors}
+                    <span>
+                      <label htmlFor="movilHorario" >Laboratorio móvil</label>
+                      <select
+                        name="movilHorario"
+                        id="movilHorario"
+                        defaultValue={matricula?.laboratorio_movil ? matricula.laboratorio_movil?.id_lab_mov : ""} >
+                        <option value={"0"}>No</option>
+                        {movilesLista}
+                      </select>
+                    </span>
+
+                    <span>
+                      <label htmlFor="grupo">Grupo</label>
+                      <input
+                        id="schedule_group_id"
+                        title="Grupo"
+                        type="number"
+                        name="grupo"
+                        placeholder=""
+                        className=""
+                        required={true}
+                        readOnly={!!matricula?.group}
+                        min="1"
+                        max="100"
+                        defaultValue={matricula?.group ? matricula?.group?.group_id : ""}
+                      />
+                    </span>
+
+                    <span hidden={isNewMatricula}>
+                      <p><strong>Modificado:</strong>
+                        {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
+                      </p>
+                    </span>
+                  </div>
+
+                  <div className="section">
+                    <span>
+                      <label htmlFor="diaHorario" >Día:</label>
+                      <select
+                        name="diaHorario"
+                        id="diaHorario"
+                        required={true}
+                        onChange={handleDiaChange}
+                        hidden={!isNewMatricula}>
+                        <option value={""}></option>
+                        <option value={"LUNES"}>Lunes</option>
+                        <option value={"MARTES"}>Martes</option>
+                        <option value={"MIERCOLES"}>Miércoles</option>
+                        <option value={"JUEVES"}>Jueves</option>
+                        <option value={"VIERNES"}>Viernes</option>
+                        <option value={"SABADO"}>Sábado</option>
+                      </select>
+                    </span>
+                    <span hidden={isVirtual}>
+                      <label htmlFor="aulaHorario" >Aula:</label>
+                      <select
+                        name="aulaHorario"
+                        id="aulaHorario"
+                        required={true}
+                        hidden={!isNewMatricula}
+                        onChange={handleAulaChange}
+                        defaultValue={aula} >
+                        <option value={""}></option>
+                        {aulasLista}
+                      </select>
+
+                    </span>
+                    <span>
+                      <label htmlFor="horaInicio" >Hora de inicio:</label>
+                      <select
+                        name="horaInicio"
+                        id="horaInicio"
+                        required={true}
+                        onClick={validateTimeSpans}
+                        hidden={!isNewMatricula}>
+                        <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
+                        {timeList}
+                      </select>
+                    </span>
+
+                    <span>
+                      <label htmlFor="horaFin" >Hora de finalización:</label>
+                      <select
+                        name="horaFin"
+                        id="horaFin"
+                        required={true}
+                        onClick={validateTimeSpans}
+                        hidden={!isNewMatricula}>
+                        <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
+                        {timeList}
+                      </select>
+                    </span>
+                    <span>
+                      <button
+                        type="button"
+                        onClick={handleTimeSpanAdd}
+                        className="mainButton">+</button>
+                    </span>
+                    <span>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Día</th>
+                            <th>Aula</th>
+                            <th>Franja horaria</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {timeSpanListRender}
+                        </tbody>
+                      </table>
+                    </span>
+                    <div className="errorBlock" style={{ color: "red" }}>
+                      {renderErrors}
+                    </div>
+
+                  </div>
                 </div>
-                <span hidden={isNewMatricula}>
-                  <p><strong>Modificado:</strong>
-                    {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
-                  </p>
-                </span>
               </div>
             </div>
           </div>
@@ -357,29 +460,38 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horaInicio = Number(formData.get("horaInicio"));
   const horaFin = Number(formData.get("horaFin")) + 1;
   const modalidad = (formData.get("modalidadHorario")) as string;
-  const movilHorario = Number(formData.get("movilHorario")) === 0 ? null : Number(formData.get("movilHorario"));
-  const intent = formData.get("intent");
   const aula = Number(formData.get("aulaHorario"));
+  const timeSpans = formData.get("time_spans") as string;
+  const mobileLab = Number(formData.get("movilHorario")) === 0 ? null : Number(formData.get("movilHorario"));
+  const intent = formData.get("intent");
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula);
   const searchQueries = formData.get("filters");
 
+
   if (intent === "create") {
     try {
-      return await createMatricula(horaInicio, horaFin, dia, curso, aula, horarioId, profesor, modalidad, movilHorario).then(() => { return redirect(`/horario/${horarioId}/${searchQueries}`) })
+      const timeSpansJson = JSON.parse(timeSpans)
+      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, mobileLab).then(() => {
+        return redirect(`/horario/${horarioId}/${searchQueries}`)
+      }).catch(e => {
+        console.error(e);
+        return [];
+      })
     } catch (error) {
       console.error(error);
-      return redirect("/error")      
+      return redirect("/error")
     }
 
 
   } else if (intent === "update") {
-    await updateMatricula(matriculaID, curso, horarioId, profesor, movilHorario);
+    //await updateMatricula(matriculaID, curso, horarioId, profesor, mobileLab);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
     const matricula = await removeMatricula(matriculaID);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   }
+  return null;
 }
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
@@ -393,24 +505,29 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const dia = url.searchParams.get("dia") || "LUNES";
   const aula = Number(url.searchParams.get("aula"));
-  
+
+  const matriculaTimeSpans: TimeSpan[] = !!matriculaId ? await getTimeSpanByMatricula(matriculaId).then(r => r).catch(e => {
+    console.error(e);
+    return [];
+  }) : []
+
   let time_white_list;
-  if(aula !== 0){
+  if (aula !== 0) {
     time_white_list = await getAula(aula).then(
       async (result) => {
         if (result?.identificador === 999) {
           return generateTimeWhiteList([], dia, aula);
         }
         else {
-          const lockedTimesByHorario: LockTime[] = await getLockedTimesByHorarioDay(horarioId, dia);
+          const lockedTimesByHorario: LockTime[] = await getTimeSpanSByHorarioDia(horarioId, dia);
           return generateTimeWhiteList(lockedTimesByHorario, dia, aula);
         }
       },
       (e) => {
         //console.log(e);
-       })
+      })
   }
-  time_white_list = time_white_list === undefined ? {} : time_white_list  
+  time_white_list = time_white_list === undefined ? {} : time_white_list
 
   return json({
     horarioId: horarioId,
@@ -419,8 +536,13 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     listaProfesores: listaProfesores,
     listaAulas: listaAulas,
     listaMoviles: listaMoviles,
+    matriculaTimeSpans: matriculaTimeSpans,
     times: TIMESLOTS,
     time_white_list: time_white_list,
     matricula: isNewMatricula ? null : await getMatriculaById(matriculaId)
   })
 }
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: rstyles },
+];

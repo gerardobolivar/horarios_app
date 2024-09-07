@@ -47,4 +47,17 @@ const TIMES: TIME_SLOTS = {
   22: "22:00-22:50"
 };
 
-export {TIMESLOTS_REVERSE, TIMES};
+interface DIAS_ {
+  [key:string] : string
+}
+
+const DIAS:DIAS_ ={
+   "LUNES": "LUNES",
+   "MARTES": "MARTES",
+   "MIERCOLES": "MIÉRCOLES",
+   "JUEVES": "JUEVES",
+   "VIERNES": "VIERNES",
+   "SABADO": "SÁBADO"
+}
+
+export {TIMESLOTS_REVERSE, TIMES, DIAS};

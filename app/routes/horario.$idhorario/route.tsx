@@ -11,6 +11,7 @@ import horarioStyles from './horarioStyles.css?url';
 import { getPlanes } from "prisma/models/planEstudioModel";
 import { Matricula, Planes } from "~/types/horarioTypes";
 import VirtualCourses from "./VirtualCourses";
+import { getTimesSpanBySchedule } from "prisma/models/timeSpanModel";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -18,30 +19,29 @@ export default function () {
   const timeSlots: string[] = Object.values(data.timeSlots);
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
   const matriculas = data.matriculas;
-  const showVirtual = data.cursosVirtuales.length > 0 ? true : false;
   const [searchParams, setSearchParams] = useSearchParams();
+  const showVirtual = searchParams.get("showvirtual") === "true" ? true: false;
   const location = useLocation();
   const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
-  
-
+  const scheduleTimeSpans = data.scheduleTimeSpans;
   const listaClassroom = data.aulas.map((classroom, index) => {
     return classroom.identificador !== 999 ? <ClassroomColumn
       nombreAula={classroom.identificador}
       timeSlots={timeSlots}
       index={index}
-      matriculas={matriculas.filter(m => m.aula.identificador === classroom.identificador)}
+      scheduleTimeSpans={scheduleTimeSpans.filter(s=>s?.aula.identificador === classroom.identificador)} //matriculas.filter(m => m.aula.identificador === classroom.identificador)
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
       key={classroom.identificador}></ClassroomColumn> : null
   })
 
   const listaClassroomHidden = data.aulas.map((classroom, index) => {
-    const mtr = matriculas.filter(m => m.aula.identificador === classroom.identificador);
-    return classroom.identificador !== 999 && mtr.length >= 1 ? <ClassroomColumn
+    const sch = scheduleTimeSpans.filter(s=>s?.aula.identificador === classroom.identificador); //matriculas.filter(m => m.aula.identificador === classroom.identificador)
+    return classroom.identificador !== 999 && sch.length >= 1 ? <ClassroomColumn
       nombreAula={classroom.identificador}
       timeSlots={timeSlots}
       index={index}
-      matriculas={mtr}
+      scheduleTimeSpans={sch}
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
       key={classroom.identificador}></ClassroomColumn> : null
@@ -92,9 +92,18 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const timesTitle = TIMES_TITLE;
   const planes: Planes = await getPlanes();
   const showVirtual: Boolean = url.searchParams.get("showvirtual") === "true" ? true : false;
-  const cursosVirtuales: Matricula[] = showVirtual ? await getVirtualMatriculas(idHorario) : []
-  let matriculas: Matricula[];
-  matriculas = await filterMatriculas(idHorario, dia, id_plan_estudio, ubicacion)
+  const cursosVirtuales: Matricula[] = await getVirtualMatriculas(idHorario);
+  
+  const matriculas:Matricula[] = await filterMatriculas(idHorario, dia, id_plan_estudio, ubicacion).catch(e=>{
+    console.error(e);
+    return [];
+  });
+  
+  const scheduleTimeSpans = await getTimesSpanBySchedule(idHorario, dia, id_plan_estudio, ubicacion).catch(e=>{
+    console.error(e);
+    return [];
+  });
+
 
   return json({
     idHorario: idHorario,
@@ -103,7 +112,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     aulas: aulas,
     matriculas: matriculas,
     cursosVirtuales: cursosVirtuales,
-    planes: planes
+    planes: planes,
+    scheduleTimeSpans: scheduleTimeSpans
   });
 }
 

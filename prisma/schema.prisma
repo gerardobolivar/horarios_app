@@ -45,9 +45,9 @@ model Curso{
   sigla String @db.VarChar(10)
   tipoCurso String @db.VarChar(2)
   ubicacion String @db.Char(1) @default("1")
-  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+  groups Group[]
 }
 
 model Aula{
@@ -56,9 +56,9 @@ model Aula{
   cupo Int
   detalle String @db.VarChar(100)
   edificio String @db.VarChar(45)
-  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+  time_spans Time_span[]
 }
 
 model Profesor{
@@ -68,9 +68,9 @@ model Profesor{
   segundo_apellido String @db.VarChar(45)
   email String @db.VarChar(320)
   lab_mov LaboratorioMovil?
-  horarios Matricula[]
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+  groups Group[]
 }
 
 model LaboratorioMovil{
@@ -95,23 +95,16 @@ model Hash{
 
 model Matricula{
   matricula_id Int @id @default(autoincrement())
-  curso Curso @relation(fields: [curso_id], references: [id_curso])
-  aula Aula @relation(fields: [aula_id], references: [id_aula])
   laboratorio_movil LaboratorioMovil? @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
   horario Horario @relation(fields: [horario_id],references: [horario_id])
-  profesor Profesor @relation(fields: [profesor_id],references: [id_profesor])
-  hora_inicio Int
-  hora_final Int
-  dia String
   modalidad String @default("PRESENCIAL")
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
-  curso_id Int
-  aula_id Int
-  profesor_id Int
   laboratorio_movil_id Int?
   horario_id Int
+  group Group?
+  time_spans Time_span[]
 }
 
 model Horario{
@@ -138,4 +131,32 @@ model ActiveCycle{
   active_cycle_id Int @id @default(1)
   ciclo Ciclo? @relation(fields: [ciclo_id],references: [ciclo_id])
   ciclo_id Int? @unique
+}
+
+model Group{
+  group_id Int @id @default(autoincrement())
+  curso Curso @relation(fields: [course_id],references: [id_curso])
+  matricula Matricula @relation(fields: [matricula_id],references: [matricula_id])
+  profesor Profesor @relation(fields: [profesor_id],references: [id_profesor])
+  course_id Int
+  matricula_id Int @unique
+  profesor_id Int
+  Ahours Int
+  completed Boolean
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
+  @@unique([group_id,course_id])
+}
+
+model Time_span{
+  time_span_id Int @id @default(autoincrement())
+  matricula Matricula @relation(fields: [matricula_id],references: [matricula_id])
+  aula Aula @relation(fields: [aula_id],references: [id_aula])
+  matricula_id Int
+  aula_id Int
+  hora_inicio Int
+  hora_final Int
+  dia String
+  fecha_creado DateTime @default(now())
+  fecha_modificado DateTime @updatedAt
 }

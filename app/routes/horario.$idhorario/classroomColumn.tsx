@@ -1,10 +1,10 @@
-import { Matricula } from "~/types/horarioTypes";
+import { Matricula, ScheduleTimeSpans } from "~/types/horarioTypes";
 import CourseCell from "./courseCell";
 import { Link, useLocation, useSearchParams } from "@remix-run/react";
 import { TIMESLOTS_REVERSE } from "./reversedTimes";
 
 type Props = {
-  matriculas: Matricula[],
+  scheduleTimeSpans: any,
   nombreAula: number,
   timeSlots: string[],
   horarioId: number,
@@ -12,17 +12,17 @@ type Props = {
   index: number
 }
 
-const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, index, horarioId, aula_id }) => {
+const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeSlots, index, horarioId, aula_id }) => {
   let isCellMerged: boolean = false;
   let cont: number = 1;
-
+  
   return <div key={nombreAula + index} className="classroom-column">
     <h3 >{`${nombreAula < 10 ? "Aula 0" + nombreAula:  nombreAula === 999 ? "Virtual" : "Aula "+nombreAula}`}</h3>
     {
       timeSlots.map((slot) => {
-        const matricula = matriculas.find(m => m.hora_inicio <= TIMESLOTS_REVERSE[slot] && m.hora_final > TIMESLOTS_REVERSE[slot]);
+        const matricula = scheduleTimeSpans.find((m:any) => m.hora_inicio <= TIMESLOTS_REVERSE[slot] && m.hora_final > TIMESLOTS_REVERSE[slot]);
         const numberToMerge = matricula ? hoursTakenByCourse(matricula) : 1;
-
+        
         if (matricula && numberToMerge > 1) {
           if (!isCellMerged && cont < numberToMerge) {
             isCellMerged = true;
@@ -33,8 +33,8 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
                 style={{ height: `${hoursTakenByCourse(matricula) * 50}px` }}>
                 <CourseCell
                   horarioId={horarioId}
-                  matriculaId={matricula.matricula_id}
-                  classN="time-slot" curso={matricula.curso}
+                  matriculaId={matricula.matricula.matricula_id}
+                  classN="time-slot" curso={matricula.matricula.group.curso}
                   hiddenCell={false}>
                 </CourseCell></div>:
               <div key={slot + nombreAula} className="empty-slot"></div>
@@ -45,10 +45,10 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
             return matricula ? 
             <CourseCell 
               horarioId={horarioId}
-              matriculaId={matricula.matricula_id}
+              matriculaId={matricula.matricula.matricula_id}
               classN={""}
               key={slot + nombreAula}
-              curso={matricula.curso}
+              curso={matricula.matricula.group.curso}
               hiddenCell={true}></CourseCell>:
             <div key={slot + nombreAula} className="empty-slot"></div>
           }
@@ -59,11 +59,11 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
           return matricula ?
           <CourseCell
             horarioId={horarioId}
-            matriculaId={matricula.matricula_id}
+            matriculaId={matricula.matricula.matricula_id}
             hiddenCell={false}
             classN={"single-slot"}
             key={slot}
-            curso={matricula.curso}>
+            curso={matricula.matricula.group.curso}>
           </CourseCell> :
             <Link
               key={slot+aula_id}
@@ -78,7 +78,7 @@ const ClassroomColumn: React.FC<Props> = ({ matriculas, nombreAula, timeSlots, i
   </div>
 }
 
-function hoursTakenByCourse(matricula: Matricula) {
+function hoursTakenByCourse(matricula: any) {
   return matricula.hora_final - matricula.hora_inicio;
 }
 
