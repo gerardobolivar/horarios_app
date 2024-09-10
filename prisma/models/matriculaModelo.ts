@@ -218,10 +218,38 @@ export const updateMatricula = async (matricula_id: number,
   })
 }
 
-export const removeMatricula = async (matricula_id: number) => {
+export const removeMatriculaOld = async (matricula_id: number) => {
   return await prisma.matricula.delete({
     where: { matricula_id: matricula_id }
+  }).catch(e => {
+    console.error(e);
   })
+}
+
+export const removeMatricula = async (matricula_id: number) => {
+  return prisma.$transaction(async (tx) => {
+    await tx.time_span.deleteMany({
+      where: {
+        matricula_id: matricula_id
+      }
+    }).catch(e => {
+      console.error(e);
+    })
+
+    await tx.group.delete({
+      where: { matricula_id: matricula_id }
+    }).catch(e => {
+      console.error(e);
+    })
+
+    await tx.matricula.delete({
+      where: { matricula_id: matricula_id }
+    }).catch(e => {
+      console.error(e);
+    })
+
+  })
+
 }
 
 export const getLockedTimesByHorarioDay = async (horario_id: number, dia?: string) => {

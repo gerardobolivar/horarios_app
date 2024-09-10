@@ -341,7 +341,6 @@ export default function HorarioModal() {
                       <select
                         name="diaHorario"
                         id="diaHorario"
-                        required={true}
                         onChange={handleDiaChange}
                         hidden={!isNewMatricula}>
                         <option value={""}></option>
@@ -358,7 +357,6 @@ export default function HorarioModal() {
                       <select
                         name="aulaHorario"
                         id="aulaHorario"
-                        required={true}
                         hidden={!isNewMatricula}
                         onChange={handleAulaChange}
                         defaultValue={aula} >
@@ -372,7 +370,6 @@ export default function HorarioModal() {
                       <select
                         name="horaInicio"
                         id="horaInicio"
-                        required={true}
                         onClick={validateTimeSpans}
                         hidden={!isNewMatricula}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
@@ -385,7 +382,6 @@ export default function HorarioModal() {
                       <select
                         name="horaFin"
                         id="horaFin"
-                        required={true}
                         onClick={validateTimeSpans}
                         hidden={!isNewMatricula}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
@@ -488,7 +484,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
     //await updateMatricula(matriculaID, curso, horarioId, profesor, mobileLab);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
-    const matricula = await removeMatricula(matriculaID);
+    const matricula = await removeMatricula(matriculaID).catch(e=>{
+      console.error(e);
+    });
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   }
   return null;
