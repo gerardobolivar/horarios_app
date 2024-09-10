@@ -185,6 +185,16 @@ export default function HorarioModal() {
     }
   }
 
+  function handleRemoveTimeSpan(event: React.FormEvent<HTMLButtonElement>){
+    const idBtn = event.currentTarget.id;
+    if(!!idBtn){
+      const newList = timeSpanList.filter(t=> t.dia+t.aula_id+t.hora_inicio !== idBtn)
+      setTimeSpanList(newList);
+    }else{
+      throw new Error(SCHEDULE_ERRORS["NULL_ID_ELEMENT"]);
+    }
+  }
+
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}`
   }
@@ -230,7 +240,15 @@ export default function HorarioModal() {
     return <tr key={t.dia + t.aula_id + t.hora_inicio}>
       <td>{`${DIAS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
-      <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final-1].split("-")[1]}`}</td>
+      <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
+      <td>
+        <button
+          id={t.dia + t.aula_id + t.hora_inicio}
+          onClick={handleRemoveTimeSpan}
+          type="button">
+          <i className="bi bi-trash-fill"></i>
+        </button>
+      </td>
     </tr>
   })
 
@@ -401,6 +419,7 @@ export default function HorarioModal() {
                             <th>Día</th>
                             <th>Aula</th>
                             <th>Franja horaria</th>
+                            <th>Remove</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -408,15 +427,14 @@ export default function HorarioModal() {
                         </tbody>
                       </table>
                     </span>
-                    <div className="errorBlock" style={{ color: "red" }}>
-                      {renderErrors}
-                    </div>
-
                   </div>
                 </div>
               </div>
-            </div>
+            <div className="errorBlock" style={{ color: "red" }}>
+                      {renderErrors}
+                    </div>
           </div>
+            </div>
           <div className="course_modal_btns">
             <button
               id="m_course_create"
@@ -463,7 +481,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula);
   const searchQueries = formData.get("filters");
-  const grupo =  Number(formData.get("grupo"))
+  const grupo = Number(formData.get("grupo"))
 
 
   if (intent === "create") {
@@ -485,7 +503,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     //await updateMatricula(matriculaID, curso, horarioId, profesor, mobileLab);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
-    const matricula = await removeMatricula(matriculaID).catch(e=>{
+    const matricula = await removeMatricula(matriculaID).catch(e => {
       console.error(e);
     });
     return redirect(`/horario/${horarioId}/${searchQueries}`)

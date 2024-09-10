@@ -19,3 +19,7 @@
 .grid-container > div:last-child select{
   width: 10vw;
 }
+
+.errorBlock{
+  position: absolute;
+}
