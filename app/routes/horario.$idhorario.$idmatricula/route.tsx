@@ -463,12 +463,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula);
   const searchQueries = formData.get("filters");
+  const grupo =  Number(formData.get("grupo"))
 
 
   if (intent === "create") {
     try {
       const timeSpansJson = JSON.parse(timeSpans)
-      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, mobileLab).then(() => {
+      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, mobileLab).then(() => {
         return redirect(`/horario/${horarioId}/${searchQueries}`)
       }).catch(e => {
         console.error(e);

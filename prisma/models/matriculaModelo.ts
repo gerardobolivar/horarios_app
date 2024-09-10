@@ -138,6 +138,7 @@ export const createMatricula = async (
   horario_id: number,
   modalidad: string,
   profesor_id: number,
+  grupo: number,
   laboratorio_movil_id?: number | null,
 ) => {
   return prisma.$transaction(async (tx) => {
@@ -184,6 +185,7 @@ export const createMatricula = async (
         let completed = !Ahours
         const group = await tx.group.create({
           data: {
+            group_id: grupo,
             matricula_id: matricula.matricula_id,
             course_id: course_id,
             Ahours: Ahours,
@@ -192,6 +194,12 @@ export const createMatricula = async (
           }
         }).then((r) => {
           return r;
+        }).catch(e=>{
+          if(e.code === "P2002"){
+            throw `GroupID ${grupo} already exists`
+          }else{
+            throw e
+          }
         })
       } else {
         console.error("ILLEGAL_TIME_ALLOCATION");
