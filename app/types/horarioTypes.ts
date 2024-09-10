@@ -32,7 +32,8 @@ interface ScheduleTimeSpans{
 }
 
 interface Group_{
-  group_id: number;
+  group_id: number,
+  groupNumber: number,
   // course_id: number;
   curso: Curso
   // matricula_id: number;

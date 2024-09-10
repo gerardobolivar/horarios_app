@@ -77,6 +77,7 @@ export const filterMatriculas = async (horario_id: number, dia: string, id_plan_
       },
       group: {
         select: {
+          groupNumber:true,
           group_id: true,
           curso: true
         }
@@ -105,6 +106,7 @@ export const getVirtualMatriculas = async (horario_id: number) => {
       group: {
         select: {
           group_id: true,
+          groupNumber: true,
           curso: true,
         }
       },
@@ -185,7 +187,7 @@ export const createMatricula = async (
         let completed = !Ahours
         const group = await tx.group.create({
           data: {
-            group_id: grupo,
+            groupNumber: grupo,
             matricula_id: matricula.matricula_id,
             course_id: course_id,
             Ahours: Ahours,
@@ -196,7 +198,7 @@ export const createMatricula = async (
           return r;
         }).catch(e=>{
           if(e.code === "P2002"){
-            throw `GroupID ${grupo} already exists`
+            throw `The course ${course?.nombre} with group number:${grupo} already exists!`
           }else{
             throw e
           }

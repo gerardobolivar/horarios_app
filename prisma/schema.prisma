@@ -138,6 +138,7 @@ model Group{
   curso Curso @relation(fields: [course_id],references: [id_curso])
   matricula Matricula @relation(fields: [matricula_id],references: [matricula_id])
   profesor Profesor @relation(fields: [profesor_id],references: [id_profesor])
+  groupNumber Int
   course_id Int
   matricula_id Int @unique
   profesor_id Int
@@ -145,7 +146,7 @@ model Group{
   completed Boolean
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
-  @@unique([group_id,course_id])
+  @@unique([groupNumber,course_id])
 }
 
 model Time_span{

@@ -342,7 +342,7 @@ export default function HorarioModal() {
                         readOnly={!!matricula?.group}
                         min="1"
                         max="100"
-                        defaultValue={matricula?.group ? matricula?.group?.group_id : ""}
+                        defaultValue={matricula?.group ? matricula?.group?.groupNumber : ""}
                       />
                     </span>
 
