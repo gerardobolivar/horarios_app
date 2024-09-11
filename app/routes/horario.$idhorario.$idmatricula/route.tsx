@@ -1,12 +1,12 @@
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { createMatricula, getLockedTimesByHorarioDay, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
+import { createMatricula, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { getCourses } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
-import { LockTime, SCHEDULE_ERRORS, scheduleFilters, Time_span, TimeSpan, TimeSpans } from "~/types/horarioTypes";
+import { LockTime, SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
 import { TIMESLOTS } from "~/.server/allowedTimes";
 import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
@@ -156,7 +156,7 @@ export default function HorarioModal() {
   function addTimeSpanToList(timeSpans: TimeSpan[], timeSpan: TimeSpan) {
     const timeSPanObject: TimeSpan = {
       matricula_id: timeSpan.matricula_id,
-      aula_id: timeSpan.aula_id,
+      aula_id: isVirtual && !isNewMatricula ? Number((document.querySelector('option[hidden]') as HTMLOptionElement).value) : timeSpan.aula_id,
       dia: timeSpan.dia,
       hora_inicio: timeSpan.hora_inicio,
       hora_final: ++timeSpan.hora_final
@@ -241,7 +241,7 @@ export default function HorarioModal() {
       <td>{`${DIAS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
       <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
-      <td>
+      <td hidden={!!matricula?.group}>
         <button
           id={t.dia + t.aula_id + t.hora_inicio}
           onClick={handleRemoveTimeSpan}
@@ -354,13 +354,14 @@ export default function HorarioModal() {
                   </div>
 
                   <div className="section">
-                    <span>
+                    <p>{isNewMatricula ?  "": matricula?.group?.completed ? null:`Horas restantes: ${matricula?.group?.Ahours}`}</p>
+                    <span hidden={matricula?.group?.completed}>
                       <label htmlFor="diaHorario" >Día:</label>
                       <select
                         name="diaHorario"
                         id="diaHorario"
                         onChange={handleDiaChange}
-                        hidden={!isNewMatricula}>
+                        hidden={matricula?.group?.completed}>
                         <option value={""}></option>
                         <option value={"LUNES"}>Lunes</option>
                         <option value={"MARTES"}>Martes</option>
@@ -370,12 +371,12 @@ export default function HorarioModal() {
                         <option value={"SABADO"}>Sábado</option>
                       </select>
                     </span>
-                    <span hidden={isVirtual}>
+                    <span hidden={isVirtual || matricula?.group?.completed}  >
                       <label htmlFor="aulaHorario" >Aula:</label>
                       <select
                         name="aulaHorario"
                         id="aulaHorario"
-                        hidden={!isNewMatricula}
+                        hidden={matricula?.group?.completed}
                         onChange={handleAulaChange}
                         defaultValue={aula} >
                         <option value={""}></option>
@@ -383,30 +384,30 @@ export default function HorarioModal() {
                       </select>
 
                     </span>
-                    <span>
+                    <span hidden={matricula?.group?.completed}>
                       <label htmlFor="horaInicio" >Hora de inicio:</label>
                       <select
                         name="horaInicio"
                         id="horaInicio"
                         onClick={validateTimeSpans}
-                        hidden={!isNewMatricula}>
+                        hidden={matricula?.group?.completed}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                         {timeList}
                       </select>
                     </span>
 
-                    <span>
+                    <span hidden={matricula?.group?.completed}>
                       <label htmlFor="horaFin" >Hora de finalización:</label>
                       <select
                         name="horaFin"
                         id="horaFin"
                         onClick={validateTimeSpans}
-                        hidden={!isNewMatricula}>
+                        hidden={matricula?.group?.completed}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                         {timeList}
                       </select>
                     </span>
-                    <span>
+                    <span hidden={!!matricula?.group?.completed}>
                       <button
                         type="button"
                         onClick={handleTimeSpanAdd}
@@ -419,7 +420,7 @@ export default function HorarioModal() {
                             <th>Día</th>
                             <th>Aula</th>
                             <th>Franja horaria</th>
-                            <th>Remove</th>
+                            <th hidden={!!matricula?.group}>Remove</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -482,11 +483,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const matriculaID = Number(params.idmatricula);
   const searchQueries = formData.get("filters");
   const grupo = Number(formData.get("grupo"))
-
+  const timeSpansJson = JSON.parse(timeSpans)
 
   if (intent === "create") {
     try {
-      const timeSpansJson = JSON.parse(timeSpans)
       return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, mobileLab).then(() => {
         return redirect(`/horario/${horarioId}/${searchQueries}`)
       }).catch(e => {
@@ -498,9 +498,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
       return redirect("/error")
     }
 
-
   } else if (intent === "update") {
-    //await updateMatricula(matriculaID, curso, horarioId, profesor, mobileLab);
+    const newTimeSpansJson = timeSpansJson.filter((t:any)=>!Object.hasOwn(t,"fecha_creado"))
+    await updateMatricula(newTimeSpansJson, matriculaID, profesor, mobileLab);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
     const matricula = await removeMatricula(matriculaID).catch(e => {

@@ -1,7 +1,7 @@
 import prisma from "prisma/client";
-import { Time_span, Time_spans, TimeSpan, TimeSpans } from "~/types/horarioTypes";
+import { TimeSpan, TimeSpans } from "~/types/horarioTypes";
 import { getCourseById } from "./courseModel";
-import { group } from "console";
+import { getGroupByMatricula } from "./groupModel";
 
 export const getMatriculas = async () => {
   return await prisma.matricula.findMany({
@@ -77,7 +77,7 @@ export const filterMatriculas = async (horario_id: number, dia: string, id_plan_
       },
       group: {
         select: {
-          groupNumber:true,
+          groupNumber: true,
           group_id: true,
           curso: true
         }
@@ -141,8 +141,7 @@ export const createMatricula = async (
   modalidad: string,
   profesor_id: number,
   grupo: number,
-  laboratorio_movil_id?: number | null,
-) => {
+  laboratorio_movil_id?: number | null) => {
   return prisma.$transaction(async (tx) => {
     try {
       const matricula = await tx.matricula.create({
@@ -155,8 +154,7 @@ export const createMatricula = async (
         return r;
       })
 
-
-      const queryfiedTimesSpans: TimeSpans = time_spans.map(t => {
+      const queryfiedTimesSpansBK: TimeSpans = time_spans.map(t => {
         return {
           matricula_id: matricula.matricula_id,
           aula_id: t.aula_id,
@@ -166,11 +164,15 @@ export const createMatricula = async (
         }
       })
 
-      const timeSpans = await tx.time_span.createMany({
-        data: queryfiedTimesSpans
-      }).then((r) => {
-        return r;
-      })
+      const queryfiedTimesSpans: TimeSpans = queryfi(time_spans, matricula);
+
+      if (queryfiedTimesSpans) {
+        await tx.time_span.createMany({
+          data: queryfiedTimesSpans
+        }).then((r) => {
+          return r;
+        })
+      }
 
       let hoursToAllocate: number = 0;
 
@@ -196,16 +198,16 @@ export const createMatricula = async (
           }
         }).then((r) => {
           return r;
-        }).catch(e=>{
-          if(e.code === "P2002"){
+        }).catch(e => {
+          if (e.code === "P2002") {
             throw `The course ${course?.nombre} with group number:${grupo} already exists!`
-          }else{
+          } else {
             throw e
           }
         })
       } else {
         console.error("ILLEGAL_TIME_ALLOCATION");
-        throw "ILLEGAL_TIME_ALLOCATION"
+        throw new Error("ILLEGAL_TIME_ALLOCATION");
       }
     } catch (error) {
       throw error;
@@ -213,18 +215,53 @@ export const createMatricula = async (
   });
 }
 
-export const updateMatricula = async (matricula_id: number,
-  horario_id: number,
-  laboratorio_movil_id?: number | null
-) => {
-  return await prisma.matricula.update({
-    where: { matricula_id: matricula_id },
-    data: {
-      //curso_id: curso_id,
-      horario_id: horario_id,
-      laboratorio_movil_id: laboratorio_movil_id,
-      //profesor_id: profesor_id
+export const updateMatricula = async (
+  time_spans: TimeSpan[],
+  matricula_id: number,
+  profesor_id: number,
+  laboratorio_movil_id?: number | null) => {
+  return await prisma.$transaction(async (tx) => {
+    const queryfiedTimesSpans: TimeSpans = queryfi(time_spans, matricula_id);
+    let hoursToAllocate: number = 0;
+
+    time_spans.map(t => {
+      let hoursPerT = Number(t.hora_final) - Number(t.hora_inicio);
+      hoursToAllocate += hoursPerT;
+    })
+
+    if (queryfiedTimesSpans) {
+      await tx.time_span.createMany({
+        data: queryfiedTimesSpans,
+      }).catch(e => { throw new Error(e) })
     }
+    const group = (await getGroupByMatricula(matricula_id).catch(e => { throw new Error(e) }))[0]
+    const Ahours = group.Ahours;
+    const neoAhours = Ahours - hoursToAllocate;
+
+    if (neoAhours >= 0) {
+      await tx.group.updateMany({
+        where: {
+          matricula_id: matricula_id
+        },
+        data: {
+          profesor_id: profesor_id,
+          completed: !!neoAhours ? false : true,
+          Ahours: !!neoAhours ? neoAhours : 0,
+        }
+      }).catch(e => { throw new Error(e) })
+    } else {
+      throw new Error("ILLEGAL_TIME_ALLOCATION");
+    }
+
+
+
+    await tx.matricula.update({
+      where: { matricula_id: matricula_id },
+      data: {
+        laboratorio_movil_id: laboratorio_movil_id
+      }
+    }).catch(e => { throw new Error(e) })
+
   })
 }
 
@@ -288,3 +325,15 @@ export const getLockedTimesByHorarioDay = async (horario_id: number, dia?: strin
     }
   });
 };
+
+function queryfi(time_spans: TimeSpan[], matricula: any | number): TimeSpans {
+  return time_spans.map(t => {
+    return {
+      matricula_id: typeof matricula === "number" ? matricula : matricula.matricula_id,
+      aula_id: t.aula_id,
+      dia: t.dia,
+      hora_inicio: t.hora_inicio,
+      hora_final: t.hora_final
+    }
+  })
+}

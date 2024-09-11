@@ -19,9 +19,10 @@ export const updateGroupCompleteness = async (group_id:number, completed:boolean
   })
 }
 
-export const createGroup = async (course_id:number, matricula_id:number, Ahours: number, profesor_id: number,completed:boolean) => {
+export const createGroup = async (groupNumber:number, course_id:number, matricula_id:number, Ahours: number, profesor_id: number,completed:boolean) => {
   return await prisma.group.create({
     data:{
+      groupNumber:groupNumber,
       course_id: course_id,
       matricula_id: matricula_id,
       Ahours: Ahours,
@@ -43,4 +44,12 @@ export const getGroup = async (group_id:number) =>{
       group_id: group_id
     }
   })
-} 
+}
+
+export const getGroupByMatricula = async (matricula_id:number) =>{
+  return await prisma.group.findMany({
+    where:{
+      matricula_id: matricula_id,
+    }
+  })
+}
