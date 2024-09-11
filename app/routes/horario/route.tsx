@@ -16,9 +16,6 @@ export default function Horario() {
 
   return (
     <>
-      <div className="">
-        <MainTitle titleText="Horario" />
-      </div>
       <Outlet/>
     </>
   );

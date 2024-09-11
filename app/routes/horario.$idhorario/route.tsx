@@ -20,23 +20,30 @@ export default function () {
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
   const matriculas = data.matriculas;
   const [searchParams, setSearchParams] = useSearchParams();
-  const showVirtual = searchParams.get("showvirtual") === "true" ? true: false;
+  const showVirtual = searchParams.get("showvirtual") === "true" ? true : false;
   const location = useLocation();
   const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
   const scheduleTimeSpans = data.scheduleTimeSpans;
+
+  function handleDrag(e:React.DragEvent){
+    // const scheduleUI = e.currentTarget;
+    // (e.target as HTMLAnchorElement).textContent;
+    // console.log(e)
+  }
+  
   const listaClassroom = data.aulas.map((classroom, index) => {
     return classroom.identificador !== 999 ? <ClassroomColumn
       nombreAula={classroom.identificador}
       timeSlots={timeSlots}
       index={index}
-      scheduleTimeSpans={scheduleTimeSpans.filter(s=>s?.aula.identificador === classroom.identificador)} //matriculas.filter(m => m.aula.identificador === classroom.identificador)
+      scheduleTimeSpans={scheduleTimeSpans.filter(s => s?.aula.identificador === classroom.identificador)} //matriculas.filter(m => m.aula.identificador === classroom.identificador)
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
       key={classroom.identificador}></ClassroomColumn> : null
   })
 
   const listaClassroomHidden = data.aulas.map((classroom, index) => {
-    const sch = scheduleTimeSpans.filter(s=>s?.aula.identificador === classroom.identificador); //matriculas.filter(m => m.aula.identificador === classroom.identificador)
+    const sch = scheduleTimeSpans.filter(s => s?.aula.identificador === classroom.identificador); //matriculas.filter(m => m.aula.identificador === classroom.identificador)
     return classroom.identificador !== 999 && sch.length >= 1 ? <ClassroomColumn
       nombreAula={classroom.identificador}
       timeSlots={timeSlots}
@@ -56,20 +63,28 @@ export default function () {
         <button className="mainButton">Registrar</button>
       </Link>
       <Link to={`/horario/${data.idHorario}/config`}>
-        <button className="mainButton">Configurar | Botón temporal </button>
+        <button className="mainButton">Configurar</button>
       </Link>
     </Form>
-    <div
-      className="schedule"
-      style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
-      <TimeColumn slots={timeSlotsTitle}></TimeColumn>
-      {hideEmpty ? listaClassroomHidden : listaClassroom}
-      <Outlet />
-    </div>
-    <div className="virtualCoursesContainer">
-      {
-        showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} /> : null
-      }
+    <div className="grid_container">
+      <div
+        onDrag={handleDrag} 
+        className="mainScheduleUI">
+        <div
+          className="schedule"
+          style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
+          <TimeColumn slots={timeSlotsTitle}></TimeColumn>
+          {hideEmpty ? listaClassroomHidden : listaClassroom}
+          <Outlet />
+        </div>
+      </div>
+      <div className="virtual_courses_container" style={{display: showVirtual ? "block" : "none"}}>
+        <div className="virtualCoursesContainer">
+          {
+            showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} /> : null
+          }
+        </div>
+      </div>
     </div>
   </>
 }
@@ -93,13 +108,13 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const planes: Planes = await getPlanes();
   const showVirtual: Boolean = url.searchParams.get("showvirtual") === "true" ? true : false;
   const cursosVirtuales: Matricula[] = await getVirtualMatriculas(idHorario);
-  
-  const matriculas:Matricula[] = await filterMatriculas(idHorario, dia, id_plan_estudio, ubicacion).catch(e=>{
+
+  const matriculas: Matricula[] = await filterMatriculas(idHorario, dia, id_plan_estudio, ubicacion).catch(e => {
     console.error(e);
     return [];
   });
-  
-  const scheduleTimeSpans = await getTimesSpanBySchedule(idHorario, dia, id_plan_estudio, ubicacion).catch(e=>{
+
+  const scheduleTimeSpans = await getTimesSpanBySchedule(idHorario, dia, id_plan_estudio, ubicacion).catch(e => {
     console.error(e);
     return [];
   });
