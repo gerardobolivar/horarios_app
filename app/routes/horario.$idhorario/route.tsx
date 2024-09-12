@@ -25,12 +25,12 @@ export default function () {
   const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
   const scheduleTimeSpans = data.scheduleTimeSpans;
 
-  function handleDrag(e:React.DragEvent){
+  function handleDrag(e: React.DragEvent) {
     // const scheduleUI = e.currentTarget;
     // (e.target as HTMLAnchorElement).textContent;
     // console.log(e)
   }
-  
+
   const listaClassroom = data.aulas.map((classroom, index) => {
     return classroom.identificador !== 999 ? <ClassroomColumn
       nombreAula={classroom.identificador}
@@ -55,20 +55,23 @@ export default function () {
   })
 
   return <>
-    <div className="filtersHorario">
-      <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
+    <div className="grid_container_filter_config">
+      <div className="filtersHorario">
+        <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
+      </div>
+      <div className="scheduleConfigBtn">
+        <Link to={`/horario/${data.idHorario}/config`}>
+          <i className="bi bi-gear-fill gear-icon"></i>
+        </Link>
+      </div>
     </div>
-    <Form method="POST">
-      <Link to={`/horario/${data.idHorario}/new`}>
-        <button className="mainButton">Registrar</button>
-      </Link>
-      <Link to={`/horario/${data.idHorario}/config`}>
-        <button className="mainButton">Configurar</button>
-      </Link>
-    </Form>
+    <Link to={`/horario/${data.idHorario}/new`}>
+      <button className="mainButton">Registrar</button>
+    </Link>
+
     <div className="grid_container">
       <div
-        onDrag={handleDrag} 
+        onDrag={handleDrag}
         className="mainScheduleUI">
         <div
           className="schedule"
@@ -78,7 +81,7 @@ export default function () {
           <Outlet />
         </div>
       </div>
-      <div className="virtual_courses_container" style={{display: showVirtual ? "block" : "none"}}>
+      <div className="virtual_courses_container" style={{ display: showVirtual ? "block" : "none" }}>
         <div className="virtualCoursesContainer">
           {
             showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} /> : null

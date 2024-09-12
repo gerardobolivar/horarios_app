@@ -17,29 +17,7 @@ export default function HorarioConfigPage() {
 
   return <>
     <div id="pageContainer">
-      <nav id="navbar">
-        <header>
-          <h1>Configuración de Horario</h1>
-        </header>
-        <ul>
-          <li><a href="#General"
-            className="nav-link">
-            Información general
-          </a></li>
-          <li><a href="#Archivar"
-            className="nav-link">
-            Archivar
-          </a></li>
-          <li><a href="#Estado"
-            className="nav-link">
-            Estado
-          </a></li>
-          <li><a href="#Visibilidad"
-            className="nav-link">
-            Visibilidad
-          </a></li>
-        </ul>
-      </nav>
+
       <main id="main-doc">
         <section
           className="main-section"
