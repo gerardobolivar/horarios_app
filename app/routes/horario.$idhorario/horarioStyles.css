@@ -56,3 +56,14 @@
   border-radius: 10px 10px 0px 0px;
   padding: 1vh;
 }
+
+.aulaTitle{
+  text-align: center;
+  color: #204C6F;
+  font-weight: bold;
+}
+
+.timeSpanRowTitle{
+  color: #204C6F;
+  font-weight: bold;
+}

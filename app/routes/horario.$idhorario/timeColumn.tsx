@@ -4,7 +4,7 @@
     {slots.map(slot=>
     slot === "HORAS" ? 
     <div key={slot} style={{fontWeight:"bold"}}>{slot}</div>:
-    <div key={slot} className="time-cell">{slot}</div>
+    <div key={slot} className="time-cell"><p className="timeSpanRowTitle">{slot}</p></div>
     )}
   </div>
 }

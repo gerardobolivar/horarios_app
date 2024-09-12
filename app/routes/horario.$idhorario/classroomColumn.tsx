@@ -1,6 +1,5 @@
-import { Matricula, ScheduleTimeSpans } from "~/types/horarioTypes";
 import CourseCell from "./courseCell";
-import { Link, useLocation, useSearchParams } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { TIMESLOTS_REVERSE } from "./reversedTimes";
 
 type Props = {
@@ -17,7 +16,7 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
   let cont: number = 1;
   
   return <div key={nombreAula + index} className="classroom-column">
-    <h3 >{`${nombreAula < 10 ? "Aula 0" + nombreAula:  nombreAula === 999 ? "Virtual" : "Aula "+nombreAula}`}</h3>
+    <h3 className="aulaTitle">{`${nombreAula < 10 ? "Aula 0" + nombreAula:  nombreAula === 999 ? "Virtual" : "Aula "+nombreAula}`}</h3>
     {
       timeSlots.map((slot) => {
         const matricula = scheduleTimeSpans.find((m:any) => m.hora_inicio <= TIMESLOTS_REVERSE[slot] && m.hora_final > TIMESLOTS_REVERSE[slot]);
