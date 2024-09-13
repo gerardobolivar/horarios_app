@@ -1,3 +1,4 @@
+import { Outlet } from "@remix-run/react";
 import NavBar from "./NavBar";
 
 export default function MainLayout(props){
@@ -6,6 +7,7 @@ export default function MainLayout(props){
   return(
     <div>
       <NavBar/>
+      <Outlet/>
     </div>
   )
 }
