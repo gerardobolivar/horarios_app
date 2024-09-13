@@ -7,18 +7,20 @@ export default function CicleCard(props) {
   const cicloID = props.cicloID
   const isActiveCycle = props.isActiveCycle
   return (<>
-  <div>
-    <Link to={`/cicle/${cicloID}`}>
-      <i className="bi bi-gear-fill gear-icon"></i>
-    </Link>
-    <Link to={href} className={!isActiveCycle ? "disableLink noDecoration" : "noDecoration"}>
-      <div className="cicleCard">
-        <div className="cardBody">
-          <h5 className="cardTitle">{title}</h5>
-        </div>
+    <div className='cyCard'>
+      <div className='gear_container'>
+        <Link to={`/cicle/${cicloID}`} className='linkA'>
+          <i className="bi bi-gear-fill gear_icon_cycle"></i>
+        </Link>
       </div>
-    </Link>
-  </div>
+      <Link to={href} className={`${!isActiveCycle ? "disableLink noDecoration" : "noDecoration"}`}>
+        <div className="cicleCard">
+          <div className="cardBody">
+            <h5 className="cardTitle">{title}</h5>
+          </div>
+        </div>
+      </Link>
+    </div>
   </>
   )
 }

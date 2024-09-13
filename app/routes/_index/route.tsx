@@ -1,10 +1,11 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import MainTitle from "../shared/MainTitle";
 import CicleCard from "./CicleCard";
 import { createCicles, getCiclos } from "prisma/models/cicloModel";
 import { useLoaderData } from "@remix-run/react";
 import { createActiveCycle, getActiveCycle } from "prisma/models/activeCycles";
 import { createAula } from "prisma/models/aulaModel";
+import indexStyles from "./indexStyles.css?url"
 
 export default function HomeAdmin(){
   const data = useLoaderData<typeof loader>();
@@ -16,7 +17,7 @@ export default function HomeAdmin(){
 return (
   <div className="">
     <MainTitle innerText="Horarios"/>
-    <div className="planCardContainer">
+    <div className="cicleCardContainer">
       {cicleList}
     </div>
   </div>
@@ -50,3 +51,7 @@ export const loader = async ({ params }:LoaderFunctionArgs) => {
     return json({ ciclos: ciclos, activeCycle: activeCycle});
   }
 };
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: indexStyles },
+];

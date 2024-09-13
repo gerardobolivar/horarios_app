@@ -61,25 +61,6 @@ body{
   margin-left:50px; 
 }
 
-.cicleCard{
-  width: 10rem;
-  height: 10rem !important;
-  margin-left: 50px !important;
-  margin-top: 50px !important;
-}
-
-.cicleCard > div{
-  background-color: #204C6F;
-  height: 100%;
-  margin: auto;
-  color: #FFFFFF !important;
-}
-
-.cicleCard > div:hover{
-  border-radius: 5px;
-  scale: 1.01;
-}
-
 .planCard{
   background-color: #D9D9D9 !important;
   width: 10rem;
@@ -132,33 +113,11 @@ body{
   border-radius: 50px;
 }
 
-.planCardContainer{
-  display: flex;
-}
 
-@media only screen and (max-width: 1000px) {
+
+@media only screen and (width <= 1000px) {
   .mainNavBarmenu>ul{
     display: none !important;
-  }
-
-  .planCardContainer{
-    display: block;
-  }
-
-  .planCardContainer>a>div{
-    margin: auto !important;
-    margin-bottom: 10% !important;
-  }
-  .mainTitle{
-    margin: 0;
-    margin-top: 5%;
-    margin-bottom: 10%;
-    text-align: center;
-  }
-
-  .cicleCard{
-    width: 20rem;
-    height: 10rem !important;
   }
 }
 

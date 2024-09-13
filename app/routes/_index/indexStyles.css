@@ -1,0 +1,82 @@
+.cicleCard{
+  width: 10rem;
+  height: 10rem !important;
+}
+
+.cicleCard > div{
+  background-color: #204C6F;
+  margin: auto;
+  color: #FFFFFF !important;
+  border-radius: 5px !important;
+}
+
+.cicleCard > div:hover{
+  scale: 1.02;
+}
+
+.cicleCardContainer{
+  display: grid !important;
+  grid-template-columns: repeat(3,300px);
+  margin-left: 50px;
+}
+
+.cicleCardContainer > div{
+  margin: 0;
+  margin-bottom: 10px;
+
+}
+
+.linkA{
+  position: relative;
+  top:40px;
+  left: 130px;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 25px;
+  z-index: 100;
+}
+
+.gear_icon_cycle:hover{
+  color:#00C0F3;
+}
+
+.cyCard{
+  width: fit-content;
+  height: auto;
+}
+
+
+@media only screen and (width <= 1000px) {
+
+
+  .cicleCardContainer {
+    display: block !important;
+    margin-left: 0px !important;
+    margin-bottom: 100px;
+  }
+
+  .mainTitle{
+    margin: 0;
+    margin-top: 5%;
+    margin-bottom: 10%;
+    text-align: center;
+  }
+
+  .cicleCard{
+    width: 20rem;
+    height: 10rem !important;
+  }
+
+  .cyCard{
+    margin: auto !important;
+  }
+
+  .linkA{
+    top:40px;
+    left: 290px;
+  }
+
+  .cicleCard > div:hover{
+    scale: 1.02;
+  }
+}
