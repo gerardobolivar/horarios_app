@@ -42,3 +42,13 @@
 .loginContainer > Form > div > button:active{
   scale: 1.1 !important;
 }
+
+@media only screen and (width <= 1000px){
+  .loginContainer{
+    top: 18vh;
+  }
+
+  .title{
+    top: 17vh;
+  }
+}
