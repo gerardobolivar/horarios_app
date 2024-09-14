@@ -1,5 +1,5 @@
-import { Outlet, Links, Scripts, Meta , useRouteError, useNavigate, } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import { Outlet, Links, Scripts, Meta , useRouteError, useNavigate, useLoaderData, redirect } from "@remix-run/react";
+import { json, type ActionFunctionArgs, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
@@ -34,9 +34,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const data = useLoaderData<typeof loader>();
+  const isLogged = data.logged;
+  
+
   return <div>
-    <MainLayout />
+    {!isLogged ? <MainLayout /> : null}
+    <Outlet/>
   </div>
+}
+
+export async function action({ request, params }: ActionFunctionArgs) {
+  // const formData = await request.formData();
+  // const intent = formData.get("intent");
+
+  return null;
+}
+
+export const loader = async ({ params, }: LoaderFunctionArgs) => {
+  
+  return json({logged: true});
 }
 
 export function ErrorBoundary() {

@@ -1,0 +1,44 @@
+.loginContainer > Form > div > input{
+  display: block;
+  margin-bottom: 25px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-width: 1px;
+  border-color: #204C6F;
+}
+
+.loginContainer{
+  background-color: #ffff;
+  width: fit-content;
+  padding: 70px;
+  margin:auto;
+  position: relative;
+  top: 25vh;
+  border: 3px solid #204C6F;
+  border-radius: 10px;
+  text-align: center;
+  color: #204C6F;
+  font-weight: bold;
+}
+
+
+.title{
+  position: relative;
+  text-align: center;
+  top: 24vh;
+  font-size: 20px;
+  color: #204C6F;
+}
+
+.loginContainer > Form > h3{
+  margin-bottom:  15px;
+}
+
+.loginContainer > Form > div> button{
+  margin: 0px ;
+}
+
+.loginContainer > Form > div > button:active{
+  scale: 1.1 !important;
+}
