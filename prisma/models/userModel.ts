@@ -1,6 +1,7 @@
+import { redirect } from "@remix-run/react";
 import prisma from "prisma/client";
 
-export const getUser = async (id_usuario: number) => {
+export const getUserById = async (id_usuario: number) => {
   return await prisma.user.findUnique({
     where: { id_usuario },
   });
@@ -51,5 +52,32 @@ export const createUsuario = async (nombre_usuario:string, role:string) =>{
       nombre_usuario: nombre_usuario,
       role: role
     }
+  })
+}
+
+export const validateUser = async (hash:string, username: string) => {
+  return prisma.$transaction(async (tx)=>{
+
+    const user = await tx.user.findUnique({
+      where:{
+        nombre_usuario: username
+      },
+      include:{
+        hash:{
+          select:{
+            hash: true
+          }
+        }
+      }
+    }).then(user=>user).catch((e)=>{
+      throw new Error(e)
+    })
+    
+    if (user?.hash?.hash === hash) {
+      return user.id_usuario;
+    }else{
+      return null;
+    }
+    
   })
 }

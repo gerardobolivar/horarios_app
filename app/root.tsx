@@ -4,6 +4,7 @@ import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import MainLayout from "./routes/shared/Main";
+import { getUser } from "./.server/session";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
@@ -35,11 +36,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const data = useLoaderData<typeof loader>();
-  const isLogged = data.logged;
+  const user = data.user;
   
 
   return <div>
-    {!isLogged ? <MainLayout /> : null}
+    {user ? <MainLayout /> : null}
     <Outlet/>
   </div>
 }
@@ -51,9 +52,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   return null;
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request}: LoaderFunctionArgs) => {
   
-  return json({logged: true});
+  return json({user: await getUser(request)});
 }
 
 export function ErrorBoundary() {

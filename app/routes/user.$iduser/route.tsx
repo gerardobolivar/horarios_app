@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, Outlet, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
-import {createUsuario, getUser, getUserByName, updateUsuarioRole} from "prisma/models/userModel"
+import {createUsuario, getUserById, getUserByName, updateUsuarioRole} from "prisma/models/userModel"
 import { useEffect, useState } from "react";
 
 export default function ModalUsuario() {
@@ -144,5 +144,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const isNewUser:boolean = params.iduser === "new";
   const iduser:number = Number(params.iduser);
-  return json({ isNewUser: isNewUser, user: isNewUser ? null: await getUser(iduser)})
+  return json({ isNewUser: isNewUser, user: isNewUser ? null: await getUserById(iduser)})
 }

@@ -7,6 +7,7 @@ import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import modalStyles from "~/modals/modalStyles.css?url";
 import ConfirmationModal from "~/modals/ConfirmationModal";
+import { requireUser } from "~/.server/session";
 
 const ROUTE_TAG = "Aulas";
 
@@ -115,6 +116,7 @@ export default function Aulas() {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  const userId = await requireUser(request);
   const formData = await request.formData();
   const intent = formData.get("intent");
   const currentAula = Number(formData.get("elementID"))
@@ -134,7 +136,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request}: LoaderFunctionArgs) => {
+  await requireUser(request);
 
   const listaAulas = await getAulas();
 

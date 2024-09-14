@@ -1,7 +1,10 @@
 import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import loginStyles from "./loginStyles.css?url";
 import appStyles from '~/stylesheets/plan_.new.css?url';
-import { Form } from "@remix-run/react";
+import { Form, redirect } from "@remix-run/react";
+import { validateUser } from "prisma/models/userModel";
+import { createUserSession, getUserId } from "~/.server/session";
+import { useOptionalUser } from "~/utils";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: loginStyles },
@@ -9,6 +12,9 @@ export const links: LinksFunction = () => [
 ];
 
 export default function login() {
+
+  const user = useOptionalUser();
+  
 
   return <>
       <p className="title">Sistema de Horarios</p>
@@ -44,14 +50,24 @@ export default function login() {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const intent = formData.get("intent");
+  const username = String(formData.get("username")); 
+  const password = String(formData.get("password")); 
 
-  return intent;
+  const userID = await validateUser(password,username);
+
+
+  return createUserSession({
+    request,
+    userId: userID!
+  });
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
-  const logged = true;
+export const loader = async ({ params, request}: LoaderFunctionArgs) => {
+  const userID = await getUserId(request);
+  
+  if(userID){
+    return redirect("/");
+  }
 
-  // return !logged ? redirect("/") : json({ok:true})
-  return null
+  return json({});
 }

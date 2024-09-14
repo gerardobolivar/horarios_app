@@ -2,6 +2,7 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { filterMatriculas, getMatriculaById, getVirtualMatriculas } from "prisma/models/matriculaModelo";
 import { getTimesSpanBySchedule } from "prisma/models/timeSpanModel";
+import { useOptionalUser } from "~/utils";
 
 export default function test(){
   const data = useLoaderData<typeof loader>();
@@ -9,6 +10,7 @@ export default function test(){
 
   const routes = useMatches();
   //console.log(routes[0].data);//Root route loader data
+  
   
 }
 
