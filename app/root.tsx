@@ -4,7 +4,7 @@ import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import MainLayout from "./routes/shared/Main";
-import { getUser } from "./.server/session";
+import { getUser, requireUser } from "./.server/session";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
@@ -53,7 +53,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export const loader = async ({ params, request}: LoaderFunctionArgs) => {
-  
   return json({user: await getUser(request)});
 }
 

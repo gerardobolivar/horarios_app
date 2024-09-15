@@ -6,6 +6,7 @@ import { useLoaderData } from "@remix-run/react";
 import { createActiveCycle, getActiveCycle } from "prisma/models/activeCycles";
 import { createAula } from "prisma/models/aulaModel";
 import indexStyles from "./indexStyles.css?url"
+import { requireUser } from "~/.server/session";
 
 export default function HomeAdmin(){
   const data = useLoaderData<typeof loader>();
@@ -24,7 +25,8 @@ return (
 )
 } 
 
-export const loader = async ({ params }:LoaderFunctionArgs) => {
+export const loader = async ({ params, request }:LoaderFunctionArgs) => {
+  await requireUser(request);
   const ciclos = await getCiclos().then((r)=>{return r}).catch((error)=>{return []})
 
   const activeCycle = await getActiveCycle().then(r=>r,()=>null).catch((e)=>{

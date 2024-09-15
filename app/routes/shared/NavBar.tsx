@@ -1,8 +1,17 @@
+import { useSubmit } from "@remix-run/react";
 import { Link } from "react-router-dom";
 
 export default function NavBar() {
   const stateData = { name: "Nombre Apellido" };
+
   let username = stateData.name
+  const submit = useSubmit();
+
+  function handleLogOut(event: Event) {
+    event.preventDefault();
+    submit({ ok: true }, { method: "post", action: "/logout" });
+  }
+
   return (
     <div id="NavBar">
       <nav className="navbar d-flex flex-row-reverse mainNavBar">
@@ -44,8 +53,12 @@ export default function NavBar() {
           </li>
           <li>
             <Link className="navbar-brand d-flex nav-item"
-            preventScrollReset={true}
-            to="user">Usuarios</Link>
+              preventScrollReset={true}
+              to="user">Usuarios</Link>
+          </li>
+          <li>
+            <Link className="navbar-brand d-flex nav-item"
+              to="" preventScrollReset={true} onClick={(e:any)=>{handleLogOut(e)}}>Salir</Link>
           </li>
         </ul>
       </nav>

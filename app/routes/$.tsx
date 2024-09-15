@@ -1,5 +1,7 @@
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { useSearchParams } from "@remix-run/react";
 import { Link } from "react-router-dom";
+import { requireUser } from "~/.server/session";
 import { SCHEDULE_ERRORS } from "~/types/horarioTypes";
 export default function ErrorPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,4 +14,8 @@ export default function ErrorPage() {
       <Link to="/"><a>Back home</a></Link>
     </div>
   );
+}
+
+export async function loader({request}:LoaderFunctionArgs){
+  //await requireUser(request);
 }
