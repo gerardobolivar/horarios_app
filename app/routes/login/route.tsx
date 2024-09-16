@@ -56,10 +56,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const userID = await validateUser(password,username);
 
 
-  return createUserSession({
-    request,
-    userId: userID!
-  });
+  return userID ? createUserSession({request, userId: userID!}) : null
 }
 
 export const loader = async ({ params, request}: LoaderFunctionArgs) => {
