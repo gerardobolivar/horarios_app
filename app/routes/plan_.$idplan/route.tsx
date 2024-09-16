@@ -5,6 +5,8 @@ import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
 import { countCoursesById, getCoursesbyPlan, removeCourse } from "prisma/models/courseModel";
+import { requireUser } from "~/.server/session";
+import { getUserById } from "prisma/models/userModel";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
@@ -195,7 +197,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   return redirect(`/plan/${Number(params.idplan)}`)
 }
 
-export const loader = async ({params, }: LoaderFunctionArgs) => {
+export const loader = async ({params, request}: LoaderFunctionArgs) => {
+  const userId = await requireUser(request);
+  const user = await getUserById(userId);
+  if(user?.role === "GUEST"){
+    return redirect("/");
+  }
+  
   const planid = params.idplan;
   const plan = await getPlanById(Number(planid));
   const listaCursos = await getCoursesbyPlan(Number(planid));

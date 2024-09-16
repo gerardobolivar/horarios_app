@@ -4,9 +4,10 @@ import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getUsers, removeUsuario } from "prisma/models/userModel";
+import { getUserById, getUsers, removeUsuario } from "prisma/models/userModel";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
+import { requireUser } from "~/.server/session";
 
 const ROUTE_TAG = "Usuarios";
 
@@ -113,6 +114,8 @@ export default function Usuarios() {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  await requireUser(request);
+
   const formData = await request.formData();
   const intent = formData.get("intent");
   const currentUsuario = Number(formData.get("elementID"))
@@ -123,7 +126,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   return redirect("/user")
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request}: LoaderFunctionArgs) => {
+  const userId = await requireUser(request);
+  const user = await getUserById(userId);
+
+  if(user?.role !== "ADMIN"){
+    return redirect("/")
+  }
+
   const listaUsuarios = await getUsers();
 
   return json({ listaUsuarios: listaUsuarios })

@@ -7,6 +7,8 @@ import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getMovileLabs, removeMobileLab } from "prisma/models/movileLab";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
+import { requireUser } from "~/.server/session";
+import { getUserById } from "prisma/models/userModel";
 
 const ROUTE_TAG = "Laboratorios Móviles";
 
@@ -124,8 +126,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   return redirect("/movil")
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request}: LoaderFunctionArgs) => {
   const listaMovileLabs = await getMovileLabs();
+  const userId = await requireUser(request);
+  const user = await getUserById(userId);
+  if(user?.role !== "ADMIN"){
+    return redirect("/");
+  }
+  
   return json({ listaMovileLabs: listaMovileLabs })
 }
 

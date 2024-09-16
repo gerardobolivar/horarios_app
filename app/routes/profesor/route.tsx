@@ -7,6 +7,8 @@ import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { getProfesores, removeProfesor } from "prisma/models/profesorModel";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
+import { requireUser } from "~/.server/session";
+import { getUserById } from "prisma/models/userModel";
 
 const ROUTE_TAG = "Profesores";
 
@@ -123,7 +125,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   return redirect("/profesor")
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request}: LoaderFunctionArgs) => {
+  const userId = await requireUser(request);
+  const user = await getUserById(userId);
+
+  if(user?.role === "GUEST"){
+    return redirect("/");
+  }
+  
   const listaProfesores = await getProfesores();
 
   return json({ listaProfesores: listaProfesores })

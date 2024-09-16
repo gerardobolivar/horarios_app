@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node"
+import { json, LoaderFunctionArgs, redirect } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
 import PlanCard from "./PlanCard";
@@ -29,6 +29,10 @@ export default function Planes() {
 export const loader = async ({request}:LoaderFunctionArgs) => {
   const userId = await requireUser(request);
   const user = await getUserById(userId);
+  if(user?.role === "GUEST"){
+    return redirect("/");
+  }
+
   let planes:Plan[] = [];
 
   if(user?.role === "ADMIN"){
