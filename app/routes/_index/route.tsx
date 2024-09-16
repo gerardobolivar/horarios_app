@@ -7,12 +7,14 @@ import { createActiveCycle, getActiveCycle } from "prisma/models/activeCycles";
 import { createAula } from "prisma/models/aulaModel";
 import indexStyles from "./indexStyles.css?url"
 import { requireUser } from "~/.server/session";
+import { useOptionalUser } from "~/utils";
 
 export default function HomeAdmin(){
+  const user = useOptionalUser();
   const data = useLoaderData<typeof loader>();
   const activeCycle = data.activeCycle;
   const cicleList = data.ciclos.map((c)=>{
-    return <CicleCard key={c?.ciclo_id} innerText={c?.nombre} url={`/horario/${c?.horario_id}`} active={c?.active} cicloID={c?.ciclo_id} isActiveCycle={c?.ciclo_id === activeCycle?.ciclo_id}></CicleCard>
+    return <CicleCard key={c?.ciclo_id} innerText={c?.nombre} url={`/horario/${c?.horario_id}`} active={c?.active} cicloID={c?.ciclo_id} isActiveCycle={c?.ciclo_id === activeCycle?.ciclo_id} isAdmin={user?.role === "ADMIN"}></CicleCard>
   }) 
   
 return (

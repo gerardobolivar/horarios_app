@@ -12,6 +12,7 @@ import { getPlanes } from "prisma/models/planEstudioModel";
 import { Matricula, Planes } from "~/types/horarioTypes";
 import VirtualCourses from "./VirtualCourses";
 import { getTimesSpanBySchedule } from "prisma/models/timeSpanModel";
+import { useOptionalUser } from "~/utils";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -24,6 +25,7 @@ export default function () {
   const location = useLocation();
   const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
   const scheduleTimeSpans = data.scheduleTimeSpans;
+  const user = useOptionalUser();
 
   function handleDrag(e: React.DragEvent) {
     // const scheduleUI = e.currentTarget;
@@ -59,7 +61,7 @@ export default function () {
       <div className="filtersHorario">
         <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
       </div>
-      <div className="scheduleConfigBtn">
+      <div className="scheduleConfigBtn" hidden={user?.role !== "ADMIN"}>
         <Link to={`/horario/${data.idHorario}/config`}>
           <i className="bi bi-gear-fill gear-icon"></i>
         </Link>

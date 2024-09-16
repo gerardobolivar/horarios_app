@@ -6,6 +6,8 @@ import { getBindedHorario, unBindCicloByHorario } from "prisma/models/cicloModel
 import { deactivateHorarioById, getHorario } from "prisma/models/horarioModel";
 import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
 import { clearActiveCycle } from "prisma/models/activeCycles";
+import { requireUser } from "~/.server/session";
+import { getUserById } from "prisma/models/userModel";
 
 
 export default function HorarioConfigPage() {
@@ -85,7 +87,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 }
 
-export const loader = async ({ params, }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const userId = await requireUser(request)
+  const user = await getUserById(userId);
+  if(user?.role !== "ADMIN"){
+    return redirect("/");
+  }
+
   const horarioId = Number(params.idhorario);
   const horario = await getHorario(horarioId).then((r) => { return r }, () => { return {} }).catch((e) => { console.error(e); return {} })
   const ciclo = await getBindedHorario(horarioId).then(

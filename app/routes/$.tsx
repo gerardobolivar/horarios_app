@@ -18,4 +18,5 @@ export default function ErrorPage() {
 
 export async function loader({request}:LoaderFunctionArgs){
   //await requireUser(request);
+  return null
 }
