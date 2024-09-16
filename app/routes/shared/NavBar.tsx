@@ -1,10 +1,12 @@
 import { useSubmit } from "@remix-run/react";
 import { Link } from "react-router-dom";
+import { useOptionalUser } from "~/utils";
 
 export default function NavBar() {
-  const stateData = { name: "Nombre Apellido" };
+  const user = useOptionalUser();
+  let username = user?.nombre_usuario.toLocaleUpperCase()
 
-  let username = stateData.name
+
   const submit = useSubmit();
 
   function handleLogOut(event: Event) {
@@ -32,12 +34,14 @@ export default function NavBar() {
               className="navbar-brand d-flex nav-item" >Planes de estudio</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item"
+            <Link 
+              className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="/aula">Aulas</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item"
+            <Link 
+              className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="/movil">Laboratorios móviles</Link>
           </li>
@@ -47,12 +51,14 @@ export default function NavBar() {
               to="/report">Mi reporte</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item"
+            <Link
+              className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="profesor">Profesores</Link>
           </li>
           <li>
-            <Link className="navbar-brand d-flex nav-item"
+            <Link
+              className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="user">Usuarios</Link>
           </li>
