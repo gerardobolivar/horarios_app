@@ -43,3 +43,14 @@ export const updatePlan = async (idPlan: number, name:string, codigoPlan:string)
   })
 }
 
+export const getPlansByUserId = async (user_id: number)=> {
+  return prisma.planEstudio.findMany({
+    where:{
+      usuario_id: user_id
+    },
+    select:{
+      nombre_plan: true,
+      id_plan_estudio: true
+    }
+  })
+}

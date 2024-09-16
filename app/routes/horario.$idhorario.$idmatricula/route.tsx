@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, json } from "@re
 import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { createMatricula, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
-import { getCourses } from "prisma/models/courseModel";
+import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
 import { getProfesores } from "prisma/models/profesorModel";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getMovileLabs } from "prisma/models/movileLab";
@@ -13,6 +13,9 @@ import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
 import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
 import { getTimeSpanByMatricula, getTimeSpanSByHorarioDia } from "prisma/models/timeSpanModel";
 import rstyles from "./styles.css?url"
+import { useOptionalUser } from "~/utils";
+import { requireUser } from "~/.server/session";
+import { getUserById } from "prisma/models/userModel";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -512,10 +515,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const userId = await requireUser(request);
+  const user = await getUserById(userId);
+  const listaCursos = user?.role === "ADMIN" ? await getCourses() : await getCoursesByUserId(userId);
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
-  const listaCursos = await getCourses();
   const listaProfesores = await getProfesores();
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();

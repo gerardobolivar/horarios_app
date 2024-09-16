@@ -15,6 +15,20 @@ export const getCourses = async () => {
   });
 };
 
+export const getCoursesByUserId = async (usuario_id:number) =>{
+  return await prisma.curso.findMany({
+    where:{
+      plan:{
+        usuario_id: usuario_id
+      },
+    },
+    select:{
+      nombre: true,
+      id_curso: true
+    }
+  })
+}
+
 export const getCoursesbyPlan = async (plan_id: number) => {
   return await prisma.curso.findMany({
     where: { plan_id },

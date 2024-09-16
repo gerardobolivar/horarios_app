@@ -4,7 +4,7 @@ import { useOptionalUser } from "~/utils";
 
 export default function NavBar() {
   const user = useOptionalUser();
-  let username = user?.nombre_usuario.toLocaleUpperCase()
+  let username = user?.role === "ADMIN" ? `${user?.nombre_usuario.toLocaleUpperCase()} (ADMIN)`: user?.nombre_usuario.toLocaleUpperCase()
 
 
   const submit = useSubmit();

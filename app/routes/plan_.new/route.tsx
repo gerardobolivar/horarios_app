@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import { createPlan } from "prisma/models/planEstudioModel";
+import { requireUser } from "~/.server/session";
 
 export default function PlanNew() {
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
@@ -76,11 +77,11 @@ export default function PlanNew() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const userID = await requireUser(request);
   const formData = await request.formData();
   const name = String(formData.get("nombre"));
   const code = String(formData.get("codigo"));
-  const USER_ID = 1; // Dev purposes // This will be taken from session.
-  const plan =  await createPlan(name,code,USER_ID)
+  const plan =  await createPlan(name,code,userID)
   const planId = plan.id_plan_estudio
   
   return redirect(`/plan/${planId}`)
