@@ -1,10 +1,16 @@
+import { User } from "@prisma/client";
 import { useSubmit } from "@remix-run/react";
 import { Link } from "react-router-dom";
 import { useOptionalUser } from "~/utils";
 
-export default function NavBar() {
-  const user = useOptionalUser();
-  let username = user?.role === "ADMIN" ? `${user?.nombre_usuario.toLocaleUpperCase()} (ADMIN)`: user?.nombre_usuario.toLocaleUpperCase()
+
+type Props = {
+  user: User,
+}
+
+ const NavBar: React.FC<Props> = ({user}) => {
+
+  let username = `${user?.nombre_usuario.toLocaleUpperCase()} ${user.role !== "USER" ? `(${user.role})` :"" }`
 
 
   const submit = useSubmit();
@@ -28,35 +34,35 @@ export default function NavBar() {
       <hr className="hr divider"></hr>
       <nav className="navbar navbar-expand-lg mainNavBarmenu ">
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-          <li>
+          <li hidden={user.role === "GUEST"}>
             <Link to="/plan"
               preventScrollReset={true}
               className="navbar-brand d-flex nav-item" >Planes de estudio</Link>
           </li>
-          <li>
+          <li hidden={user.role !== "ADMIN"}>
             <Link 
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="/aula">Aulas</Link>
           </li>
-          <li>
+          <li hidden={user.role !== "ADMIN"}>
             <Link 
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="/movil">Laboratorios móviles</Link>
           </li>
-          <li>
+          <li hidden={user.role === "GUEST"}>
             <Link className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="/report">Mi reporte</Link>
           </li>
-          <li>
+          <li hidden={user.role === "GUEST"}>
             <Link
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="profesor">Profesores</Link>
           </li>
-          <li>
+          <li hidden={user.role !== "ADMIN"}>
             <Link
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
@@ -73,3 +79,5 @@ export default function NavBar() {
     </div>
   )
 }
+
+export default NavBar;

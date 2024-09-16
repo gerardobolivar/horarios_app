@@ -1,11 +1,19 @@
+import { User } from '@prisma/client';
 import { Link } from 'react-router-dom';
-
-export default function CicleCard(props) {
-  let title = props.innerText;
-  let href = props.url;
-  const isAdmin = props.isAdmin;
-  const cicloID = props.cicloID
-  const isActiveCycle = props.isActiveCycle
+type Props = {
+  innerText: string | undefined,
+  url: string,
+  isAdmin: boolean | undefined,
+  cicloID: number | undefined,
+  active: boolean | undefined,
+  isActiveCycle: boolean | undefined
+  user: User | undefined,
+}
+ 
+const CicleCard: React.FC<Props> = ({innerText, url, isAdmin, cicloID, isActiveCycle, user}) => {
+  let title = innerText;
+  let href = url;  
+  
   return (<>
     <div className='cyCard'>
       <div className='gear_container' hidden={!isAdmin}>
@@ -14,7 +22,7 @@ export default function CicleCard(props) {
         </Link>
       </div>
       <Link to={href} className={`${!isActiveCycle ? "disableLink noDecoration" : "noDecoration"}`}>
-        <div className="cicleCard" style={{marginTop:`${!isAdmin ? "4vh !important":""}`}}>
+        <div className={`cicleCard ${user?.role !== "ADMIN" ? "cicleCardHeight":""}`} >
           <div className="cardBody">
             <h5 className="cardTitle">{title}</h5>
           </div>
@@ -24,3 +32,5 @@ export default function CicleCard(props) {
   </>
   )
 }
+
+export default CicleCard;

@@ -14,7 +14,15 @@ export default function HomeAdmin(){
   const data = useLoaderData<typeof loader>();
   const activeCycle = data.activeCycle;
   const cicleList = data.ciclos.map((c)=>{
-    return <CicleCard key={c?.ciclo_id} innerText={c?.nombre} url={`/horario/${c?.horario_id}`} active={c?.active} cicloID={c?.ciclo_id} isActiveCycle={c?.ciclo_id === activeCycle?.ciclo_id} isAdmin={user?.role === "ADMIN"}></CicleCard>
+    return <CicleCard 
+              key={c?.ciclo_id}
+              innerText={c?.nombre}
+              url={`/horario/${c?.horario_id}`}
+              active={c?.active}
+              cicloID={c?.ciclo_id}
+              isActiveCycle={c?.ciclo_id === activeCycle?.ciclo_id}
+              isAdmin={user?.role === "ADMIN"}
+              user={user}></CicleCard>
   }) 
   
 return (

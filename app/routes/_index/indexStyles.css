@@ -14,6 +14,10 @@
   scale: 1.02;
 }
 
+.cicleCardHeight{
+  margin-top: 4vh !important;
+}
+
 .cicleCardContainer{
   display: grid !important;
   grid-template-columns: repeat(3,300px);

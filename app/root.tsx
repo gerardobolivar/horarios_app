@@ -5,6 +5,8 @@ import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import MainLayout from "./routes/shared/Main";
 import { getUser, requireUser } from "./.server/session";
+import { createContext } from "react";
+import { useOptionalUser } from "./utils";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
@@ -37,10 +39,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const data = useLoaderData<typeof loader>();
   const user = data.user;
-  
 
   return <div>
-    {user ? <MainLayout /> : null}
+    {user ? <MainLayout user={user}/> : null}
     <Outlet/>
   </div>
 }
