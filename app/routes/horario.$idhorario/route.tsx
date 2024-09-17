@@ -13,6 +13,7 @@ import { Matricula, Planes } from "~/types/horarioTypes";
 import VirtualCourses from "./VirtualCourses";
 import { getTimesSpanBySchedule } from "prisma/models/timeSpanModel";
 import { useOptionalUser } from "~/utils";
+import { requireUser } from "~/.server/session";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -100,6 +101,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 }
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const userID = await requireUser(request);
   const url = new URL(request.url);
   const id_plan_estudioParam = url.searchParams.get("planEstudios");
   const id_plan_estudio = Number(id_plan_estudioParam) === 0 ? undefined : id_plan_estudioParam !== null ? Number(id_plan_estudioParam) : undefined;
