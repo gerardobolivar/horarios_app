@@ -14,8 +14,20 @@ function handleClick(event:any){
 const style = {textDecoration:"none",
 }
 
-const CourseCell: React.FC<{curso:Curso,classN:string,hiddenCell:boolean,matriculaId:number,horarioId:number}> = ({curso,classN,hiddenCell,matriculaId,horarioId}) =>{
-  return <Link style={style} to={`/horario/${horarioId}/${matriculaId}`}><div className={`${classN} course-cell`}  onDoubleClick={handleDoubleClick}>
+type Props = {
+  curso:Curso,
+  classN:string,
+  hiddenCell:boolean,
+  matriculaId:number,
+  horarioId:number,
+  aulaID:number
+}
+
+const CourseCell: React.FC<Props> = ({curso,classN,hiddenCell,matriculaId,horarioId, aulaID}) =>{
+  return <Link
+          style={style}
+          to={`/horario/${horarioId}/${matriculaId}`} 
+          state={{aulaID: aulaID}}><div className={`${classN} course-cell`}  onDoubleClick={handleDoubleClick}>
     <span>{hiddenCell?null:curso.nombre}</span>
   </div>
   </Link>

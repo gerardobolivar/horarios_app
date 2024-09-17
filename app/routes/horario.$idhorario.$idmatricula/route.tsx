@@ -13,7 +13,6 @@ import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
 import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
 import { getTimeSpanByMatricula, getTimeSpanSByHorarioDia } from "prisma/models/timeSpanModel";
 import rstyles from "./styles.css?url"
-import { useOptionalUser } from "~/utils";
 import { requireUser } from "~/.server/session";
 import { getUserById } from "prisma/models/userModel";
 
@@ -28,7 +27,7 @@ export default function HorarioModal() {
   const location = useLocation();
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
-  const aula = location.state?.aula_id;
+  let aula = location.state?.aulaID;
   const showVirtual: boolean = location.state?.showVirtual;
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
@@ -37,7 +36,7 @@ export default function HorarioModal() {
   const [warningShown, setWarningShown] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const submit = useSubmit();
-
+  
   let filters = {
     "planEstudios": "",
     "dia": "",
@@ -227,11 +226,7 @@ export default function HorarioModal() {
     </option>
   })
 
-  let timeList = matricula ? Object.keys(TIMES).map((time) => {
-    return <option value={Number(time)} key={Number(time)}>
-      {`${TIMES[Number(time)]}`}
-    </option>
-  }) : timeSlots.map((time) => {
+  let timeList = timeSlots.map((time) => {
     return <option value={Number(time)} key={Number(time)}>
       {`${TIMES[Number(time)]}`}
     </option>
@@ -546,7 +541,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
         }
       },
       (e) => {
-        //console.log(e);
+        console.error(e);
       })
   }
   time_white_list = time_white_list === undefined ? {} : time_white_list

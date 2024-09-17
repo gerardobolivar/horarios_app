@@ -34,7 +34,8 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
                   horarioId={horarioId}
                   matriculaId={matricula.matricula.matricula_id}
                   classN="time-slot" curso={matricula.matricula.group.curso}
-                  hiddenCell={false}>
+                  hiddenCell={false}
+                  aulaID={aula_id}>
                 </CourseCell></div>:
               <div key={slot + nombreAula} className="empty-slot"></div>
           }
@@ -48,7 +49,7 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
               classN={""}
               key={slot + nombreAula}
               curso={matricula.matricula.group.curso}
-              hiddenCell={true}></CourseCell>:
+              hiddenCell={true} aulaID={aula_id}></CourseCell>:
             <div key={slot + nombreAula} className="empty-slot"></div>
           }
         }
@@ -62,7 +63,8 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
             hiddenCell={false}
             classN={"single-slot"}
             key={slot}
-            curso={matricula.matricula.group.curso}>
+            curso={matricula.matricula.group.curso}
+            aulaID={aula_id}>
           </CourseCell> :
             <Link
               key={slot+aula_id}
