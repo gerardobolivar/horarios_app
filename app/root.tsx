@@ -4,9 +4,7 @@ import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import MainLayout from "./routes/shared/Main";
-import { getUser, requireUser } from "./.server/session";
-import { createContext } from "react";
-import { useOptionalUser } from "./utils";
+import { getUser } from "./.server/session";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
@@ -40,7 +38,7 @@ export default function App() {
   const data = useLoaderData<typeof loader>();
   const user = data.user;
 
-  return <div>
+  return <div className="app_container container-xxl">
     {user ? <MainLayout user={user}/> : null}
     <Outlet/>
   </div>

@@ -3,6 +3,11 @@ body{
   box-sizing: border-box;
 }
 
+.app_container{
+}
+
+
+
 .infoText {
     display: flex;
     flex-direction: column;
@@ -46,6 +51,15 @@ body{
 .mainNavBarmenu{
   background-color: #ffffff !important;
   height: 50px;
+}
+
+.mainNavBarmenu > ul{
+  margin-left: 50px;
+}
+
+.mainNavBarmenu > ul > li:hover{
+  text-decoration-line: underline;
+  text-decoration-color: #204C6F;
 }
 
 .mainNavBarmenu > a {
