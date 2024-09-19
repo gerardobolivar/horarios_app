@@ -1,3 +1,6 @@
+import { SubmitFunction } from "@remix-run/react";
+import { TimeSpan } from "~/types/horarioTypes";
+
 export function getTimeStamp(matricula_date: string) {
   let date = new Date(matricula_date);
   let stringDate = date.toLocaleDateString();
@@ -49,34 +52,65 @@ export async function validEdgeTimeSpans(startTime: number, endTime: number, hor
   return result;
 }
 
-//Migrating functions to this file.
-// export function validateTimeSpans(errorList:string[],setErrorList:any,setAreThereErrors:any): boolean {
-//   const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
-//   const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
-//   let approvedValidation = false;
-//   const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
+export async function validateTimeSpans(
+    data:any,
+    filters:any,
+    aula:string,
+    errorList:string[],
+    setErrorList: React.Dispatch<React.SetStateAction<string[]>>,
+    setAreThereErrors:React.Dispatch<React.SetStateAction<boolean>>): Promise<boolean>{
 
-//   if (initialTime > endTime) {
-//     if (!hasRangeError) {
-//       const newList = [...errorList];
-//       newList.push("INAVALID_TIME_RANGE")
-//       setErrorList(newList)
-//       setAreThereErrors(true);
-//     }
-//   } else if (hasRangeError) {
-//     const newList = errorList.filter(e => e !== "INAVALID_TIME_RANGE")
-//     setErrorList(newList);
-//     if (newList.length < 1) { setAreThereErrors(false) }
-//   }
-//   else {
-//     approvedValidation = true;
+  const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
+  const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
+  const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
+  const whiteListKeys = Object.keys(data.time_white_list);
+  const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia, Number(aula), whiteListKeys);
+  let approvedValidation = false;
 
-//   }
-//   return approvedValidation;
-// }
+  if (initialTime > endTime || !edgesSafe) {
+    if (!hasRangeError) {
 
-// export function checkForErrors(event: any,errorList:string[],setErrorList:any,setAreThereErrors:any) {
-//   if (!validateTimeSpans(errorList,setErrorList,setAreThereErrors)) {
-//     event.preventDefault();
-//   }
-// }
+      const newList = [...errorList];
+      newList.push("INAVALID_TIME_RANGE")
+      setErrorList(newList)
+      setAreThereErrors(true);
+
+    }
+  } 
+  else if (hasRangeError) {
+
+    const newList = errorList.filter(e => e !== "INAVALID_TIME_RANGE")
+    setErrorList(newList);
+
+    if (newList.length < 1) { setAreThereErrors(false) }
+
+  }
+  else {
+
+    approvedValidation = true;
+
+  }
+
+  return approvedValidation;
+}
+
+export async function checkForErrors(event: React.FormEvent<HTMLFormElement>, areThereErrors:boolean, formRef:React.RefObject<HTMLFormElement>, timeSpanList:TimeSpan[], submit:SubmitFunction){
+  
+  if (areThereErrors) {
+    event.preventDefault();
+    throw "INVALID_FORM_STATE"
+  } else {
+    event.preventDefault();
+
+
+    if (formRef.current) {
+      const formData = new FormData(formRef.current);
+      formData.append("time_spans", JSON.stringify(timeSpanList));
+      const submitter = (event.nativeEvent as SubmitEvent).submitter
+      const intent = (submitter as HTMLButtonElement).value
+      formData.append("intent", intent);
+      submit(formData, { method: "POST" });
+    }
+  }
+
+}

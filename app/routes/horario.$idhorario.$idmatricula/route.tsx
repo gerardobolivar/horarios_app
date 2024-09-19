@@ -1,20 +1,12 @@
-import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Form, Link, redirect, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
+import { LinksFunction } from "@remix-run/node";
+import { Form, Link, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { createMatricula, getMatriculaById, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
-import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
-import { getProfesores } from "prisma/models/profesorModel";
-import { getAula, getAulas } from "prisma/models/aulaModel";
-import { getMovileLabs } from "prisma/models/movileLab";
-import { LockTime, SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
-import { TIMESLOTS } from "~/.server/allowedTimes";
-import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
+import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
-import { getTimeStamp, handleModalidadChange, validEdgeTimeSpans } from "./utils";
-import { getTimeSpanByMatricula, getTimeSpanSByHorarioDia } from "prisma/models/timeSpanModel";
+import { checkForErrors, getTimeStamp, handleModalidadChange, validateTimeSpans, } from "./utils";
 import rstyles from "./styles.css?url"
-import { requireUser } from "~/.server/session";
-import { getUserById } from "prisma/models/userModel";
+import MatriculaDetailsLoader from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
+import MatriculaDetailsAction from "~/.server/Controller/horario.$idhorario.$idmatricula/action";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,7 +65,7 @@ export default function HorarioModal() {
     }
 
   }, [])
-
+ 
   useEffect(() => {
     (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
   }, [dia])
@@ -85,56 +77,6 @@ export default function HorarioModal() {
       setBtnDisabled(false);
     }
   }, [navigation.state])
-
-
-
-  async function validateTimeSpans(): Promise<boolean> {
-    const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
-    const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
-    const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
-    const whiteListKeys = Object.keys(data.time_white_list);
-    const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia, aula, whiteListKeys);
-
-    let approvedValidation = false;
-
-
-    if (initialTime > endTime || !edgesSafe) {
-      if (!hasRangeError) {
-        const newList = [...errorList];
-        newList.push("INAVALID_TIME_RANGE")
-        setErrorList(newList)
-        setAreThereErrors(true);
-      }
-    } else if (hasRangeError) {
-      const newList = errorList.filter(e => e !== "INAVALID_TIME_RANGE")
-      setErrorList(newList);
-      if (newList.length < 1) { setAreThereErrors(false) }
-    }
-    else {
-      approvedValidation = true;
-
-    }
-    return approvedValidation;
-  }
-
-  async function checkForErrors(event: React.FormEvent<HTMLFormElement>) {
-    if (areThereErrors) {
-      event.preventDefault();
-      throw "INVALID_FORM_STATE"
-    } else {
-      event.preventDefault();
-
-
-      if (formRef.current) {
-        const formData = new FormData(formRef.current);
-        formData.append("time_spans", JSON.stringify(timeSpanList));
-        const submitter = (event.nativeEvent as SubmitEvent).submitter
-        const intent = (submitter as HTMLButtonElement).value
-        formData.append("intent", intent);
-        submit(formData, { method: "POST" });
-      }
-    }
-  }
 
   function handleAulaChange(event: any) {
     const params = new URLSearchParams();
@@ -262,7 +204,9 @@ export default function HorarioModal() {
           method="post"
           autoComplete="off"
           name="form"
-          onSubmit={checkForErrors}
+          onSubmit={(e)=>{
+            checkForErrors(e,areThereErrors,formRef,timeSpanList,submit)
+          }}
           ref={formRef}
           preventScrollReset>
           <input hidden={true} defaultValue={createSearchQuery(filters)} name="filters"></input>
@@ -387,7 +331,9 @@ export default function HorarioModal() {
                       <select
                         name="horaInicio"
                         id="horaInicio"
-                        onClick={validateTimeSpans}
+                        onClick={()=>{
+                          validateTimeSpans(data,filters,aula,errorList,setErrorList,setAreThereErrors)
+                        }}
                         hidden={matricula?.group?.completed}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                         {timeList}
@@ -399,7 +345,9 @@ export default function HorarioModal() {
                       <select
                         name="horaFin"
                         id="horaFin"
-                        onClick={validateTimeSpans}
+                        onClick={()=>{
+                          validateTimeSpans(data,filters,aula,errorList,setErrorList,setAreThereErrors)
+                        }}
                         hidden={matricula?.group?.completed}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                         {timeList}
@@ -465,101 +413,12 @@ export default function HorarioModal() {
   </div>
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const curso = Number(formData.get("cursoHorario"));
-  const profesor = Number(formData.get("profesorHorario"));
-  const dia = String(formData.get("diaHorario"));
-  const horaInicio = Number(formData.get("horaInicio"));
-  const horaFin = Number(formData.get("horaFin")) + 1;
-  const modalidad = (formData.get("modalidadHorario")) as string;
-  const aula = Number(formData.get("aulaHorario"));
-  const timeSpans = formData.get("time_spans") as string;
-  const mobileLab = Number(formData.get("movilHorario")) === 0 ? null : Number(formData.get("movilHorario"));
-  const intent = formData.get("intent");
-  const horarioId = Number(params.idhorario);
-  const matriculaID = Number(params.idmatricula);
-  const searchQueries = formData.get("filters");
-  const grupo = Number(formData.get("grupo"))
-  const timeSpansJson = JSON.parse(timeSpans)
 
-  if (intent === "create") {
-    try {
-      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, mobileLab).then(() => {
-        return redirect(`/horario/${horarioId}/${searchQueries}`)
-      }).catch(e => {
-        console.error(e);
-        return [];
-      })
-    } catch (error) {
-      console.error(error);
-      return redirect("/error")
-    }
-
-  } else if (intent === "update") {
-    const newTimeSpansJson = timeSpansJson.filter((t:any)=>!Object.hasOwn(t,"fecha_creado"))
-    await updateMatricula(newTimeSpansJson, matriculaID, profesor, mobileLab);
-    return redirect(`/horario/${horarioId}/${searchQueries}`)
-  } else if (intent == "eliminar") {
-    const matricula = await removeMatricula(matriculaID).catch(e => {
-      console.error(e);
-    });
-    return redirect(`/horario/${horarioId}/${searchQueries}`)
-  }
-  return null;
-}
-
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const userId = await requireUser(request);
-  const user = await getUserById(userId);
-  const listaCursos = user?.role === "ADMIN" ? await getCourses() : await getCoursesByUserId(userId);
-  const horarioId: number = Number(params.idhorario);
-  const matriculaId: number = Number(params.idmatricula);
-  const isNewMatricula: boolean = params.idmatricula === "new";
-  const listaProfesores = await getProfesores();
-  const listaAulas = await getAulas();
-  const listaMoviles = await getMovileLabs();
-  const url = new URL(request.url);
-  const dia = url.searchParams.get("dia") || "LUNES";
-  const aula = Number(url.searchParams.get("aula"));
-
-  const matriculaTimeSpans: TimeSpan[] = !!matriculaId ? await getTimeSpanByMatricula(matriculaId).then(r => r).catch(e => {
-    console.error(e);
-    return [];
-  }) : []
-
-  let time_white_list;
-  if (aula !== 0) {
-    time_white_list = await getAula(aula).then(
-      async (result) => {
-        if (result?.identificador === 999) {
-          return generateTimeWhiteList([], dia, aula);
-        }
-        else {
-          const lockedTimesByHorario: LockTime[] = await getTimeSpanSByHorarioDia(horarioId, dia);
-          return generateTimeWhiteList(lockedTimesByHorario, dia, aula);
-        }
-      },
-      (e) => {
-        console.error(e);
-      })
-  }
-  time_white_list = time_white_list === undefined ? {} : time_white_list
-
-  return json({
-    horarioId: horarioId,
-    isNewMatricula: isNewMatricula,
-    listaCursos: listaCursos,
-    listaProfesores: listaProfesores,
-    listaAulas: listaAulas,
-    listaMoviles: listaMoviles,
-    matriculaTimeSpans: matriculaTimeSpans,
-    times: TIMESLOTS,
-    time_white_list: time_white_list,
-    matricula: isNewMatricula ? null : await getMatriculaById(matriculaId)
-  })
-}
+export const action = MatriculaDetailsAction;
+export const loader = MatriculaDetailsLoader;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rstyles },
 ];
+
+//569
