@@ -1,3 +1,9 @@
+:root{
+  --ucr_blue: #204C6F;
+  --ucr_light_blue: #00C0F3;
+  --ucr_gray: #D9D9D9
+}
+
 body{
   background-color: #D9D9D9 !important ;
   box-sizing: border-box;

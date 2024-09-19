@@ -296,7 +296,7 @@ export default function HorarioModal() {
                   </div>
 
                   <div className="section">
-                    <p>{isNewMatricula ?  "": matricula?.group?.completed ? null:`Horas restantes: ${matricula?.group?.Ahours}`}</p>
+                    <p>{isNewMatricula ?  "": matricula?.group?.completed ? null:`Horas por asignar: ${matricula?.group?.Ahours}`}</p>
                     <span hidden={matricula?.group?.completed}>
                       <label htmlFor="diaHorario" >Día:</label>
                       <select

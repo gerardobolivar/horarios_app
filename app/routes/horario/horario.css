@@ -1,7 +1,6 @@
 .schedule {
   display: grid;
   column-gap: 1px;
-
 }
 
 .time-column, .classroom-column {
@@ -13,11 +12,12 @@
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   padding: 5px;
-  overflow: hidden;  
+  overflow: hidden;
 }
 
 .empty-slot {
-  border: 1px solid #eee;
+  border: 1px solid var(--ucr_blue);
+  border-bottom: 0px;
 }
 
 .course-cell,.empty-slot{
@@ -45,9 +45,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  
 }
 
 .time-cell{
 border-width: 5px ;
-border:#000;
+border:1px solid var(--ucr_blue);
+border-bottom: 0px;
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center;
+
+}
+
+.time-cell p{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.time-cell:last-child{
+  border-bottom:1px solid var(--ucr_blue);
+}
+
+.classroom-column > a:last-child {
+  border-bottom:1px solid var(--ucr_blue);
+}
+
+.classroom-column{
+  margin-left: 1px; 
 }
