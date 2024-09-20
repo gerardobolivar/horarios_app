@@ -29,13 +29,14 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
               <div 
                 key={slot + nombreAula}
                 className="merged-cell"
-                style={{ height: `${hoursTakenByCourse(matricula) * 50}px` }}>
+                style={{ height: `${hoursTakenByCourse(matricula) * 50}px`}}>
                 <CourseCell
                   horarioId={horarioId}
                   matriculaId={matricula.matricula.matricula_id}
                   classN="time-slot" curso={matricula.matricula.group.curso}
                   hiddenCell={false}
-                  aulaID={aula_id}>
+                  aulaID={aula_id}
+                  color={matricula.matricula.color}>
                 </CourseCell></div>:
               <div key={slot + nombreAula} className="empty-slot"></div>
           }
@@ -49,7 +50,7 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
               classN={""}
               key={slot + nombreAula}
               curso={matricula.matricula.group.curso}
-              hiddenCell={true} aulaID={aula_id}></CourseCell>:
+              hiddenCell={true} aulaID={aula_id} color={matricula.matricula.color}></CourseCell>:
             <div key={slot + nombreAula} className="empty-slot"></div>
           }
         }
@@ -64,7 +65,8 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
             classN={"single-slot"}
             key={slot}
             curso={matricula.matricula.group.curso}
-            aulaID={aula_id}>
+            aulaID={aula_id}
+            color={matricula.matricula.color}>
           </CourseCell> :
             <Link
               key={slot+aula_id}

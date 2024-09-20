@@ -139,6 +139,12 @@ export default function HorarioModal() {
     }
   }
 
+  function manageColorChange(event:React.FormEvent<HTMLInputElement>){
+    const colorInput = event.currentTarget;
+    console.log(colorInput.value);
+
+  }
+
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
     return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}`
   }
@@ -286,6 +292,18 @@ export default function HorarioModal() {
                         max="100"
                         defaultValue={matricula?.group ? matricula?.group?.groupNumber : ""}
                       />
+                    </span>
+                    <span>
+                      <label htmlFor="color">Color</label>
+                      <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"}/>
+                      <datalist id="suggestedColors">
+                        <option value="#00c0f3"/>
+                        <option value="#005da4"/>
+                        <option value="#f37021"/>
+                        <option value="#6dc067"/>
+                        <option value="#7b3400"/>
+                        <option value="#ffe06a"/>
+                      </datalist>
                     </span>
 
                     <span hidden={isNewMatricula}>

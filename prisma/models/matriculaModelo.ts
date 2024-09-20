@@ -125,6 +125,7 @@ export const getMatriculaById = async (matricula_id: number) => {
       modalidad: true,
       laboratorio_movil: true,
       time_spans: true,
+      color: true,
       group: {
         include: {
           curso: true,
@@ -141,6 +142,7 @@ export const createMatricula = async (
   modalidad: string,
   profesor_id: number,
   grupo: number,
+  color: string,
   laboratorio_movil_id?: number | null) => {
   return prisma.$transaction(async (tx) => {
     try {
@@ -148,6 +150,7 @@ export const createMatricula = async (
         data: {
           horario_id: horario_id,
           modalidad: modalidad,
+          color: color,
           laboratorio_movil_id: laboratorio_movil_id,
         }
       }).then((r) => {
@@ -219,6 +222,7 @@ export const updateMatricula = async (
   time_spans: TimeSpan[],
   matricula_id: number,
   profesor_id: number,
+  color: string,
   laboratorio_movil_id?: number | null) => {
   return await prisma.$transaction(async (tx) => {
     const queryfiedTimesSpans: TimeSpans = queryfi(time_spans, matricula_id);
@@ -253,12 +257,13 @@ export const updateMatricula = async (
       throw new Error("ILLEGAL_TIME_ALLOCATION");
     }
 
-
+    const formattedColor = color.slice(1,7);
 
     await tx.matricula.update({
       where: { matricula_id: matricula_id },
       data: {
-        laboratorio_movil_id: laboratorio_movil_id
+        laboratorio_movil_id: laboratorio_movil_id,
+        color: formattedColor
       }
     }).catch(e => { throw new Error(e) })
 
@@ -334,6 +339,18 @@ function queryfi(time_spans: TimeSpan[], matricula: any | number): TimeSpans {
       dia: t.dia,
       hora_inicio: t.hora_inicio,
       hora_final: t.hora_final
+    }
+  })
+}
+
+export function getColorByMatriculaId(matricula_id:number){
+  return prisma.matricula.findUnique({
+    where: {
+      matricula_id: matricula_id
+    },
+    select:{
+      matricula_id: true,
+      color: true
     }
   })
 }

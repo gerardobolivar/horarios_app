@@ -18,10 +18,11 @@ export default async function MatriculaDetailsAction({ request, params }: Action
   const searchQueries = formData.get("filters");
   const grupo = Number(formData.get("grupo"))
   const timeSpansJson = JSON.parse(timeSpans)
+  const color = String(formData.get("color"));
 
   if (intent === "create") {
     try {
-      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, mobileLab).then(() => {
+      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, color, mobileLab).then(() => {
         return redirect(`/horario/${horarioId}/${searchQueries}`)
       }).catch(e => {
         console.error(e);
@@ -34,7 +35,7 @@ export default async function MatriculaDetailsAction({ request, params }: Action
 
   } else if (intent === "update") {
     const newTimeSpansJson = timeSpansJson.filter((t:any)=>!Object.hasOwn(t,"fecha_creado"))
-    await updateMatricula(newTimeSpansJson, matriculaID, profesor, mobileLab);
+    await updateMatricula(newTimeSpansJson, matriculaID, profesor, color, mobileLab);
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
     const matricula = await removeMatricula(matriculaID).catch(e => {

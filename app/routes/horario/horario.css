@@ -9,8 +9,10 @@
 }
 
 .course-cell {
-  background-color: #f0f0f0;
+  color: var(--ucr_blue);
+  font-weight: bold;
   border: 1px solid #ccc;
+  border-radius: 10px;
   padding: 5px;
   overflow: hidden;
 }
