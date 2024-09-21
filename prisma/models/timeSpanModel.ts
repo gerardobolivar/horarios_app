@@ -85,6 +85,7 @@ export const getTimesSpanBySchedule = async (horario_Id: number, dia?:string, id
           group: {
             include: {
               curso: true,
+              profesor: true,
             }
           }
         }
