@@ -11,6 +11,7 @@ interface TimeSpan{
     hora_inicio: number;
     hora_final: number;
     dia: string;
+    type: string
     //fecha_creado: Date;
     //fecha_modificado: Date;
 }

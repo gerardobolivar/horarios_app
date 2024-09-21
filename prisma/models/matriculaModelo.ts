@@ -150,7 +150,7 @@ export const createMatricula = async (
         data: {
           horario_id: horario_id,
           modalidad: modalidad,
-          color: color,
+          color: color.slice(1,7),
           laboratorio_movil_id: laboratorio_movil_id,
         }
       }).then((r) => {
@@ -163,7 +163,8 @@ export const createMatricula = async (
           aula_id: t.aula_id,
           dia: t.dia,
           hora_inicio: t.hora_inicio,
-          hora_final: t.hora_final
+          hora_final: t.hora_final,
+          type: t.type
         }
       })
 
@@ -338,7 +339,8 @@ function queryfi(time_spans: TimeSpan[], matricula: any | number): TimeSpans {
       aula_id: t.aula_id,
       dia: t.dia,
       hora_inicio: t.hora_inicio,
-      hora_final: t.hora_final
+      hora_final: t.hora_final,
+      type: t.type
     }
   })
 }

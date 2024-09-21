@@ -5,14 +5,16 @@ export const createTimeSpan = async (
   aula_id: number,
   dia: string,
   hora_inicio: number,
-  hora_final: number) => {
+  hora_final: number,
+  type?:string) => {
   return await prisma.time_span.create({
     data: {
       matricula_id: matricula_id,
       hora_inicio: hora_inicio,
       hora_final: hora_final,
       aula_id: aula_id,
-      dia: dia
+      dia: dia,
+      type: type,
     }
   })
 }

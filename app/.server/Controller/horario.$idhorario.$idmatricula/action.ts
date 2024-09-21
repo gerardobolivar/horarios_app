@@ -19,6 +19,8 @@ export default async function MatriculaDetailsAction({ request, params }: Action
   const grupo = Number(formData.get("grupo"))
   const timeSpansJson = JSON.parse(timeSpans)
   const color = String(formData.get("color"));
+  console.log(color);
+  
 
   if (intent === "create") {
     try {
@@ -28,6 +30,9 @@ export default async function MatriculaDetailsAction({ request, params }: Action
         console.error(e);
         return [];
       })
+      console.log(color);
+      
+      return null
     } catch (error) {
       console.error(error);
       return redirect("/error")

@@ -103,7 +103,8 @@ export default function HorarioModal() {
       aula_id: isVirtual && !isNewMatricula ? Number((document.querySelector('option[hidden]') as HTMLOptionElement).value) : timeSpan.aula_id,
       dia: timeSpan.dia,
       hora_inicio: timeSpan.hora_inicio,
-      hora_final: ++timeSpan.hora_final
+      hora_final: ++timeSpan.hora_final,
+      type: timeSpan.type
     }
     const oldList = [...timeSpans];
     oldList.push(timeSPanObject);
@@ -116,7 +117,8 @@ export default function HorarioModal() {
       matricula_id: data.matricula?.matricula_id as number,
       hora_inicio: Number((document.getElementById("horaInicio") as HTMLSelectElement).value),
       hora_final: Number((document.getElementById("horaFin") as HTMLSelectElement).value),
-      dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value
+      dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
+      type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
     }
     addTimeSpanToList(timeSpanList, timeSpan);
   }
@@ -369,6 +371,14 @@ export default function HorarioModal() {
                         hidden={matricula?.group?.completed}>
                         <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
                         {timeList}
+                      </select>
+                    </span>
+                    <span hidden={matricula?.group?.completed}>
+                      <label htmlFor="tipoHoras">Tipo:</label>
+                      <select name="tipoHoras" defaultValue="T">
+                        <option value="T">Teórico</option>
+                        <option value="P">Práctico</option>
+                        <option value="TP">Teórico-Práctico</option>
                       </select>
                     </span>
                     <span hidden={!!matricula?.group?.completed}>

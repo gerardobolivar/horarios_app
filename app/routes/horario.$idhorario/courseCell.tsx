@@ -30,6 +30,7 @@ const CourseCell: React.FC<Props> = ({curso,classN,hiddenCell,matriculaId,horari
   const groupNumber = matricula.matricula.group.groupNumber
   const groupNumberFormatted = `G${(Number(groupNumber) < 10 ? `0${(groupNumber)}` : groupNumber)}`;
   const formattedTeacherName = `${matricula.matricula.group.profesor.nombre} ${matricula.matricula.group.profesor.primer_apellido} ${matricula.matricula.group.profesor.segundo_apellido}` 
+  const hoursType = matricula.type === null ? "?" : matricula.type
   
   return <Link
           style={style}
@@ -37,7 +38,7 @@ const CourseCell: React.FC<Props> = ({curso,classN,hiddenCell,matriculaId,horari
           state={{aulaID: aulaID}}><div style={styleCell} className={`${classN} course-cell`}  onDoubleClick={handleDoubleClick}>
     <span>
       <p>
-        {hiddenCell?null:`${curso.nombre} - ${groupNumberFormatted} - ${formattedTeacherName} - ${curso.tipoCurso}`}
+        {hiddenCell?null:`${curso.nombre} - ${groupNumberFormatted} - ${formattedTeacherName} - ${hoursType}`}
       </p>
     </span>
   </div>
