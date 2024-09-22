@@ -1,14 +1,13 @@
-import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node"
+import { LinksFunction } from "@remix-run/node"
 import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
-import { getAulas, removeAula } from "prisma/models/aulaModel";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import modalStyles from "~/modals/modalStyles.css?url";
 import ConfirmationModal from "~/modals/ConfirmationModal";
-import { requireUser } from "~/.server/session";
-import { getUserById } from "prisma/models/userModel";
+import actionAula from "~/.server/Controller/aula/action";
+import loaderAula from "~/.server/Controller/aula/loader";
 
 const ROUTE_TAG = "Aulas";
 
@@ -116,38 +115,8 @@ export default function Aulas() {
   )
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const userId = await requireUser(request);
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  const currentAula = Number(formData.get("elementID"))
-  
-  if(intent === "delete_aula"){
-    return await removeAula(currentAula).then(()=>{
-      return redirect("/aula")
-    },(e)=>{
-      switch (e.code) {
-        case "P2003":
-          console.error(`A constraint failed on in the field: ${e.meta.field_name}, in the model ${e.meta.modelName}`);
-          throw redirect("/aula",405)
-        default:
-          return console.error(e);
-      }
-    })
-  }
-}
-
-export const loader = async ({ params, request}: LoaderFunctionArgs) => {
-  const userId = await requireUser(request);
-  const user = await getUserById(userId)
-  if(user?.role !== "ADMIN"){
-    return redirect("/")
-  }
-  
-  const listaAulas = await getAulas();
-
-  return json({ listaAulas: listaAulas })
-}
+export const action = actionAula;
+export const loader = loaderAula;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },

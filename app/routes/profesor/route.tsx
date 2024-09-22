@@ -9,6 +9,8 @@ import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
 import { requireUser } from "~/.server/session";
 import { getUserById } from "prisma/models/userModel";
+import actionProfesor from "~/.server/Controller/profesor/action";
+import loaderProfesor from "~/.server/Controller/profesor/loader";
 
 const ROUTE_TAG = "Profesores";
 
@@ -114,29 +116,8 @@ export default function Profesor() {
   )
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  const currentProfesor = Number(formData.get("elementID"))
-
-  if(intent === "delete_profesor"){
-    await removeProfesor(currentProfesor);
-  }
-  return redirect("/profesor")
-}
-
-export const loader = async ({ params, request}: LoaderFunctionArgs) => {
-  const userId = await requireUser(request);
-  const user = await getUserById(userId);
-
-  if(user?.role === "GUEST"){
-    return redirect("/");
-  }
-  
-  const listaProfesores = await getProfesores();
-
-  return json({ listaProfesores: listaProfesores })
-}
+export const action = actionProfesor;
+export const loader = loaderProfesor;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
