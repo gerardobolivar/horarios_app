@@ -126,6 +126,8 @@ export const getMatriculaById = async (matricula_id: number) => {
       laboratorio_movil: true,
       time_spans: true,
       color: true,
+      user_id: true,
+      user: true,
       group: {
         include: {
           curso: true,
@@ -143,6 +145,7 @@ export const createMatricula = async (
   profesor_id: number,
   grupo: number,
   color: string,
+  user_id: number,
   laboratorio_movil_id?: number | null) => {
   return prisma.$transaction(async (tx) => {
     try {
@@ -151,6 +154,7 @@ export const createMatricula = async (
           horario_id: horario_id,
           modalidad: modalidad,
           color: color.slice(1,7),
+          user_id: user_id,
           laboratorio_movil_id: laboratorio_movil_id,
         }
       }).then((r) => {

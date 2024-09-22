@@ -1,7 +1,9 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { createMatricula, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
+import { requireUser } from "~/.server/session";
 
 export default async function MatriculaDetailsAction({ request, params }: ActionFunctionArgs) {
+  const user_id = await requireUser(request);
   const formData = await request.formData();
   const curso = Number(formData.get("cursoHorario"));
   const profesor = Number(formData.get("profesorHorario"));
@@ -19,20 +21,16 @@ export default async function MatriculaDetailsAction({ request, params }: Action
   const grupo = Number(formData.get("grupo"))
   const timeSpansJson = JSON.parse(timeSpans)
   const color = String(formData.get("color"));
-  console.log(color);
   
 
   if (intent === "create") {
     try {
-      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, color, mobileLab).then(() => {
+      return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, color, user_id, mobileLab).then(() => {
         return redirect(`/horario/${horarioId}/${searchQueries}`)
       }).catch(e => {
         console.error(e);
         return [];
       })
-      console.log(color);
-      
-      return null
     } catch (error) {
       console.error(error);
       return redirect("/error")

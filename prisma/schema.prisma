@@ -23,6 +23,7 @@ model User{
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
   hash Hash?
+  matriculas Matricula[]
 }
 
 model PlanEstudio{
@@ -97,6 +98,7 @@ model Matricula{
   matricula_id Int @id @default(autoincrement())
   laboratorio_movil LaboratorioMovil? @relation(fields: [laboratorio_movil_id], references: [id_lab_mov])
   horario Horario @relation(fields: [horario_id],references: [horario_id])
+  user User @relation(fields: [user_id],references: [id_usuario])
   modalidad String @default("PRESENCIAL")
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
@@ -105,6 +107,7 @@ model Matricula{
   horario_id Int
   color String @db.Char(6) @default("f0f0f0")
   group Group?
+  user_id Int @default(1)
   time_spans Time_span[]
 }
 
