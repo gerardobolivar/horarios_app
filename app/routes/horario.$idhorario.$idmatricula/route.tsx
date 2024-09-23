@@ -264,7 +264,8 @@ export default function HorarioModal() {
                       </p>
                     </span>
 
-                    <span>
+                    { hiddeOwnerOptions ? null :
+                      <span>
                       <label htmlFor="modalidadHorario" >Modalidad:</label>
                       <select
                         name="modalidadHorario"
@@ -283,7 +284,8 @@ export default function HorarioModal() {
                       </select>
                       <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
                     </span>
-
+                    }
+                    { hiddeOwnerOptions ? null :
                     <span>
                       <label htmlFor="movilHorario" >Laboratorio móvil</label>
                       <select
@@ -294,7 +296,8 @@ export default function HorarioModal() {
                         {movilesLista}
                       </select>
                     </span>
-
+                    }
+                    { hiddeOwnerOptions ? null :
                     <span>
                       <label htmlFor="grupo">Grupo</label>
                       <input
@@ -311,6 +314,8 @@ export default function HorarioModal() {
                         defaultValue={matricula?.group ? matricula?.group?.groupNumber : ""}
                       />
                     </span>
+                    }
+                    { hiddeOwnerOptions ? null :
                     <span>
                       <label htmlFor="color">Color</label>
                       <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} />
@@ -323,12 +328,14 @@ export default function HorarioModal() {
                         <option value="#ffe06a" />
                       </datalist>
                     </span>
-
+                    }
+                    { hiddeOwnerOptions ? null :
                     <span hidden={isNewMatricula}>
                       <p><strong>Modificado:</strong>
                         {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
                       </p>
                     </span>
+                    }
                   </div>
 
                   <div className="section">
