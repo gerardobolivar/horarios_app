@@ -30,7 +30,8 @@ export default function HorarioModal() {
   const formRef = useRef<HTMLFormElement>(null);
   const submit = useSubmit();
   const user = useOptionalUser();
-  const hiddeOwnerOptions = !(user?.id_usuario === matricula?.user_id || user?.role === "ADMIN")
+  const hiddeOwnerOptions = !(user?.id_usuario === matricula?.user_id || user?.role === "ADMIN");
+  const isOwner = user?.id_usuario === matricula?.user_id;
 
 
   let filters = {
@@ -186,7 +187,7 @@ export default function HorarioModal() {
     </option>
   })
 
-  let ownerTag = user?.role === "ADMIN" ? <p>{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null 
+  let ownerTag = user?.role === "ADMIN" ? <p>{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
 
   let timeSpanListRender = timeSpanList.map(t => {
     const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
@@ -237,10 +238,14 @@ export default function HorarioModal() {
                         name="cursoHorario"
                         id="cursoHorario"
                         required={true}
-                        defaultValue={matricula?.group?.curso.id_curso} >
+                        defaultValue={matricula?.group?.curso.id_curso}
+                        hidden={hiddeOwnerOptions}>
                         <option value={""}></option>
                         {cursosLista}
                       </select>
+                      <p hidden={!hiddeOwnerOptions}>
+                        {matricula?.group?.curso.nombre}
+                      </p>
                     </span>
 
                     <span>
@@ -249,10 +254,14 @@ export default function HorarioModal() {
                         name="profesorHorario"
                         id="profesorHorario"
                         required={true}
-                        defaultValue={matricula?.group?.profesor_id} >
+                        defaultValue={matricula?.group?.profesor_id}
+                        hidden={hiddeOwnerOptions}>
                         <option value={""}></option>
                         {profesoresLista}
                       </select>
+                      <p hidden={!hiddeOwnerOptions}>
+                        {`${matricula?.group?.profesor.nombre} ${matricula?.group?.profesor.primer_apellido} ${matricula?.group?.profesor.segundo_apellido}`}
+                      </p>
                     </span>
 
                     <span>

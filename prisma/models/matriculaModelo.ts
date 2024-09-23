@@ -131,8 +131,9 @@ export const getMatriculaById = async (matricula_id: number) => {
       group: {
         include: {
           curso: true,
+          profesor: true
         }
-      }
+      },
     }
   })
 }
