@@ -1,14 +1,13 @@
-import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node"
+import { LinksFunction } from "@remix-run/node"
 import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getMovileLabs, removeMobileLab } from "prisma/models/movileLab";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
-import { requireUser } from "~/.server/session";
-import { getUserById } from "prisma/models/userModel";
+import actionMobile from "~/.server/Controller/mobile/action";
+import { loaderMobile } from "~/.server/Controller/mobile/loader";
 
 const ROUTE_TAG = "Laboratorios Móviles";
 
@@ -115,27 +114,8 @@ export default function Profesor() {
   )
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  const currentLab = Number(formData.get("elementID"))
-
-  if(intent === "delete_laboratorio"){
-    await removeMobileLab(currentLab);
-  }
-  return redirect("/movil")
-}
-
-export const loader = async ({ params, request}: LoaderFunctionArgs) => {
-  const listaMovileLabs = await getMovileLabs();
-  const userId = await requireUser(request);
-  const user = await getUserById(userId);
-  if(user?.role !== "ADMIN"){
-    return redirect("/");
-  }
-  
-  return json({ listaMovileLabs: listaMovileLabs })
-}
+export const action = actionMobile; 
+export const loader = loaderMobile;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },

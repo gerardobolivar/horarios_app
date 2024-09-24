@@ -1,12 +1,10 @@
-import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Form, json, Link, Outlet, useLoaderData, useNavigate, useNavigation, useRouteError } from "@remix-run/react";
+import { LinksFunction } from "@remix-run/node";
+import { Form, Link, Outlet, useLoaderData, useNavigate, useNavigation, useRouteError } from "@remix-run/react";
 import { useEffect, useState} from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getPlanById, removePlan, updatePlan } from "prisma/models/planEstudioModel";
-import { countCoursesById, getCoursesbyPlan, removeCourse } from "prisma/models/courseModel";
-import { requireUser } from "~/.server/session";
-import { getUserById } from "prisma/models/userModel";
+import actionIdplan from "~/.server/Controller/plan_.$idplan/action";
+import loaderIdplan from "~/.server/Controller/plan_.$idplan/loader";
 
 export default function PlanEdit() {
   const data = useLoaderData<typeof loader>();
@@ -167,55 +165,8 @@ export default function PlanEdit() {
   )
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const name = String(formData.get('nombre'));
-  const intent = formData.get('intent');
-  const code = String(formData.get('codigo'));
-  const courseID = Number(formData.get('courseID'));
-
-  if (intent == 'delete') {
-    const coursesCount = await countCoursesById(Number(params.idplan));
-    if (coursesCount.id_curso == 0) {
-      await removePlan(Number(params.idplan));
-      return redirect(`/plan/`)
-    } else {
-      let error = new Error("Plan contiene cursos")
-      throw error;
-    }
-  }
-  else if (intent == "update") {
-    await updatePlan(Number(params.idplan), name, code);
-    return redirect("/plan");
-  }
-  else if (intent == "delete_course" && courseID != 0) {
-    try {
-      await removeCourse(courseID).then();
-    } catch (error) {
-    }
-  }
-  return redirect(`/plan/${Number(params.idplan)}`)
-}
-
-export const loader = async ({params, request}: LoaderFunctionArgs) => {
-  const userId = await requireUser(request);
-  const user = await getUserById(userId);
-  if(user?.role === "GUEST"){
-    return redirect("/");
-  }
-  
-  const planid = params.idplan;
-  const plan = await getPlanById(Number(planid));
-  const listaCursos = await getCoursesbyPlan(Number(planid));
-
-  if (!planid || isNaN(Number(planid))) {
-    throw new Response("Not found", { status: 404 });
-  }
-  if (!plan) {
-    throw new Response("Not found", { status: 404 });
-  }
-  return json({ cursos: listaCursos, plan: plan })
-}
+export const action = actionIdplan;
+export const loader = loaderIdplan;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
