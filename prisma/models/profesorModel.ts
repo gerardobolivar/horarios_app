@@ -11,6 +11,20 @@ export const getProfesores = async ()=>{
   })
 }
 
+export const getProfesoresByUserId = async (userId: number)=>{
+  return await prisma.profesor.findMany({
+    where:{
+      user_id: userId
+    },
+    select: {
+      id_profesor: true,
+      nombre:true,
+      primer_apellido: true,
+      segundo_apellido: true
+    }
+  })
+}
+
 export const getProfesor = async (id_profesor:number) =>{
   return await prisma.profesor.findUnique({
     where:{
@@ -42,13 +56,14 @@ export const updateProfesor = async (id_profesor:number, nombre:string, primer_a
   })
 }
 
-export const createProfesor = async (nombre:string, primer_apellido:string, segundo_apellido:string, email:string ) =>{
+export const createProfesor = async (nombre:string, primer_apellido:string, segundo_apellido:string, email:string, user_id: number ) =>{
   return await prisma.profesor.create({
     data:{
       nombre: nombre,
       primer_apellido: primer_apellido,
       segundo_apellido: segundo_apellido,
-      email: email
+      email: email,
+      user_id: user_id
     }
   })
 }

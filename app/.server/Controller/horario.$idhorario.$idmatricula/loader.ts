@@ -3,7 +3,7 @@ import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
 import { getMatriculaById } from "prisma/models/matriculaModelo";
 import { getMovileLabs } from "prisma/models/movileLab";
-import { getProfesores } from "prisma/models/profesorModel";
+import { getProfesores, getProfesoresByUserId } from "prisma/models/profesorModel";
 import { getTimeSpanByMatricula, getTimeSpanSByHorarioDia } from "prisma/models/timeSpanModel";
 import { getUserById } from "prisma/models/userModel";
 import { TIMESLOTS } from "~/.server/allowedTimes";
@@ -14,11 +14,12 @@ import { LockTime, TimeSpan } from "~/types/horarioTypes";
 const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunctionArgs) => {
   const userId = await requireUser(request);
   const user = await getUserById(userId);
-  const listaCursos = user?.role === "ADMIN" ? await getCourses() : await getCoursesByUserId(userId);
+  const isAdmin = user?.role === "ADMIN"
+  const listaCursos = isAdmin ? await getCourses() : await getCoursesByUserId(userId);
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
-  const listaProfesores = await getProfesores();
+  const listaProfesores = isAdmin ? await getProfesores() : await getProfesoresByUserId(userId);
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();
   const url = new URL(request.url);

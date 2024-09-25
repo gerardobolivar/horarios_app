@@ -24,6 +24,7 @@ model User{
   fecha_modificado DateTime @updatedAt
   hash Hash?
   matriculas Matricula[]
+  profesores Profesor[]
 }
 
 model PlanEstudio{
@@ -71,6 +72,8 @@ model Profesor{
   lab_mov LaboratorioMovil?
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+  user_id Int @default(1)
+  user User @relation(fields: [user_id],references: [id_usuario])
   groups Group[]
 }
 

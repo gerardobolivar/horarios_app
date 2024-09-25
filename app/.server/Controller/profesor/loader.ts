@@ -1,5 +1,5 @@
 import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { getProfesores } from "prisma/models/profesorModel";
+import { getProfesores, getProfesoresByUserId } from "prisma/models/profesorModel";
 import { getUserById } from "prisma/models/userModel";
 import { requireUser } from "~/.server/session";
 
@@ -11,7 +11,7 @@ const loaderProfesor = async ({ params, request}: LoaderFunctionArgs) => {
     return redirect("/");
   }
   
-  const listaProfesores = await getProfesores();
+  const listaProfesores = user?.role === "ADMIN" ? await getProfesores() : await getProfesoresByUserId(userId);
 
   return json({ listaProfesores: listaProfesores })
 }
