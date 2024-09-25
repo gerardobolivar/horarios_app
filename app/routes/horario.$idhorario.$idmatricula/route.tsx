@@ -228,7 +228,7 @@ export default function HorarioModal() {
           <div className="outter_white_container">
             <div className="grayContainer">
               <div className="course_input_container">
-                {ownerTag}
+                {!isNewMatricula ? ownerTag : null}
                 <div className="grid-container">
 
                   <div className="section">
@@ -239,11 +239,11 @@ export default function HorarioModal() {
                         id="cursoHorario"
                         required={true}
                         defaultValue={matricula?.group?.curso.id_curso}
-                        hidden={hiddeOwnerOptions}>
+                        hidden={hiddeOwnerOptions && !isNewMatricula}>
                         <option value={""}></option>
                         {cursosLista}
                       </select>
-                      <p hidden={!hiddeOwnerOptions}>
+                      <p hidden={!hiddeOwnerOptions || isNewMatricula}>
                         {matricula?.group?.curso.nombre}
                       </p>
                     </span>
@@ -255,16 +255,16 @@ export default function HorarioModal() {
                         id="profesorHorario"
                         required={true}
                         defaultValue={matricula?.group?.profesor_id}
-                        hidden={hiddeOwnerOptions}>
+                        hidden={hiddeOwnerOptions  && !isNewMatricula}>
                         <option value={""}></option>
                         {profesoresLista}
                       </select>
-                      <p hidden={!hiddeOwnerOptions}>
+                      <p hidden={!hiddeOwnerOptions || isNewMatricula}>
                         {`${matricula?.group?.profesor.nombre} ${matricula?.group?.profesor.primer_apellido} ${matricula?.group?.profesor.segundo_apellido}`}
                       </p>
                     </span>
 
-                    { hiddeOwnerOptions ? null :
+                    { hiddeOwnerOptions  && !isNewMatricula ? null :
                       <span>
                       <label htmlFor="modalidadHorario" >Modalidad:</label>
                       <select
@@ -285,7 +285,7 @@ export default function HorarioModal() {
                       <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
                     </span>
                     }
-                    { hiddeOwnerOptions ? null :
+                    { hiddeOwnerOptions  && !isNewMatricula ? null :
                     <span>
                       <label htmlFor="movilHorario" >Laboratorio móvil</label>
                       <select
@@ -297,7 +297,7 @@ export default function HorarioModal() {
                       </select>
                     </span>
                     }
-                    { hiddeOwnerOptions ? null :
+                    { hiddeOwnerOptions  && !isNewMatricula ? null :
                     <span>
                       <label htmlFor="grupo">Grupo</label>
                       <input
@@ -315,7 +315,7 @@ export default function HorarioModal() {
                       />
                     </span>
                     }
-                    { hiddeOwnerOptions ? null :
+                    { hiddeOwnerOptions  && !isNewMatricula ? null :
                     <span>
                       <label htmlFor="color">Color</label>
                       <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} />
@@ -329,7 +329,7 @@ export default function HorarioModal() {
                       </datalist>
                     </span>
                     }
-                    { hiddeOwnerOptions ? null :
+                    { hiddeOwnerOptions  && !isNewMatricula ? null :
                     <span hidden={isNewMatricula}>
                       <p><strong>Modificado:</strong>
                         {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
@@ -340,7 +340,7 @@ export default function HorarioModal() {
 
                   <div className="section">
 
-                    <div hidden={hiddeOwnerOptions}>
+                    <div hidden={hiddeOwnerOptions && !isNewMatricula}>
 
                       <p>{isNewMatricula ? "" : matricula?.group?.completed ? null : `Horas por asignar: ${matricula?.group?.Ahours}`}</p>
                       <span hidden={matricula?.group?.completed}>
@@ -446,7 +446,7 @@ export default function HorarioModal() {
               name="intent"
               disabled={btnDisabled || areThereErrors}
               value={isNewMatricula ? "create" : "update"}
-              hidden={hiddeOwnerOptions}>
+              hidden={hiddeOwnerOptions && !isNewMatricula}>
               {isNewMatricula ? "Guardar" : "Actualizar"}
             </button>
             <Link
