@@ -1,7 +1,7 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation} from "@remix-run/react";
-import { createProfesor, getProfesor, updateProfesor } from "prisma/models/profesorModel";
 import { useEffect, useState } from "react";
+import actionProfesorIdprofesor from "~/.server/Controller/profesor.$idprofesor/action";
+import loaderProfersorIdprofesor from "~/.server/Controller/profesor.$idprofesor/loader";
 
 export default function ModalProfesor() {
   const navigation = useNavigation()
@@ -113,30 +113,5 @@ export default function ModalProfesor() {
   </div>
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const nombre = String(formData.get("profesor_name"));
-  const primer_apellido = String(formData.get("primer_apellido"));
-  const segundo_apellido = String(formData.get("segundo_apellido"));
-  const email = String(formData.get("email"));
-  const intent = formData.get("intent");
-  let status:number;
-  
-  if (intent === "create") {
-    const profesor = await createProfesor(nombre,primer_apellido,segundo_apellido,email);
-  } else {
-    const idprofesor = Number(params.idprofesor);
-    await updateProfesor(idprofesor,nombre,primer_apellido,segundo_apellido,email)
-  }
-  return redirect(`/profesor/`,{
-    headers: {
-      'X-Remix-Revalidate': 'yes',
-    },
-  })
-}
-
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const isNewProfesor:boolean = params.idprofesor === "new";
-  const idprofesor:number = Number(params.idprofesor);
-  return json({ isNewProfesor: isNewProfesor, profesor: isNewProfesor ? null: await getProfesor(idprofesor)})
-}
+export const action = actionProfesorIdprofesor;
+export const loader = loaderProfersorIdprofesor;
