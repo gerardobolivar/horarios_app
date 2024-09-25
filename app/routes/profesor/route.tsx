@@ -1,14 +1,11 @@
-import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node"
+import { LinksFunction} from "@remix-run/node"
 import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getProfesores, removeProfesor } from "prisma/models/profesorModel";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
-import { requireUser } from "~/.server/session";
-import { getUserById } from "prisma/models/userModel";
 import actionProfesor from "~/.server/Controller/profesor/action";
 import loaderProfesor from "~/.server/Controller/profesor/loader";
 
