@@ -5,9 +5,9 @@ import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
 import { checkForErrors, getTimeStamp, handleModalidadChange, validateTimeSpans, } from "./utils";
 import rstyles from "./styles.css?url"
-import MatriculaDetailsLoader from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
-import MatriculaDetailsAction from "~/.server/Controller/horario.$idhorario.$idmatricula/action";
 import { useOptionalUser } from "~/utils";
+import loaderHorarioIdhorarioIdmatricula from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
+import actionHorarioIdhorarioIdmatricula from "~/.server/Controller/horario.$idhorario.$idmatricula/action";
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -471,8 +471,8 @@ export default function HorarioModal() {
 }
 
 
-export const action = MatriculaDetailsAction;
-export const loader = MatriculaDetailsLoader;
+export const action = actionHorarioIdhorarioIdmatricula;
+export const loader = loaderHorarioIdhorarioIdmatricula;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rstyles },

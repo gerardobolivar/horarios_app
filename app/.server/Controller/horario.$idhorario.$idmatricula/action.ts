@@ -2,7 +2,7 @@ import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { createMatricula, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { requireUser } from "~/.server/session";
 
-export default async function MatriculaDetailsAction({ request, params }: ActionFunctionArgs) {
+export default async function actionHorarioIdhorarioIdmatricula({ request, params }: ActionFunctionArgs) {
   const user_id = await requireUser(request);
   const formData = await request.formData();
   const curso = Number(formData.get("cursoHorario"));

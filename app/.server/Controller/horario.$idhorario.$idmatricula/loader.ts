@@ -11,7 +11,7 @@ import { generateTimeWhiteList } from "~/.server/Controller/Horario/horario";
 import { requireUser } from "~/.server/session";
 import { LockTime, TimeSpan } from "~/types/horarioTypes";
 
-const MatriculaDetailsLoader = async ({ params, request }: LoaderFunctionArgs) => {
+const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunctionArgs) => {
   const userId = await requireUser(request);
   const user = await getUserById(userId);
   const listaCursos = user?.role === "ADMIN" ? await getCourses() : await getCoursesByUserId(userId);
@@ -62,4 +62,4 @@ const MatriculaDetailsLoader = async ({ params, request }: LoaderFunctionArgs) =
   })
 }
 
-export default MatriculaDetailsLoader;
+export default loaderHorarioIdhorarioIdmatricula;
