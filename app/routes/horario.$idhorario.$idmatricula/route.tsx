@@ -133,7 +133,7 @@ export default function HorarioModal() {
       dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
       type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
     }
-    if(!checkDuplicates(timeSpanList, timeSpan)){
+    if (!checkDuplicates(timeSpanList, timeSpan)) {
       addTimeSpanToList(timeSpanList, timeSpan);
     }
   }
@@ -365,7 +365,7 @@ export default function HorarioModal() {
                         <select
                           name="diaHorario"
                           id="diaHorario"
-                          onChange={(event)=>{
+                          onChange={(event) => {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                             handleDiaChange(event);
                           }}
@@ -385,7 +385,7 @@ export default function HorarioModal() {
                           name="aulaHorario"
                           id="aulaHorario"
                           hidden={matricula?.group?.completed}
-                          onChange={(event)=>{
+                          onChange={(event) => {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                             handleAulaChange(event);
                           }}
@@ -436,8 +436,13 @@ export default function HorarioModal() {
                           type="button"
                           className={btnDisabled || areThereErrors ? "mainButton disabled" : "mainButton"}
                           disabled={btnDisabled || areThereErrors}
-                          onClick={()=>{
-                            handleTimeSpanAdd();
+                          onClick={() => {
+                            const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
+                            const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value);
+                            if(initialTime !== 0 && endTime !== 0){
+                              handleTimeSpanAdd();
+                            }
+
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                           }}>+</button>
                       </span>
