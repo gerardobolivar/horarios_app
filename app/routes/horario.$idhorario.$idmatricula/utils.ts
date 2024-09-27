@@ -15,7 +15,7 @@ export function handleModalidadChange(event: any, setIsVirtual: any, setSearchPa
   const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
   const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
   diaForm.value = diaFilters
-  
+
   if (modalidad === "VIRTUAL") {
     const xpath = "//option[text()='Aula 999']";
     const selectorAula = document.getElementById("aulaHorario");
@@ -23,7 +23,7 @@ export function handleModalidadChange(event: any, setIsVirtual: any, setSearchPa
     (document.getElementById("horaFin") as HTMLSelectElement).value = "";
 
     const valorAulaVirtual = document.evaluate(xpath, selectorAula as Node, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue as HTMLOptionElement;
-    
+
     setIsVirtual(true);
     aulaSelector.value = virtualClassroomValue;
     const params = new URLSearchParams();
@@ -53,37 +53,64 @@ export async function validEdgeTimeSpans(startTime: number, endTime: number, hor
 }
 
 export async function validateTimeSpans(
-    data:any,
-    filters:any,
-    aula:string,
-    errorList:string[],
-    setErrorList: React.Dispatch<React.SetStateAction<string[]>>,
-    setAreThereErrors:React.Dispatch<React.SetStateAction<boolean>>): Promise<boolean>{
+  data: any,
+  filters: any,
+  aula: string,
+  errorList: string[],
+  timeSpans: TimeSpan[],
+  setErrorList: React.Dispatch<React.SetStateAction<string[]>>,
+  setAreThereErrors: React.Dispatch<React.SetStateAction<boolean>>): Promise<boolean> {
 
   const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
   const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value)
   const hasRangeError = errorList.includes("INAVALID_TIME_RANGE");
+  const hasDuplicatedError = errorList.includes("DUPLICATED_TIME_RANGE");
   const whiteListKeys = Object.keys(data.time_white_list);
   const edgesSafe = await validEdgeTimeSpans(initialTime, endTime, data.horarioId, filters.dia, Number(aula), whiteListKeys);
+  const isAnyTimeSpanEmpty = (document.getElementById("horaInicio") as HTMLSelectElement).value === "" || (document.getElementById("horaFin") as HTMLSelectElement).value === ""
+  const rangeError = initialTime > endTime; 
   let approvedValidation = false;
 
-  if (initialTime > endTime || !edgesSafe) {
+  const timeSpan: TimeSpan = {
+    aula_id: Number((document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value),
+    matricula_id: data.matricula?.matricula_id as number,
+    hora_inicio: initialTime,
+    hora_final: endTime,
+    dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
+    type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
+  }
+
+  const isDuplicated = checkDuplicates(timeSpans, timeSpan);
+  let newList = [...errorList];
+
+  if (rangeError || !edgesSafe || isAnyTimeSpanEmpty) {
     if (!hasRangeError) {
-
-      const newList = [...errorList];
       newList.push("INAVALID_TIME_RANGE")
-      setErrorList(newList)
+      setErrorList(newList);
       setAreThereErrors(true);
-
     }
-  } 
-  else if (hasRangeError) {
+  }
 
-    const newList = errorList.filter(e => e !== "INAVALID_TIME_RANGE")
-    setErrorList(newList);
+  if (isDuplicated) {
+    newList.push("DUPLICATED_TIME_RANGE")
+    setErrorList(newList)
+    setAreThereErrors(true);
+
+  }
+
+  if (newList.length > 0) {
+
+    if (hasRangeError && (rangeError === false && edgesSafe === true && isAnyTimeSpanEmpty === false)) {
+      newList = newList.filter(e => e !== "INAVALID_TIME_RANGE")
+      setErrorList(newList);
+    }
+    
+    if (hasDuplicatedError && !isDuplicated) {
+      newList = newList.filter(e => e !== "DUPLICATED_TIME_RANGE")
+      setErrorList(newList);
+    }
 
     if (newList.length < 1) { setAreThereErrors(false) }
-
   }
   else {
 
@@ -94,23 +121,23 @@ export async function validateTimeSpans(
   return approvedValidation;
 }
 
-export async function checkForErrors(event: React.FormEvent<HTMLFormElement>, areThereErrors:boolean, formRef:React.RefObject<HTMLFormElement>, timeSpanList:TimeSpan[], submit:SubmitFunction){
+export async function checkForErrors(event: React.FormEvent<HTMLFormElement>, areThereErrors: boolean, formRef: React.RefObject<HTMLFormElement>, timeSpanList: TimeSpan[], submit: SubmitFunction) {
+  //if (areThereErrors) {event.preventDefault();throw new Error("INVALID_FORM_STATE")} else {}
+  event.preventDefault();
   
-  if (areThereErrors) {
-    event.preventDefault();
-    throw "INVALID_FORM_STATE"
-  } else {
-    event.preventDefault();
-
-
-    if (formRef.current) {
-      const formData = new FormData(formRef.current);
-      formData.append("time_spans", JSON.stringify(timeSpanList));
-      const submitter = (event.nativeEvent as SubmitEvent).submitter
-      const intent = (submitter as HTMLButtonElement).value
-      formData.append("intent", intent);
-      submit(formData, { method: "POST" });
-    }
+  if (formRef.current) {
+    const formData = new FormData(formRef.current);
+    formData.append("time_spans", JSON.stringify(timeSpanList));
+    const submitter = (event.nativeEvent as SubmitEvent).submitter
+    const intent = (submitter as HTMLButtonElement).value
+    formData.append("intent", intent);
+    submit(formData, { method: "POST" });
   }
 
+}
+
+
+export function checkDuplicates(timeSpans: TimeSpan[], timeSpan: TimeSpan): boolean {
+  const duplicates = timeSpans.filter(ts => ts.aula_id === timeSpan.aula_id && ts.dia === timeSpan.dia && ts.hora_inicio === timeSpan.hora_inicio && ts.hora_final === timeSpan.hora_final + 1)
+  return duplicates.length > 0 ? true : false;
 }

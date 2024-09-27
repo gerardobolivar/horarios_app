@@ -1,9 +1,9 @@
 import { LinksFunction } from "@remix-run/node";
 import { Form, Link, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
-import { checkForErrors, getTimeStamp, handleModalidadChange, validateTimeSpans, } from "./utils";
+import { checkDuplicates, checkForErrors, getTimeStamp, handleModalidadChange, validateTimeSpans, } from "./utils";
 import rstyles from "./styles.css?url"
 import { useOptionalUser } from "~/utils";
 import loaderHorarioIdhorarioIdmatricula from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
@@ -16,7 +16,7 @@ export default function HorarioModal() {
   const data = useLoaderData<typeof loader>();
   const isNewMatricula: boolean = data.isNewMatricula;
   const matricula = data.matricula;
-  const timeSlots: string[] = data.time_white_list ? Object.keys(data.time_white_list) : [];
+  let timeSlots: string[] = data.time_white_list ? Object.keys(data.time_white_list) : [];
   const location = useLocation();
   const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
@@ -49,6 +49,14 @@ export default function HorarioModal() {
   } catch (error) {
     console.log(error);
   }
+
+  useEffect(() => {
+    if (errorList.length > 0) {
+      setAreThereErrors(true)
+    } else {
+      setAreThereErrors(false)
+    }
+  }, [errorList]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -125,7 +133,9 @@ export default function HorarioModal() {
       dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
       type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
     }
-    addTimeSpanToList(timeSpanList, timeSpan);
+    if(!checkDuplicates(timeSpanList, timeSpan)){
+      addTimeSpanToList(timeSpanList, timeSpan);
+    }
   }
 
   function handleModalidadClick(event: FormEvent) {
@@ -150,6 +160,13 @@ export default function HorarioModal() {
     const colorInput = event.currentTarget;
     console.log(colorInput.value);
 
+  }
+
+
+  function addNewError(errorList: string[], newError: string) {
+    const errors = [...errorList];
+    errors.push(newError)
+    setErrorList(errors);
   }
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
@@ -255,7 +272,7 @@ export default function HorarioModal() {
                         id="profesorHorario"
                         required={true}
                         defaultValue={matricula?.group?.profesor_id}
-                        hidden={hiddeOwnerOptions  && !isNewMatricula}>
+                        hidden={hiddeOwnerOptions && !isNewMatricula}>
                         <option value={""}></option>
                         {profesoresLista}
                       </select>
@@ -264,77 +281,77 @@ export default function HorarioModal() {
                       </p>
                     </span>
 
-                    { hiddeOwnerOptions  && !isNewMatricula ? null :
+                    {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span>
-                      <label htmlFor="modalidadHorario" >Modalidad:</label>
-                      <select
-                        name="modalidadHorario"
-                        id="modalidadHorario"
-                        required={true}
-                        hidden={!isNewMatricula}
-                        onMouseDown={handleModalidadClick}
-                        onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
-                        defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
-                        <option value=""></option>
-                        <option value={"PRESENCIAL"}>PRESENCIAL</option>
-                        <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
-                        <option value={"BIMODAL"}>BIMODAL</option>
-                        <option value={"ALTOVIRTUAL"}>ALTO VIRTUAL</option>
-                        <option value={"VIRTUAL"}>VIRTUAL</option>
-                      </select>
-                      <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
-                    </span>
+                        <label htmlFor="modalidadHorario" >Modalidad:</label>
+                        <select
+                          name="modalidadHorario"
+                          id="modalidadHorario"
+                          required={true}
+                          hidden={!isNewMatricula}
+                          onMouseDown={handleModalidadClick}
+                          onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
+                          defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
+                          <option value=""></option>
+                          <option value={"PRESENCIAL"}>PRESENCIAL</option>
+                          <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
+                          <option value={"BIMODAL"}>BIMODAL</option>
+                          <option value={"ALTOVIRTUAL"}>ALTO VIRTUAL</option>
+                          <option value={"VIRTUAL"}>VIRTUAL</option>
+                        </select>
+                        <h6 hidden={isNewMatricula}>{matricula ? matricula.modalidad : null}</h6>
+                      </span>
                     }
-                    { hiddeOwnerOptions  && !isNewMatricula ? null :
-                    <span>
-                      <label htmlFor="movilHorario" >Laboratorio móvil</label>
-                      <select
-                        name="movilHorario"
-                        id="movilHorario"
-                        defaultValue={matricula?.laboratorio_movil ? matricula.laboratorio_movil?.id_lab_mov : ""} >
-                        <option value={"0"}>No</option>
-                        {movilesLista}
-                      </select>
-                    </span>
+                    {hiddeOwnerOptions && !isNewMatricula ? null :
+                      <span>
+                        <label htmlFor="movilHorario" >Laboratorio móvil</label>
+                        <select
+                          name="movilHorario"
+                          id="movilHorario"
+                          defaultValue={matricula?.laboratorio_movil ? matricula.laboratorio_movil?.id_lab_mov : ""} >
+                          <option value={"0"}>No</option>
+                          {movilesLista}
+                        </select>
+                      </span>
                     }
-                    { hiddeOwnerOptions  && !isNewMatricula ? null :
-                    <span>
-                      <label htmlFor="grupo">Grupo</label>
-                      <input
-                        id="schedule_group_id"
-                        title="Grupo"
-                        type="number"
-                        name="grupo"
-                        placeholder=""
-                        className=""
-                        required={true}
-                        readOnly={!!matricula?.group}
-                        min="1"
-                        max="100"
-                        defaultValue={matricula?.group ? matricula?.group?.groupNumber : ""}
-                      />
-                    </span>
+                    {hiddeOwnerOptions && !isNewMatricula ? null :
+                      <span>
+                        <label htmlFor="grupo">Grupo</label>
+                        <input
+                          id="schedule_group_id"
+                          title="Grupo"
+                          type="number"
+                          name="grupo"
+                          placeholder=""
+                          className=""
+                          required={true}
+                          readOnly={!!matricula?.group}
+                          min="1"
+                          max="100"
+                          defaultValue={matricula?.group ? matricula?.group?.groupNumber : ""}
+                        />
+                      </span>
                     }
-                    { hiddeOwnerOptions  && !isNewMatricula ? null :
-                    <span>
-                      <label htmlFor="color">Color</label>
-                      <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} />
-                      <datalist id="suggestedColors">
-                        <option value="#00c0f3" />
-                        <option value="#005da4" />
-                        <option value="#f37021" />
-                        <option value="#6dc067" />
-                        <option value="#7b3400" />
-                        <option value="#ffe06a" />
-                      </datalist>
-                    </span>
+                    {hiddeOwnerOptions && !isNewMatricula ? null :
+                      <span>
+                        <label htmlFor="color">Color</label>
+                        <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} />
+                        <datalist id="suggestedColors">
+                          <option value="#00c0f3" />
+                          <option value="#005da4" />
+                          <option value="#f37021" />
+                          <option value="#6dc067" />
+                          <option value="#7b3400" />
+                          <option value="#ffe06a" />
+                        </datalist>
+                      </span>
                     }
-                    { hiddeOwnerOptions  && !isNewMatricula ? null :
-                    <span hidden={isNewMatricula}>
-                      <p><strong>Modificado:</strong>
-                        {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
-                      </p>
-                    </span>
+                    {hiddeOwnerOptions && !isNewMatricula ? null :
+                      <span hidden={isNewMatricula}>
+                        <p><strong>Modificado:</strong>
+                          {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
+                        </p>
+                      </span>
                     }
                   </div>
 
@@ -348,7 +365,10 @@ export default function HorarioModal() {
                         <select
                           name="diaHorario"
                           id="diaHorario"
-                          onChange={handleDiaChange}
+                          onChange={(event)=>{
+                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                            handleDiaChange(event);
+                          }}
                           hidden={matricula?.group?.completed}>
                           <option value={""}></option>
                           <option value={"LUNES"}>Lunes</option>
@@ -365,7 +385,10 @@ export default function HorarioModal() {
                           name="aulaHorario"
                           id="aulaHorario"
                           hidden={matricula?.group?.completed}
-                          onChange={handleAulaChange}
+                          onChange={(event)=>{
+                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                            handleAulaChange(event);
+                          }}
                           defaultValue={aula} >
                           <option value={""}></option>
                           {aulasLista}
@@ -377,8 +400,8 @@ export default function HorarioModal() {
                         <select
                           name="horaInicio"
                           id="horaInicio"
-                          onClick={() => {
-                            validateTimeSpans(data, filters, aula, errorList, setErrorList, setAreThereErrors)
+                          onChange={() => {
+                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors)
                           }}
                           hidden={matricula?.group?.completed}>
                           <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
@@ -391,8 +414,8 @@ export default function HorarioModal() {
                         <select
                           name="horaFin"
                           id="horaFin"
-                          onClick={() => {
-                            validateTimeSpans(data, filters, aula, errorList, setErrorList, setAreThereErrors)
+                          onChange={() => {
+                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                           }}
                           hidden={matricula?.group?.completed}>
                           <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
@@ -409,9 +432,14 @@ export default function HorarioModal() {
                       </span>
                       <span hidden={!!matricula?.group?.completed}>
                         <button
+                          id="addTimeSpanBtn"
                           type="button"
-                          onClick={handleTimeSpanAdd}
-                          className="mainButton">+</button>
+                          className={btnDisabled || areThereErrors ? "mainButton disabled" : "mainButton"}
+                          disabled={btnDisabled || areThereErrors}
+                          onClick={()=>{
+                            handleTimeSpanAdd();
+                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                          }}>+</button>
                       </span>
 
                     </div>
@@ -442,9 +470,8 @@ export default function HorarioModal() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled || areThereErrors ? "disabled" : ""}
+              className={""}
               name="intent"
-              disabled={btnDisabled || areThereErrors}
               value={isNewMatricula ? "create" : "update"}
               hidden={hiddeOwnerOptions && !isNewMatricula}>
               {isNewMatricula ? "Guardar" : "Actualizar"}

@@ -63,9 +63,11 @@ type SCHEDULE_ERROR = {
 
 const SCHEDULE_ERRORS: SCHEDULE_ERROR = {
   INAVALID_TIME_RANGE : "Rango de horas inválido.",
+  DUPLICATED_TIME_RANGE : "La entrada ya fue agregada.",
   NO_SCHEDULE_ASSIGMENT: "No se puede activar un ciclo sin un horario vinculado.",
   BUSSY_SCHEDULE: "El horario seleccionado ya está vinculado a un curso.",
-  NULL_ID_ELEMENT: "Este elemento no tiene un ID asociado"
+  NULL_ID_ELEMENT: "Este elemento no tiene un ID asociado",
+
 }
 
 interface Aula{
