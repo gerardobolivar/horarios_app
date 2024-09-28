@@ -1,4 +1,5 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/react";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
 import { getMatriculaById } from "prisma/models/matriculaModelo";
@@ -14,11 +15,17 @@ import { LockTime, TimeSpan } from "~/types/horarioTypes";
 const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunctionArgs) => {
   const userId = await requireUser(request);
   const user = await getUserById(userId);
+
   const isAdmin = user?.role === "ADMIN"
   const listaCursos = isAdmin ? await getCourses() : await getCoursesByUserId(userId);
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
+
+  if(user?.role === "GUEST" && isNewMatricula){
+    return redirect(`/horario/${horarioId}`)
+  }
+
   const listaProfesores = isAdmin ? await getProfesores() : await getProfesoresByUserId(userId);
   const listaAulas = await getAulas();
   const listaMoviles = await getMovileLabs();

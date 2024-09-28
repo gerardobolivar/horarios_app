@@ -22,6 +22,7 @@ export default function () {
   const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
   const scheduleTimeSpans = data.scheduleTimeSpans;
   const user = useOptionalUser();
+  const isGuest = user?.role === "GUEST"
 
   function handleDrag(e: React.DragEvent) {
     // const scheduleUI = e.currentTarget;
@@ -63,7 +64,7 @@ export default function () {
         </Link>
       </div>
     </div>
-    <Link to={`/horario/${data.idHorario}/new`}>
+    <Link hidden={isGuest} to={`/horario/${data.idHorario}/new`}>
       <button className="mainButton">Registrar</button>
     </Link>
 
