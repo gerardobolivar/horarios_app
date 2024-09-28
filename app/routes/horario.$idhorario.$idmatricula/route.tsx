@@ -218,7 +218,7 @@ export default function HorarioModal() {
       <td>{`${DIAS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
       <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
-      <td hidden={!!matricula?.group?.completed}>
+      <td hidden={!!matricula?.group?.completed || hiddeOwnerOptions}>
         <button
           id={t.dia + t.aula_id + t.hora_inicio}
           value={t.time_span_id}
