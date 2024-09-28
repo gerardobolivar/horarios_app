@@ -310,7 +310,7 @@ export default function HorarioModal() {
                     }
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span>
-                        <label htmlFor="movilHorario" >Laboratorio móvil</label>
+                        <label htmlFor="movilHorario" >Laboratorio móvil:</label>
                         <select
                           name="movilHorario"
                           id="movilHorario"
@@ -322,7 +322,7 @@ export default function HorarioModal() {
                     }
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span>
-                        <label htmlFor="grupo">Grupo</label>
+                        <label htmlFor="grupo">Grupo:</label>
                         <input
                           id="schedule_group_id"
                           title="Grupo"
@@ -339,8 +339,8 @@ export default function HorarioModal() {
                       </span>
                     }
                     {hiddeOwnerOptions && !isNewMatricula ? null :
-                      <span>
-                        <label htmlFor="color">Color</label>
+                      <span className="colorSelector">
+                        <label htmlFor="color">Color:</label>
                         <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} />
                         <datalist id="suggestedColors">
                           <option value="#00c0f3" />

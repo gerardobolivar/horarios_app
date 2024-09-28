@@ -27,3 +27,15 @@
 .timeSpanTableEnrollment tr:first-child button{
   display: none;
 }
+
+.colorSelector input{
+  border: 0px;
+  width: 150px;
+}
+
+.colorSelector > label{
+  text-align: right;
+  clear: both;
+  float: left;
+  margin-right: 10px;
+}
