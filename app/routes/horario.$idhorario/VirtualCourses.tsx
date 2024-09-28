@@ -22,7 +22,6 @@ const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual })
       <td>{m.group?.curso.nombre}</td>
       <td>{Number(m.group?.groupNumber) < 10 ? `0${m.group?.groupNumber}`:m.group?.groupNumber}</td>
       <td>{formatedTimeLine}</td>
-      <td>{m.modalidad}</td>
       <td>
         <Link to={`/horario/${horarioId}/${m.matricula_id}/`}
         state={{showVirtual: showVirtual}}>
@@ -33,13 +32,13 @@ const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual })
   })
 
   return <>
+  <h3 className="mainTitle" id="mainTitleVirtualCourses">Cursos Virtuales</h3>
     <table>
       <thead>
         <tr>
           <th>Curso</th>
           <th>Grupo</th>
           <th>Horario</th>
-          <th>Modalidad</th>
           <th>Actualizar</th>
         </tr>
       </thead>
