@@ -1,4 +1,5 @@
 import prisma from "prisma/client"
+import { getGroupByMatricula, updateGroup } from "./groupModel"
 
 export const createTimeSpan = async (
   matricula_id: number,
@@ -40,9 +41,33 @@ export const updateTimeSpan = async (
   })
 }
 
-export const deleteTimeSpanById = async (time_span_id: number) => {
+export const deleteTimeSpanByIdOld = async (time_span_id: number) => {
   return await prisma.time_span.delete({
     where: { time_span_id: time_span_id }
+  })
+}
+
+export const deleteTimeSpanById = async (time_span_id: number) => {
+  return await prisma.$transaction(async (tx)=>{
+    const timeSpan = await getTimeSpanById(time_span_id);
+    let hoursToRecover:number;
+    const matriculaID = timeSpan?.matricula_id 
+
+    if(timeSpan?.hora_final !== undefined && timeSpan?.hora_inicio !== undefined && matriculaID !== undefined){
+      const group = (await getGroupByMatricula(matriculaID))[0];
+      hoursToRecover = group.Ahours + (timeSpan?.hora_final - timeSpan?.hora_inicio);
+      await updateGroup(group.group_id, hoursToRecover);
+       
+    }else{
+      throw new Error("Could not find times for this time span.")
+    }
+
+    await tx.time_span.delete({
+      where:{
+        time_span_id: timeSpan.time_span_id
+      }
+    })
+
   })
 }
 
