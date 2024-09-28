@@ -32,7 +32,7 @@ export default function HorarioModal() {
   const user = useOptionalUser();
   const hiddeOwnerOptions = !(user?.id_usuario === matricula?.user_id || user?.role === "ADMIN");
   const isOwner = user?.id_usuario === matricula?.user_id;
-
+  const [timesToRemove,setTimesToRemove] = useState<number[]>([]);
 
   let filters = {
     "planEstudios": "",
@@ -45,7 +45,7 @@ export default function HorarioModal() {
     filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value;
     filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
     filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value;
-    filters.show_virtual = (document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
+    filters.show_virtual = "false" //(document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
   } catch (error) {
     console.log(error);
   }
@@ -147,9 +147,14 @@ export default function HorarioModal() {
   }
 
   function handleRemoveTimeSpan(event: React.FormEvent<HTMLButtonElement>) {
-    const idBtn = event.currentTarget.id;
-    if (!!idBtn) {
-      const newList = timeSpanList.filter(t => t.dia + t.aula_id + t.hora_inicio !== idBtn)
+    const btn = event.currentTarget as HTMLButtonElement
+    if (!!btn.id) {
+      if(btn.hasAttribute("value")){
+        const list = [...timesToRemove]
+        list.push(Number(btn.value));
+        setTimesToRemove(list);
+      }
+      const newList = timeSpanList.filter(t => t.dia + t.aula_id + t.hora_inicio !== btn.id)
       setTimeSpanList(newList);
     } else {
       throw new Error(SCHEDULE_ERRORS["NULL_ID_ELEMENT"]);
@@ -206,16 +211,17 @@ export default function HorarioModal() {
 
   let ownerTag = user?.role === "ADMIN" ? <p>{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
 
-  let timeSpanListRender = timeSpanList.map(t => {
+  let timeSpanListRender = timeSpanList.map((t:any) => {
     const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
     const formattedClassroom: string = Number(aula?.identificador) < 10 ? `0${aula?.identificador}` : `${aula?.identificador}`;
-    return <tr key={t.dia + t.aula_id + t.hora_inicio}>
+    return <tr key={t.dia + t.aula_id + t.hora_inicio} id={t.time_span_id}>
       <td>{`${DIAS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
       <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
-      <td hidden={!!matricula?.group}>
+      <td hidden={!!matricula?.group?.completed}>
         <button
           id={t.dia + t.aula_id + t.hora_inicio}
+          value={t.time_span_id}
           onClick={handleRemoveTimeSpan}
           type="button">
           <i className="bi bi-trash-fill"></i>
@@ -237,7 +243,7 @@ export default function HorarioModal() {
           autoComplete="off"
           name="form"
           onSubmit={(e) => {
-            checkForErrors(e, areThereErrors, formRef, timeSpanList, submit)
+            checkForErrors(e, areThereErrors, formRef, timeSpanList, submit, timesToRemove)
           }}
           ref={formRef}
           preventScrollReset>
@@ -458,7 +464,7 @@ export default function HorarioModal() {
                             <th hidden={!!matricula?.group}>Remove</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="timeSpanTableEnrollment">
                           {timeSpanListRender}
                         </tbody>
                       </table>
@@ -502,12 +508,9 @@ export default function HorarioModal() {
   </div>
 }
 
-
 export const action = actionHorarioIdhorarioIdmatricula;
 export const loader = loaderHorarioIdhorarioIdmatricula;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rstyles },
 ];
-
-//569

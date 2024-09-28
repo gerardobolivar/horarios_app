@@ -1,5 +1,6 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { createMatricula, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
+import { deleteTimeSpanById } from "prisma/models/timeSpanModel";
 import { requireUser } from "~/.server/session";
 
 export default async function actionHorarioIdhorarioIdmatricula({ request, params }: ActionFunctionArgs) {
@@ -21,6 +22,10 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
   const grupo = Number(formData.get("grupo"))
   const timeSpansJson = JSON.parse(timeSpans)
   const color = String(formData.get("color"));
+  const timesToRemove = formData.get("times_to_remove") as string;
+  const timesToRemoveJson = JSON.parse(timesToRemove);
+
+  
   
 
   if (intent === "create") {
@@ -39,6 +44,13 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
   } else if (intent === "update") {
     const newTimeSpansJson = timeSpansJson.filter((t:any)=>!Object.hasOwn(t,"fecha_creado"))
     await updateMatricula(newTimeSpansJson, matriculaID, profesor, color, mobileLab);
+    
+    if(timesToRemoveJson.length > 0){
+      timesToRemoveJson.map(async (t:number)=>{
+        await deleteTimeSpanById(t);
+      })
+    }
+
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
     const matricula = await removeMatricula(matriculaID).catch(e => {

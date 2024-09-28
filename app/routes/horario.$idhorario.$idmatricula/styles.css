@@ -23,3 +23,7 @@
 .errorBlock{
   position: absolute;
 }
+
+.timeSpanTableEnrollment tr:first-child button{
+  display: none;
+}

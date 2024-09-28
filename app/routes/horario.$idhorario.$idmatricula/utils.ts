@@ -121,13 +121,14 @@ export async function validateTimeSpans(
   return approvedValidation;
 }
 
-export async function checkForErrors(event: React.FormEvent<HTMLFormElement>, areThereErrors: boolean, formRef: React.RefObject<HTMLFormElement>, timeSpanList: TimeSpan[], submit: SubmitFunction) {
+export async function checkForErrors(event: React.FormEvent<HTMLFormElement>, areThereErrors: boolean, formRef: React.RefObject<HTMLFormElement>, timeSpanList: TimeSpan[], submit: SubmitFunction,times_to_remove:number[]) {
   //if (areThereErrors) {event.preventDefault();throw new Error("INVALID_FORM_STATE")} else {}
   event.preventDefault();
-  
+
   if (formRef.current) {
     const formData = new FormData(formRef.current);
     formData.append("time_spans", JSON.stringify(timeSpanList));
+    formData.append("times_to_remove", JSON.stringify(times_to_remove));
     const submitter = (event.nativeEvent as SubmitEvent).submitter
     const intent = (submitter as HTMLButtonElement).value
     formData.append("intent", intent);
