@@ -32,7 +32,7 @@ const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual })
   })
 
   return <>
-  <h3 className="mainTitle" id="mainTitleVirtualCourses">Cursos Virtuales</h3>
+  <h3 className="mainTitle mainTitleVirtualCourses" >Cursos Virtuales</h3>
     <table>
       <thead>
         <tr>

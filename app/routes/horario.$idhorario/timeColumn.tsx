@@ -2,8 +2,8 @@
   
   return <div className="time-column">
     {slots.map(slot=>
-    slot === "HORAS" ? 
-    <div key={slot} style={{fontWeight:"bold"}}>{slot}</div>:
+    slot.toUpperCase() === "HORAS" ? 
+    <div key={slot} className="time-cell aulaTitle" style={{fontWeight:"bold"}}><h3>{slot}</h3></div>:
     <div key={slot} className="time-cell"><p className="timeSpanRowTitle">{slot}</p></div>
     )}
   </div>

@@ -19,7 +19,7 @@ const TIMES = [
 ]
 
 const TIMES_TITLE = [
-  "HORAS",
+  "Horas",
   "06:00-06:50",
   "07:00-07:50",
   "08:00-08:50",

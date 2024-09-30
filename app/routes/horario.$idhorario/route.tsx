@@ -72,6 +72,7 @@ export default function () {
       <div
         onDrag={handleDrag}
         className="mainScheduleUI">
+        <h3 className="mainTitle mainTitleVirtualCourses">Horario</h3>
         <div
           className="schedule"
           style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
