@@ -8,6 +8,8 @@ import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
 import { clearActiveCycle } from "prisma/models/activeCycles";
 import { requireUser } from "~/.server/session";
 import { getUserById } from "prisma/models/userModel";
+import loaderHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/loader";
+import actionHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/action";
 
 
 export default function HorarioConfigPage() {
@@ -68,41 +70,8 @@ export default function HorarioConfigPage() {
   </>
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  const horarioId = Number(params.idhorario)
-
-  if (intent === "archivar") {
-    return await unBindCicloByHorario(horarioId).then(async () => {
-      await deactivateHorarioById(horarioId).then(async () => {
-        await clearActiveCycle().catch(e => {
-          console.error(e);})
-      }).catch(e => {
-          console.error(e);});
-      return redirect(`/horario/${horarioId}/config`)
-    }).catch((e) => { return redirect(`/error`) })
-  } else {
-    return null;
-  }
-}
-
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const userId = await requireUser(request)
-  const user = await getUserById(userId);
-  if(user?.role !== "ADMIN"){
-    return redirect("/");
-  }
-
-  const horarioId = Number(params.idhorario);
-  const horario = await getHorario(horarioId).then((r) => { return r }, () => { return {} }).catch((e) => { console.error(e); return {} })
-  const ciclo = await getBindedHorario(horarioId).then(
-    (r) => r).catch((e) => {
-      console.error(e)
-      return null;
-    })
-  return json({ horarioId: horarioId, horario: horario, ciclo: ciclo })
-}
+export const action = actionHorarioIdhorarioConfig;
+export const loader = loaderHorarioIdhorarioConfig;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: scheduleConfigPageStyles },
