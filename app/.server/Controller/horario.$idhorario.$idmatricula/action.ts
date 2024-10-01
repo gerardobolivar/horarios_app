@@ -29,6 +29,10 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
   
 
   if (intent === "create") {
+    if(timeSpansJson.length < 1){
+      return null;
+
+    }
     try {
       return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, color, user_id, mobileLab).then(() => {
         return redirect(`/horario/${horarioId}/${searchQueries}`)
