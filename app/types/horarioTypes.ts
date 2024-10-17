@@ -99,8 +99,9 @@ type Matriculas = Matricula[];
 interface scheduleFilters {
   planEstudios: string,
   dia: string,
-  ubicacion: string
-  show_virtual: string
+  ubicacion: string,
+  show_virtual: string,
+  hide_empty: string
 }
 
 interface LockTime{  

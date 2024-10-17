@@ -38,14 +38,16 @@ export default function HorarioModal() {
     "planEstudios": "",
     "dia": "",
     "ubicacion": "",
-    "show_virtual": ""
+    "show_virtual": "",
+    "hide_empty": ""
   }
 
   try {
     filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value;
     filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
     filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value;
-    filters.show_virtual = "false" //(document.querySelector('input[name="show_virtual"]') as HTMLSelectElement).value
+    filters.show_virtual = String((document.querySelector('input[name="show_virtual"]') as HTMLInputElement).checked);
+    filters.hide_empty = String((document.querySelector('input[name="show_empty"]') as HTMLInputElement).checked);
   } catch (error) {
     console.log(error);
   }
@@ -58,6 +60,7 @@ export default function HorarioModal() {
     }
   }, [errorList]);
 
+  /*
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("planEstudios", `${filters.planEstudios}`);
@@ -78,6 +81,7 @@ export default function HorarioModal() {
     }
 
   }, [])
+  */
 
   useEffect(() => {
     (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
@@ -175,7 +179,7 @@ export default function HorarioModal() {
   }
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
-    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}`
+    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}&hideempty=${filters.hide_empty}`
   }
 
   let profesoresLista = data.listaProfesores.map((profesor) => {

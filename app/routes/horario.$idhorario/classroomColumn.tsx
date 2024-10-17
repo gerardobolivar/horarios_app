@@ -2,16 +2,18 @@ import CourseCell from "./courseCell";
 import { Link } from "@remix-run/react";
 import { TIMESLOTS_REVERSE } from "./reversedTimes";
 
+
 type Props = {
   scheduleTimeSpans: any,
   nombreAula: number,
   timeSlots: string[],
   horarioId: number,
   aula_id: number,
-  index: number
+  index: number,
+  search: string
 }
 
-const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeSlots, index, horarioId, aula_id }) => {
+const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeSlots, index, horarioId, aula_id,search }) => {
   let isCellMerged: boolean = false;
   let cont: number = 1;
   
@@ -37,7 +39,8 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
                   hiddenCell={false}
                   aulaID={aula_id}
                   color={matricula.matricula.color}
-                  matricula={matricula}>
+                  matricula={matricula}
+                  search={search}>
                 </CourseCell></div>:
               <div key={slot + nombreAula} className="empty-slot"></div>
           }
@@ -53,7 +56,8 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
               curso={matricula.matricula.group.curso}
               hiddenCell={true} aulaID={aula_id}
               color={matricula.matricula.color}
-              matricula={matricula}></CourseCell>:
+              matricula={matricula}
+              search={search}></CourseCell>:
             <div key={slot + nombreAula} className="empty-slot"></div>
           }
         }
@@ -70,12 +74,16 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
             curso={matricula.matricula.group.curso}
             aulaID={aula_id}
             color={matricula.matricula.color}
-            matricula={matricula}>
+            matricula={matricula}
+            search={search}>
           </CourseCell> :
             <Link
               key={slot+aula_id}
               state={{ timePicked: TIMESLOTS_REVERSE[slot],aula_id: aula_id}}
-              to={`/horario/${horarioId}/new`}>
+              to={{
+                pathname:`/horario/${horarioId}/new`,
+                search: search
+              }}>
                 <div className="single-slot empty-slot"></div>
             </Link>
         }

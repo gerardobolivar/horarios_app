@@ -42,7 +42,8 @@ const HorarioLoader = async ({ params, request }: LoaderFunctionArgs) => {
     matriculas: matriculas,
     cursosVirtuales: cursosVirtuales,
     planes: planes,
-    scheduleTimeSpans: scheduleTimeSpans
+    scheduleTimeSpans: scheduleTimeSpans,
+    day: dia
   });
 }
 

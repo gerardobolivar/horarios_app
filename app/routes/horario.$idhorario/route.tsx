@@ -9,6 +9,7 @@ import VirtualCourses from "./VirtualCourses";
 import { useOptionalUser } from "~/utils";
 import HorarioLoader from "~/.server/Controller/horario.$idhorario/loader";
 import HorarioAction from "~/.server/Controller/horario.$idhorario/action";
+import { DIAS } from "./reversedTimes";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -30,7 +31,13 @@ export default function () {
     // console.log(e)
   }
 
-  const listaClassroom = data.aulas.map((classroom, index) => {
+  function searchParamsToString(){
+    
+  }
+  
+
+  const listaClassroom = 
+    data.aulas.map((classroom, index) => {
     return classroom.identificador !== 999 ? <ClassroomColumn
       nombreAula={classroom.identificador}
       timeSlots={timeSlots}
@@ -38,10 +45,12 @@ export default function () {
       scheduleTimeSpans={scheduleTimeSpans.filter(s => s?.aula.identificador === classroom.identificador)} //matriculas.filter(m => m.aula.identificador === classroom.identificador)
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
-      key={classroom.identificador}></ClassroomColumn> : null
+      key={classroom.identificador}
+      search={searchParams.toString()}></ClassroomColumn>: null
   })
 
-  const listaClassroomHidden = data.aulas.map((classroom, index) => {
+  const listaClassroomHidden = 
+    data.aulas.map((classroom, index) => {
     const sch = scheduleTimeSpans.filter(s => s?.aula.identificador === classroom.identificador); //matriculas.filter(m => m.aula.identificador === classroom.identificador)
     return classroom.identificador !== 999 && sch.length >= 1 ? <ClassroomColumn
       nombreAula={classroom.identificador}
@@ -50,7 +59,8 @@ export default function () {
       scheduleTimeSpans={sch}
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
-      key={classroom.identificador}></ClassroomColumn> : null
+      key={classroom.identificador}
+      search={searchParams.toString()}></ClassroomColumn> : null
   })
 
   return <>
@@ -72,7 +82,7 @@ export default function () {
       <div
         onDrag={handleDrag}
         className="mainScheduleUI">
-        <h3 className="mainTitle mainTitleVirtualCourses">Horario</h3>
+        <h3 className="mainTitle mainTitleVirtualCourses">{DIAS[data.day]}</h3>
         <div
           className="schedule"
           style={{ gridTemplateColumns: `100px repeat(${classrooms.length},300px)` }}>
