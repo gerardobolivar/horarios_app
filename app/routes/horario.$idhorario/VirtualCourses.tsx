@@ -5,10 +5,11 @@ import { Link } from "@remix-run/react"
 interface Props {
   matriculas: Matricula[],
   horarioId: number,
-  showVirtual: boolean
+  showVirtual: boolean,
+  search:string
 }
 
-const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual }) => {
+const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual, search }) => {
   const listaCursos = matriculas.map(m=>{
     let formatedTimeLine:string = "";
     formatedTimeLine += m.time_spans.map((t,i)=>{
@@ -23,7 +24,10 @@ const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual })
       <td>{Number(m.group?.groupNumber) < 10 ? `0${m.group?.groupNumber}`:m.group?.groupNumber}</td>
       <td>{formatedTimeLine}</td>
       <td>
-        <Link to={`/horario/${horarioId}/${m.matricula_id}/`}
+        <Link to={{
+          pathname: `/horario/${horarioId}/${m.matricula_id}/`,
+          search: search
+        }}
         state={{showVirtual: showVirtual}}>
           <button>🖉</button>
         </Link>

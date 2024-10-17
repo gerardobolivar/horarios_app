@@ -90,7 +90,7 @@ export default function () {
       <div className="virtual_courses_container" style={{ display: showVirtual ? "block" : "none" }}>
         <div className="virtualCoursesContainer">
           {
-            showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} /> : null
+            showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} search={searchParams.toString()}/> : null
           }
         </div>
       </div>
