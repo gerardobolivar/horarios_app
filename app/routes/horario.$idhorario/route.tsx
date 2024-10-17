@@ -1,5 +1,5 @@
-import { ActionFunctionArgs, LinksFunction } from "@remix-run/node";
-import { Link, Outlet, useLoaderData, useLocation, useSearchParams } from "@remix-run/react";
+import { LinksFunction } from "@remix-run/node";
+import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import Filters from "./filters";
 import TimeColumn from "./timeColumn";
 import ClassroomColumn from "./classroomColumn";
@@ -16,10 +16,8 @@ export default function () {
   const timeSlotsTitle: string[] = data.timesTitle
   const timeSlots: string[] = Object.values(data.timeSlots);
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
-  const matriculas = data.matriculas;
   const [searchParams, setSearchParams] = useSearchParams();
   const showVirtual = searchParams.get("showvirtual") === "true" ? true : false;
-  const location = useLocation();
   const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
   const scheduleTimeSpans = data.scheduleTimeSpans;
   const user = useOptionalUser();
@@ -30,11 +28,6 @@ export default function () {
     // (e.target as HTMLAnchorElement).textContent;
     // console.log(e)
   }
-
-  function searchParamsToString(){
-    
-  }
-  
 
   const listaClassroom = 
     data.aulas.map((classroom, index) => {
@@ -74,7 +67,10 @@ export default function () {
         </Link>
       </div>
     </div>
-    <Link hidden={isGuest} to={`/horario/${data.idHorario}/new`}>
+    <Link hidden={isGuest} to={{
+      pathname:`/horario/${data.idHorario}/new`,
+      search: searchParams.toString()
+    }}>
       <button className="mainButton">Registrar</button>
     </Link>
 
