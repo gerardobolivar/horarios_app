@@ -79,10 +79,10 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
           </CourseCell> :
             <Link
               key={slot+aula_id}
-              state={{ timePicked: TIMESLOTS_REVERSE[slot],aula_id: aula_id}}
+              state={{ timePicked: TIMESLOTS_REVERSE[slot],aulaID: aula_id}}
               to={{
                 pathname:`/horario/${horarioId}/new`,
-                search: search
+                search: search+`&aula=${aula_id}`
               }}>
                 <div className="single-slot empty-slot"></div>
             </Link>

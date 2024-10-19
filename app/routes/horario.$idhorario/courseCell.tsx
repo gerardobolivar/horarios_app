@@ -33,13 +33,13 @@ const CourseCell: React.FC<Props> = ({ curso, classN, hiddenCell, matriculaId, h
   const groupNumberFormatted = `G${(Number(groupNumber) < 10 ? `0${(groupNumber)}` : groupNumber)}`;
   const formattedTeacherName = `${matricula.matricula.group.profesor.nombre} ${matricula.matricula.group.profesor.primer_apellido} ${matricula.matricula.group.profesor.segundo_apellido}`
   const hoursType = matricula.type === null ? "?" : matricula.type
-   
+
   return <Link
     style={style}
     to={
       {
         pathname: `/horario/${horarioId}/${matriculaId}`,
-        search: search
+        search: search+`&aula=${aulaID}`
       }
     }
     state={{ aulaID: aulaID }}>

@@ -2,7 +2,7 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/react";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
-import { getMatriculaById } from "prisma/models/matriculaModelo";
+import { getMatriculaById, getMatriculaModalidad } from "prisma/models/matriculaModelo";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { getProfesores, getProfesoresByUserId } from "prisma/models/profesorModel";
 import { getTimeSpanByMatricula, getTimeSpanSByHorarioDia } from "prisma/models/timeSpanModel";
@@ -39,13 +39,15 @@ const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunc
   }) : []
 
   let time_white_list;
-  if (aula !== 0) {
+  
+  if(aula != 0){
     time_white_list = await getAula(aula).then(
       async (result) => {
         if (result?.identificador === 999) {
           return generateTimeWhiteList([], dia, aula);
         }
         else {
+
           const lockedTimesByHorario: LockTime[] = await getTimeSpanSByHorarioDia(horarioId, dia);
           return generateTimeWhiteList(lockedTimesByHorario, dia, aula);
         }
@@ -53,8 +55,20 @@ const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunc
       (e) => {
         console.error(e);
       })
+  }else{
+    if(!isNewMatricula){
+      const modalidad = await getMatriculaModalidad(matriculaId);
+      if(modalidad?.modalidad === "VIRTUAL"){
+        time_white_list = generateTimeWhiteList([], dia, aula);
+      }
+    }else{
+      time_white_list = null;
+
+    }
   }
+  
   time_white_list = time_white_list === undefined ? {} : time_white_list
+
 
   return json({
     horarioId: horarioId,

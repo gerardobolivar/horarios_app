@@ -361,3 +361,14 @@ export function getColorByMatriculaId(matricula_id:number){
     }
   })
 }
+
+export function getMatriculaModalidad(matricula_id:number){
+  return prisma.matricula.findUnique({
+    where:{
+      matricula_id: matricula_id
+    },
+    select:{
+      modalidad: true
+    }
+  })
+}

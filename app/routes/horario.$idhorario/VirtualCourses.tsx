@@ -12,12 +12,8 @@ interface Props {
 const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual, search }) => {
   const listaCursos = matriculas.map(m=>{
     let formatedTimeLine:string = "";
-    formatedTimeLine += m.time_spans.map((t,i)=>{
-      if(i === m.time_spans.length){
-        return `${DIAS[t.dia]}: ${TIMES[Number(t.hora_inicio)].split("-")[0]}-${TIMES[Number(t.hora_final)].split("-")[1]}`
-      }else{
-        return ` ${DIAS[t.dia]}: ${TIMES[Number(t.hora_inicio)].split("-")[0]}-${TIMES[Number(t.hora_final)].split("-")[1]}`
-      }
+    m.time_spans.map((t,i)=>{
+      formatedTimeLine += `${i == 0 ? "":", "}${DIAS[t.dia]}: ${TIMES[Number(t.hora_inicio)]?.split("-")[0]}-${t.hora_final === 23 ? "23:00":TIMES[Number(t.hora_final)]?.split("-")[0]}${i+1 === m.time_spans.length?".":""}`
     })
     return <tr key={String(m.matricula_id)+formatedTimeLine}>
       <td>{m.group?.curso.nombre}</td>

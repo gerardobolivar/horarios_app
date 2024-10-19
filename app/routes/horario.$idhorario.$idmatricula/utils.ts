@@ -142,5 +142,22 @@ export async function checkForErrors(event: React.FormEvent<HTMLFormElement>, ar
 
 export function checkDuplicates(timeSpans: TimeSpan[], timeSpan: TimeSpan): boolean {
   const duplicates = timeSpans.filter(ts => ts.aula_id === timeSpan.aula_id && ts.dia === timeSpan.dia && ts.hora_inicio === timeSpan.hora_inicio && ts.hora_final === timeSpan.hora_final + 1)
-  return duplicates.length > 0 ? true : false;
+  return !!duplicates.length;
+}
+
+export function isAvailable(timeList:TimeSpan[],time:TimeSpan):Boolean{
+  let isAvailable = true;
+  console.log(time);
+  
+  timeList.map((t)=>{
+    if( t.dia === time.dia &&
+      (t.hora_inicio === time.hora_inicio || 
+      t.hora_final === time.hora_final+1 || 
+      (t.hora_inicio < time.hora_inicio && time.hora_inicio < t.hora_final  ) ||
+      (t.hora_inicio < time.hora_final+1 && time.hora_final+1 < t.hora_final ))){
+        isAvailable = false;
+    }
+  })
+
+  return isAvailable;
 }

@@ -10,6 +10,7 @@ import { useOptionalUser } from "~/utils";
 import HorarioLoader from "~/.server/Controller/horario.$idhorario/loader";
 import HorarioAction from "~/.server/Controller/horario.$idhorario/action";
 import { DIAS } from "./reversedTimes";
+import { useEffect } from "react";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -22,12 +23,20 @@ export default function () {
   const scheduleTimeSpans = data.scheduleTimeSpans;
   const user = useOptionalUser();
   const isGuest = user?.role === "GUEST"
+  
+  const defaultParams = {
+    dia: "LUNES"
+  }
 
   function handleDrag(e: React.DragEvent) {
     // const scheduleUI = e.currentTarget;
     // (e.target as HTMLAnchorElement).textContent;
     // console.log(e)
   }
+
+  useEffect(()=>{
+    setSearchParams(defaultParams);
+  },[])
 
   const listaClassroom = 
     data.aulas.map((classroom, index) => {
