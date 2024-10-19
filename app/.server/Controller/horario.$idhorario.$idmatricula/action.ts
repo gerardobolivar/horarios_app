@@ -46,6 +46,9 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
     }
 
   } else if (intent === "update") {
+    if(timeSpansJson.length < 1){
+      return null;
+    }
     const newTimeSpansJson = timeSpansJson.filter((t:any)=>!Object.hasOwn(t,"fecha_creado"))
     await updateMatricula(newTimeSpansJson, matriculaID, profesor, color, mobileLab);
     

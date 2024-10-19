@@ -3,7 +3,7 @@ import { Form, Link, useLoaderData, useLocation, useNavigation, useSearchParams,
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
-import { checkDuplicates, checkForErrors, getTimeStamp, handleModalidadChange, validateTimeSpans, } from "./utils";
+import { checkDuplicates, checkForErrors, getTimeStamp, handleModalidadChange, isAvailable, validateTimeSpans, } from "./utils";
 import rstyles from "./styles.css?url"
 import { useOptionalUser } from "~/utils";
 import loaderHorarioIdhorarioIdmatricula from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
@@ -33,7 +33,7 @@ export default function HorarioModal() {
   const hiddeOwnerOptions = !(user?.id_usuario === matricula?.user_id || user?.role === "ADMIN");
   const isOwner = user?.id_usuario === matricula?.user_id;
   const [timesToRemove,setTimesToRemove] = useState<number[]>([]);
-
+  
   let filters = {
     "planEstudios": "",
     "dia": "",
@@ -60,16 +60,7 @@ export default function HorarioModal() {
     }
   }, [errorList]);
 
-  /*
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set("planEstudios", `${filters.planEstudios}`);
-    params.set("dia", `${filters.dia}`);
-    params.set("ubicacion", `${filters.ubicacion}`);
-    params.set("aula", `${aula}`);
-    params.set("showvirtual", `${showVirtual}`)
-
-    setSearchParams(params, { preventScrollReset: true, });
     if (data.matricula?.modalidad === "VIRTUAL") {
       setIsVirtual(true);
     }
@@ -81,7 +72,7 @@ export default function HorarioModal() {
     }
 
   }, [])
-  */
+  
 
   useEffect(() => {
     (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
@@ -137,7 +128,8 @@ export default function HorarioModal() {
       dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
       type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
     }
-    if (!checkDuplicates(timeSpanList, timeSpan)) {
+    
+    if (!checkDuplicates(timeSpanList, timeSpan) && isAvailable(timeSpanList,timeSpan) && dia) {
       addTimeSpanToList(timeSpanList, timeSpan);
     }
   }

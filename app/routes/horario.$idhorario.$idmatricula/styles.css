@@ -24,9 +24,7 @@
   position: absolute;
 }
 
-.timeSpanTableEnrollment tr:first-child button{
-  display: none;
-}
+
 
 .colorSelector input{
   border: 0px;
