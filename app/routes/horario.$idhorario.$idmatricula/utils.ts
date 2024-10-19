@@ -147,8 +147,6 @@ export function checkDuplicates(timeSpans: TimeSpan[], timeSpan: TimeSpan): bool
 
 export function isAvailable(timeList:TimeSpan[],time:TimeSpan):Boolean{
   let isAvailable = true;
-  console.log(time);
-  
   timeList.map((t)=>{
     if( t.dia === time.dia &&
       (t.hora_inicio === time.hora_inicio || 

@@ -10,7 +10,7 @@ const loaderProfersorIdprofesor = async ({ params,request }: LoaderFunctionArgs)
   const idprofesor:number = Number(params.idprofesor);
 
   const profesor = isNewProfesor ? null : await getProfesor(idprofesor)
-  const isAllowed = user?.role === "ADMIN" || userId === profesor?.user_id;
+  const isAllowed = user?.role === "ADMIN" || user?.role === "USER";
 
   if(!isAllowed ){
     return redirect("/profesor")

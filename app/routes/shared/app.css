@@ -188,7 +188,17 @@ body{
   background-color: yellow !important;
   color: blue !important;
 }
+/*Development purposes - END*/
 
 .no-select{
   user-select: none;
+}
+
+option:checked {
+  background-color: var( --ucr_light_blue);;
+  color: black; /* Text color */
+}
+
+select option:hover,select option:focus{
+  background-color: var(--ucr_blue) !important;
 }

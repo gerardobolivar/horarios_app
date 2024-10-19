@@ -7,7 +7,8 @@ export const getProfesores = async ()=>{
       nombre:true,
       primer_apellido: true,
       segundo_apellido: true
-    }
+    },
+    orderBy:{nombre:'asc'}
   })
 }
 
@@ -21,7 +22,8 @@ export const getProfesoresByUserId = async (userId: number)=>{
       nombre:true,
       primer_apellido: true,
       segundo_apellido: true
-    }
+    },
+    orderBy:{nombre:'asc'}
   })
 }
 

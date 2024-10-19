@@ -182,7 +182,7 @@ export default function HorarioModal() {
 
   let cursosLista = data.listaCursos.map((curso) => {
     return <option value={curso.id_curso} key={curso.id_curso}>
-      {`${curso.nombre}`}
+      {`${curso.sigla} - ${curso.nombre}`}
     </option>
   })
 

@@ -69,7 +69,7 @@ export default function ModalCourse() {
                     placeholder=""
                     className=""
                     min={1}
-                    max={8}
+                    max={12}
                     defaultValue={!isNewCourse && course ? course.horas : ""}
                     required={true}       
                   />
