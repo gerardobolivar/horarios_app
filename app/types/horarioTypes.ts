@@ -65,8 +65,10 @@ const SCHEDULE_ERRORS: SCHEDULE_ERROR = {
   INAVALID_TIME_RANGE : "Rango de horas inválido.",
   DUPLICATED_TIME_RANGE : "La entrada ya fue agregada.",
   NO_SCHEDULE_ASSIGMENT: "No se puede activar un ciclo sin un horario vinculado.",
-  BUSSY_SCHEDULE: "El horario seleccionado ya está vinculado a un curso.",
+  BUSSY_SCHEDULE: "El horario seleccionado ya está vinculado a un ciclo.",
   NULL_ID_ELEMENT: "Este elemento no tiene un ID asociado",
+  INACTIVE_SCHEDULE: "El horario vinculado a este ciclo se ecuentra inactivo.",
+  INACTIVE_SCHEDULE_ADMIN: "Este horario se encuentra inactivo.",
 
 }
 

@@ -38,18 +38,19 @@ export default function HorarioConfigPage() {
           id="Archivar">
           <header>Archivar</header>
           <article>
-            <p>Al archivar el horario este se desvinculará del ciclo respectivo y el estado pasará a cerrado.</p>
+            <p>Al archivar el horario el ciclo pasará a inactivo y el horario dejará de ser accesible para los usuarios.</p>
+            <p>Estado: <b>{`${horario.active ? "Activo": "Archivado"}`}</b></p>
             <Form method="POST">
-              <button value="archivar" name="intent" disabled={!isBinded}>{isBinded ? "Archivar" : "Archivado"}</button>
+              <button value={horario.active ? "archivar" : "desarchivar"} name="intent" >{horario.active ? "Archivar" : "Desarchivar"}</button>
             </Form>
           </article>
         </section>
         <section
           className="main-section"
           id="Estado">
-          <header>Estado</header>
+          <header>Cambios</header>
           <article>
-            <p>Estado: {horario.active ? "Abierto" : "Cerrardo"}</p>
+            <p>Estado: {horario.active ? "Abierto" : "Cerrado"}</p>
             <p><i>Abierto: Se aceptan cambios al horario.</i></p>
             <p><i>Cerrado: No se aceptan cambios al horario.</i></p>
           </article>

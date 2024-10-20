@@ -59,3 +59,14 @@ export const updateUpdateDate = async (horario_id: number) => {
     }
   })
 }
+
+export const getHorarioState = async (horarioId:number) => {
+  return await prisma.horario.findUnique({
+    where:{
+      horario_id: horarioId
+    },
+    select:{
+      active:true
+    }
+  })
+}

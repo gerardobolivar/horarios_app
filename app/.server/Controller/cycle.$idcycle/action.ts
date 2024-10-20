@@ -15,26 +15,31 @@ const actionCycleIdcycle = async ({ request, params }: ActionFunctionArgs) =>{
   });
 
   if (intent === "save_cicle_config") {
-    if (setAsActive) {
-      if (horarioId) {
-        await updateActiveCycle(cicloID).catch(e => {
-          console.error(e);
-        });
-      } else {
-        const url = new URL(request.url);
-        url.pathname = "/error";
-        url.searchParams.set("reason", "NO_SCHEDULE_ASSIGMENT");
-        return redirect(url.toString());
-      }
-    } else {
-      if (activeCycle?.ciclo_id === cicloID) {
-        await clearActiveCycle().catch(e => {
-          console.error(e);
-        })
-      }
-    }
+
 
     if (horarioId === "" || horarioId === null || horarioId === undefined) {
+
+
+      if (setAsActive) {
+        if (horarioId) {
+          await updateActiveCycle(cicloID).catch(e => {
+            console.error(e);
+          });
+        } else {
+          const url = new URL(request.url);
+          url.pathname = "/error";
+          url.searchParams.set("reason", "NO_SCHEDULE_ASSIGMENT");
+          return redirect(url.toString());
+        }
+      } else {
+        if (activeCycle?.ciclo_id === cicloID) {
+          await clearActiveCycle().catch(e => {
+            console.error(e);
+          })
+        }
+      }
+
+
       return await clearActiveCycle().then(async () => {
         await unBindByCiclo(cicloID);
 
@@ -46,6 +51,27 @@ const actionCycleIdcycle = async ({ request, params }: ActionFunctionArgs) =>{
     }
     else {
       return await updateCiclo(cicloID, Number(horarioId)).then(async () => {
+
+        if (setAsActive) {
+          console.log(horarioId)
+          if (horarioId) {
+            await updateActiveCycle(cicloID).catch(e => {
+              console.error(e);
+            });
+          } else {
+            const url = new URL(request.url);
+            url.pathname = "/error";
+            url.searchParams.set("reason", "NO_SCHEDULE_ASSIGMENT");
+            return redirect(url.toString());
+          }
+        } else {
+          if (activeCycle?.ciclo_id === cicloID) {
+            await clearActiveCycle().catch(e => {
+              console.error(e);
+            })
+          }
+        }
+
         return redirect(`/cicle/${cicloID}`)
       }).catch((e) => {
         if (e.code === "P2002") {
