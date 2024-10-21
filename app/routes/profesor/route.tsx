@@ -64,7 +64,7 @@ export default function Profesor() {
           <div>
             <div>
             </div>
-            <label>Aulas disponibles:</label>
+            <label>Profesores registrados:</label>
             <div className="whiteContainer whiteContainerTable">
               {profesoresLista}
             </div>

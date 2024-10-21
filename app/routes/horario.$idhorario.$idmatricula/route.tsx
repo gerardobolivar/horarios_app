@@ -43,11 +43,11 @@ export default function HorarioModal() {
   }
 
   try {
-    filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value;
-    filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
-    filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value;
-    filters.show_virtual = String((document.querySelector('input[name="show_virtual"]') as HTMLInputElement).checked);
-    filters.hide_empty = String((document.querySelector('input[name="show_empty"]') as HTMLInputElement).checked);
+    filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement)?.value;
+    filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement)?.value;
+    filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement)?.value;
+    filters.show_virtual = String((document.querySelector('input[name="show_virtual"]') as HTMLInputElement)?.checked);
+    filters.hide_empty = String((document.querySelector('input[name="show_empty"]') as HTMLInputElement)?.checked);
   } catch (error) {
     console.log(error);
   }
@@ -64,18 +64,29 @@ export default function HorarioModal() {
     if (data.matricula?.modalidad === "VIRTUAL") {
       setIsVirtual(true);
     }
-    const aulaCode = (document.getElementById("aulaHorario") as HTMLSelectElement).selectedOptions[0].innerText.split(" ")[1]
+    const aulaCode = (document.getElementById("aulaHorario") as HTMLSelectElement)?.selectedOptions[0].innerText.split(" ")[1]
 
     if (aulaCode === "999") {
-      (document.getElementById("modalidadHorario") as HTMLSelectElement).value = "VIRTUAL"
-      setIsVirtual(true);
+      try {
+        (document.getElementById("modalidadHorario") as HTMLSelectElement).value = "VIRTUAL"
+        setIsVirtual(true);
+        
+      } catch (error) {
+        
+      }
     }
 
   }, [])
   
 
   useEffect(() => {
-    (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
+    try {
+      (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
   }, [dia])
 
   useEffect(() => {
@@ -131,6 +142,8 @@ export default function HorarioModal() {
     
     if (!checkDuplicates(timeSpanList, timeSpan) && isAvailable(timeSpanList,timeSpan) && dia) {
       addTimeSpanToList(timeSpanList, timeSpan);
+    }else{
+      console.log(timeSpan)
     }
   }
 
@@ -232,7 +245,7 @@ export default function HorarioModal() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>{isNewMatricula ? "Registrar curso" : "Ver/Actualizar registro"}</h2>
+      <h2>{isNewMatricula ? "Registrar curso" : isOwner ? "Ver/Actualizar registro" :"Ver registro"}</h2>
       <div className="body_container">
         <Form id="courseForm"
           method="post"
@@ -282,6 +295,26 @@ export default function HorarioModal() {
                         {`${matricula?.group?.profesor.nombre} ${matricula?.group?.profesor.primer_apellido} ${matricula?.group?.profesor.segundo_apellido}`}
                       </p>
                     </span>
+                    {
+                      (matricula?.group?.completed || !isOwner) && !isNewMatricula? 
+                        <span>
+                          <label>Horario:</label>
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Día</th>
+                                <th>Aula</th>
+                                <th>Franja horaria</th>
+                                <th hidden={!!matricula?.group}>Remove</th>
+                              </tr>
+                            </thead>
+                            <tbody className="timeSpanTableEnrollment">
+                              {timeSpanListRender}
+                            </tbody>
+                          </table>
+                        </span>
+                    : null
+                    }
 
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span>
@@ -356,12 +389,12 @@ export default function HorarioModal() {
                       </span>
                     }
                   </div>
-
+                  { (!matricula?.group?.completed && isOwner) || isNewMatricula ?
                   <div className="section">
-
                     <div hidden={hiddeOwnerOptions && !isNewMatricula}>
 
                       <p>{isNewMatricula ? "" : matricula?.group?.completed ? null : `Horas por asignar: ${matricula?.group?.Ahours}`}</p>
+                      
                       <span hidden={matricula?.group?.completed}>
                         <label htmlFor="diaHorario" >Día:</label>
                         <select
@@ -381,6 +414,8 @@ export default function HorarioModal() {
                           <option value={"SABADO"}>Sábado</option>
                         </select>
                       </span>
+
+                       
                       <span hidden={isVirtual || matricula?.group?.completed}  >
                         <label htmlFor="aulaHorario" >Aula:</label>
                         <select
@@ -395,8 +430,9 @@ export default function HorarioModal() {
                           <option value={""}></option>
                           {aulasLista}
                         </select>
-
                       </span>
+                      
+                      
                       <span hidden={matricula?.group?.completed}>
                         <label htmlFor="horaInicio" >Hora de inicio:</label>
                         <select
@@ -410,9 +446,12 @@ export default function HorarioModal() {
                           {timeList}
                         </select>
                       </span>
+                      
 
+                      
                       <span hidden={matricula?.group?.completed}>
                         <label htmlFor="horaFin" >Hora de finalización:</label>
+
                         <select
                           name="horaFin"
                           id="horaFin"
@@ -424,6 +463,8 @@ export default function HorarioModal() {
                           {timeList}
                         </select>
                       </span>
+                      
+                      
                       <span hidden={matricula?.group?.completed}>
                         <label htmlFor="tipoHoras">Tipo:</label>
                         <select name="tipoHoras" defaultValue="T">
@@ -432,6 +473,7 @@ export default function HorarioModal() {
                           <option value="TP">Teórico-Práctico</option>
                         </select>
                       </span>
+
                       <span hidden={!!matricula?.group?.completed}>
                         <button
                           id="addTimeSpanBtn"
@@ -448,24 +490,25 @@ export default function HorarioModal() {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                           }}>+</button>
                       </span>
-
+                      <span>
+                          <label>Horario:</label>
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Día</th>
+                                <th>Aula</th>
+                                <th>Franja horaria</th>
+                                <th hidden={!!matricula?.group}>Remove</th>
+                              </tr>
+                            </thead>
+                            <tbody className="timeSpanTableEnrollment">
+                              {timeSpanListRender}
+                            </tbody>
+                          </table>
+                        </span>
                     </div>
-                    <span>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Día</th>
-                            <th>Aula</th>
-                            <th>Franja horaria</th>
-                            <th hidden={!!matricula?.group}>Remove</th>
-                          </tr>
-                        </thead>
-                        <tbody className="timeSpanTableEnrollment">
-                          {timeSpanListRender}
-                        </tbody>
-                      </table>
-                    </span>
                   </div>
+                  : null}
                 </div>
               </div>
               <div className="errorBlock" style={{ color: "red" }}>

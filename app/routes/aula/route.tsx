@@ -66,7 +66,7 @@ export default function Aulas() {
           <div>
             <div>
             </div>
-            <label>Aulas disponibles:</label>
+            <label>Aulas registradas:</label>
             <div className="whiteContainer whiteContainerTable">
               {aulasLista}
             </div>
