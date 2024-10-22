@@ -22,6 +22,7 @@ model User{
   ultima_sesion DateTime?
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
+  resetPassword Boolean @default(true)
   hash Hash?
   matriculas Matricula[]
   profesores Profesor[]
@@ -91,7 +92,7 @@ model LaboratorioMovil{
 model Hash{
   id_hash Int @id @default(autoincrement())
   salt String @db.Char(32)
-  hash String @db.Char(64)
+  hash String @db.Char(128)
   usuario User @relation(fields: [user_id], references: [id_usuario])
   user_id Int @unique
   fecha_modificado DateTime @updatedAt

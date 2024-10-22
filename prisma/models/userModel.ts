@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/react";
 import prisma from "prisma/client";
+import CryptoSec from "~/.server/Controller/crypto/crypto";
 
 export const getUserById = async (id_usuario: number) => {
   return await prisma.user.findUnique({
@@ -7,12 +8,24 @@ export const getUserById = async (id_usuario: number) => {
   });
 };
 
+export const userHasHash = async (id_usuario: number):Promise<boolean> => {
+  let hashFound = false;
+
+  const user = await prisma.user.findUnique({
+    where: { id_usuario },
+    select: {hash: true}
+  });
+  
+  if(user?.hash?.id_hash != null){
+    hashFound = true;
+  }
+
+  return hashFound;
+};
+
 export const getUserByName = async (nombre_usuario: string) => {
   return await prisma.user.findUnique({
-    where: { nombre_usuario:nombre_usuario},
-    select:{
-      nombre_usuario: true
-    }
+    where: { nombre_usuario:nombre_usuario}
   });
 };
 
@@ -55,8 +68,9 @@ export const createUsuario = async (nombre_usuario:string, role:string) =>{
   })
 }
 
-export const validateUser = async (hash:string, username: string) => {
-  return prisma.$transaction(async (tx)=>{
+export const validateUser = async (password:string, username: string) => {
+  return prisma.$transaction(async (tx)=>{    
+
 
     const user = await tx.user.findUnique({
       where:{
@@ -73,8 +87,14 @@ export const validateUser = async (hash:string, username: string) => {
       throw new Error(e)
     })
     
-    if (user?.hash?.hash === hash) {
-      return user.id_usuario;
+    if (user) {
+      const crp = new CryptoSec();
+      const isAutheticaded = await crp.validatePassword(user.id_usuario,password);
+      if(isAutheticaded){
+        return user.id_usuario;
+      }
+      return null;
+
     }else{
       return null;
     }
