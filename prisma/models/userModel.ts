@@ -41,10 +41,21 @@ export const getUsers = async()=>{
 }
 
 export const removeUsuario = async (id_usuario:number) =>{
-  return await prisma.user.delete({
-    where:{
-      id_usuario: id_usuario
-    }
+  return await prisma.$transaction(async (tx)=>{
+    
+    await tx.hash.delete({
+      where:{
+        user_id: id_usuario
+      }
+    })
+    
+    await tx.user.delete({
+      where:{
+        id_usuario: id_usuario
+      }
+    })
+
+
   })
 }
 
