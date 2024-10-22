@@ -2,6 +2,8 @@ import { useLoaderData } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
 import PlanCard from "./PlanCard";
 import loaderPlan from "~/.server/Controller/plan/loader";
+import appStyles from '~/stylesheets/plan_.new.css?url';
+import { LinksFunction } from "@remix-run/node";
 const ROUTE_TAG = "Planes de estudio";
 
 export default function Planes() {
@@ -23,3 +25,7 @@ export default function Planes() {
 }
 
 export const loader = loaderPlan;
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: appStyles },
+];

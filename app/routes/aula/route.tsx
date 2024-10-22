@@ -3,7 +3,6 @@ import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/rea
 import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
-import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import modalStyles from "~/modals/modalStyles.css?url";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import actionAula from "~/.server/Controller/aula/action";
@@ -120,6 +119,5 @@ export const loader = loaderAula;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
-  { rel: "stylesheet", href: icons },
   { rel: "stylesheet", href: modalStyles },
 ];
