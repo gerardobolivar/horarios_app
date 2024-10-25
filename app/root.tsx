@@ -1,5 +1,5 @@
 import { Outlet, Links, Scripts, Meta , useRouteError, useNavigate, useLoaderData, redirect } from "@remix-run/react";
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SpeedInsights } from '@vercel/speed-insights/remix';
 import { json, type ActionFunctionArgs, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import appStyles from "./routes/shared/app.css?url";
 import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
