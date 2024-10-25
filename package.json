@@ -22,6 +22,7 @@
     "@remix-run/node": "^2.10.3",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
+    "@vercel/speed-insights": "^1.0.14",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "dotenv": "^16.4.5",
