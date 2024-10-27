@@ -7,8 +7,6 @@ export const  actionUserIdUser = async ({ request, params }: ActionFunctionArgs)
   const role = String(formData.get("user_role"));
   const intent = formData.get("intent");
   const user = await getUserByName(username);
-  console.log(user);
-  debugger
 
   if (intent === "create") {
     if(user === null){
@@ -29,8 +27,7 @@ export const  actionUserIdUser = async ({ request, params }: ActionFunctionArgs)
 
   }else if (intent === "update"){
     const iduser = Number(params.iduser);
-    await updateUsuarioRole(iduser,role)
-    return null;
+    await updateUsuarioRole(iduser,role);
   }
   
     
