@@ -1,6 +1,6 @@
 import { LinksFunction } from "@remix-run/node";
 import { Form, Link, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
 import { checkDuplicates, checkForErrors, getTimeStamp, handleModalidadChange, isAvailable, validateTimeSpans, } from "./utils";
