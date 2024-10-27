@@ -69,6 +69,7 @@ const SCHEDULE_ERRORS: SCHEDULE_ERROR = {
   NULL_ID_ELEMENT: "Este elemento no tiene un ID asociado",
   INACTIVE_SCHEDULE: "El horario vinculado a este ciclo se ecuentra inactivo.",
   INACTIVE_SCHEDULE_ADMIN: "Este horario se encuentra inactivo.",
+  USER_NOT_AVAILABLE: "El usuario no se encuentra disponible."
 
 }
 

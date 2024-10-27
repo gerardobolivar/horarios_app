@@ -1,7 +1,7 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, Outlet, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
-import {createUsuario, getUserById, getUserByName, updateUsuarioRole} from "prisma/models/userModel"
 import { useEffect, useState } from "react";
+import { actionUserIdUser } from "~/.server/Controller/user.$iduser/action";
+import { loaderUserIdUser } from "~/.server/Controller/user.$iduser/loader";
 
 export default function ModalUsuario() {
   const navigation = useNavigation()
@@ -27,10 +27,11 @@ export default function ModalUsuario() {
   }
 
   function handleChangeForm(event:any){
-    const username = String((document.getElementById("username") as HTMLInputElement).value);
-    submit(event.currentTarget);
+    //const username = String((document.getElementById("username") as HTMLInputElement).value);
+    //submit(event.currentTarget);
 
   }
+
   return <div className="overlay_styles" >
     <div className="modalContainer">
       <h2>{isNewUser ? "Agregar Usuario":"Ver/Actualizar usuario"}</h2>
@@ -39,7 +40,6 @@ export default function ModalUsuario() {
               method="post"
               autoComplete="off"
               name="form"
-              onBlur={handleChangeForm}
               preventScrollReset>
           <div className="outter_white_container">
             <div className="grayContainer">
@@ -101,48 +101,5 @@ export default function ModalUsuario() {
   </div>
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const username = String(formData.get("username")).toLocaleLowerCase();
-  const role = String(formData.get("user_role"));
-  const intent = formData.get("intent");
-  let user_role:string;
-
-  switch (role) {
-    case "ADMIN": 
-      user_role = "ADMIN";
-      break;
-    case "USER":
-      user_role = "USER";
-      break;
-    default:
-      user_role = "GUEST"
-  }
-  
-  if (intent === "create") {
-    try {
-      const user = await createUsuario(username,user_role);
-    } catch (errors) {
-      console.log(errors);
-    }
-    
-  }else if (intent === "update"){
-    const iduser = Number(params.iduser);
-    await updateUsuarioRole(iduser,user_role)
-  }
-  else{
-    const result = await getUserByName(username)
-    if(result?.nombre_usuario === username){
-      return redirect(`/user/new/error`)
-    }
-    return redirect(`/user/new/`)
-    
-  }
-  return redirect(`/user/`)
-}
-
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const isNewUser:boolean = params.iduser === "new";
-  const iduser:number = Number(params.iduser);
-  return json({ isNewUser: isNewUser, user: isNewUser ? null: await getUserById(iduser)})
-}
+export const action = actionUserIdUser;
+export const loader = loaderUserIdUser;

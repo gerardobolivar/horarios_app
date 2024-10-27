@@ -1,13 +1,13 @@
-import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node"
+import { LinksFunction } from "@remix-run/node"
 import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { getUserById, getUsers, removeUsuario } from "prisma/models/userModel";
 import ConfirmationModal from "~/modals/ConfirmationModal";
 import modalStyles from "~/modals/modalStyles.css?url";
-import { requireUser } from "~/.server/session";
+import { loaderUser } from "~/.server/Controller/user/loader";
+import { actionUser } from "~/.server/Controller/user/action";
 
 const ROUTE_TAG = "Usuarios";
 
@@ -113,31 +113,8 @@ export default function Usuarios() {
   )
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  await requireUser(request);
-
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  const currentUsuario = Number(formData.get("elementID"))
-
-  if(intent === "delete_usuario"){
-    await removeUsuario(currentUsuario);
-  }
-  return redirect("/user")
-}
-
-export const loader = async ({ params, request}: LoaderFunctionArgs) => {
-  const userId = await requireUser(request);
-  const user = await getUserById(userId);
-
-  if(user?.role !== "ADMIN"){
-    return redirect("/")
-  }
-
-  const listaUsuarios = await getUsers();
-
-  return json({ listaUsuarios: listaUsuarios })
-}
+export const action = actionUser;
+export const loader = loaderUser;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
