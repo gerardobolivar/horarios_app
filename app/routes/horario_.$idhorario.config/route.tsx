@@ -1,13 +1,8 @@
-import { ActionFunctionArgs, json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useLoaderData } from "@remix-run/react";
+import { LinksFunction} from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import scheduleConfigPageStyles from './scheduleConfigPageStyles.css?url';
 import appStyles from '~/stylesheets/plan_.new.css?url';
-import { getBindedHorario, unBindCicloByHorario } from "prisma/models/cicloModel";
-import { deactivateHorarioById, getHorario } from "prisma/models/horarioModel";
 import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
-import { clearActiveCycle } from "prisma/models/activeCycles";
-import { requireUser } from "~/.server/session";
-import { getUserById } from "prisma/models/userModel";
 import loaderHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/loader";
 import actionHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/action";
 
