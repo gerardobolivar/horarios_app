@@ -27,7 +27,7 @@ export default function HomeAdmin(){
   
 return (
   <div className="">
-    <MainTitle innerText="Horarios"/>
+    <MainTitle innerText="Ciclos"/>
     <div className="cicleCardContainer">
       {cicleList}
     </div>
