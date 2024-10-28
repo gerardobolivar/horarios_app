@@ -25,7 +25,6 @@ const CicleCard: React.FC<Props> = ({ innerText, url, isAdmin, cicloID, isActive
         <div className={`cicleCard ${user?.role !== "ADMIN" ? "cicleCardHeight" : ""}`} >
           <div className="cardBody">
             <h5 className="cardTitle">{title}</h5>
-            {!isActiveCycle ? <span className='tt-cicle'><p className='tt-cicle-text'>Ciclo inactivo</p></span>:null}
           </div>
         </div>
       </Link>
