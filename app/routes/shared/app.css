@@ -118,7 +118,8 @@ body{
 
 
 .disableLink{
-  pointer-events: none;
+  pointer-events: none; 
+  position: relative;
   opacity: 0.6;
 }
 
