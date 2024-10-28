@@ -1,6 +1,6 @@
 # Scheduling system
 
-A web application designed to assist the management of enrolling courses of educational institutions.
+A web application designed to streamline course enrollment management for educational institutions.
 
 
 ## Demo
