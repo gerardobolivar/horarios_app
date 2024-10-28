@@ -67,11 +67,10 @@
   margin: auto;
 }
 
-.cyCard:hover{
-  .tt-cicle{
+.cyCard:hover .tt-cicle{
     visibility:visible;
     opacity: 1;
-  }
+  
 }
 
 
