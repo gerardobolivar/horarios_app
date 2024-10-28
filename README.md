@@ -5,7 +5,7 @@ A web application designed to assist the management of enrolling courses of educ
 
 ## Demo
 
-This demo has restricted access. To get a full preview of the web application please contact me.
+This demo has restricted access. Limited features are available.
 
 https://horarios-app.vercel.app/
 
