@@ -46,63 +46,74 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
       id="filtersSchedule"
       preventScrollReset={true}
       onChange={(e) => { handleChangeForm(e) }}
+      className="filters-form"
       action={`/horario/${horarioId}`}>
-      <span>
-        <label htmlFor="planEstudios">Plan de estudios:</label>
-        <select
-          name="planEstudios"
-          defaultValue={0}>
-          <option value={0}>Todos</option>
-          {planesEstudio}
-        </select>
-      </span>
-      <span>
-        <label htmlFor="diaHorarioFilter">Día:</label>
-        <select
-          name="diaHorarioFilter"
-          defaultValue={"LUNES"}>
-          <option value={"LUNES"}>Lunes</option>
-          <option value={"MARTES"}>Martes</option>
-          <option value={"MIERCOLES"}>Miércoles</option>
-          <option value={"JUEVES"}>Jueves</option>
-          <option value={"VIERNES"}>Viernes</option>
-          <option value={"SABADO"}>Sábado</option>
-        </select>
-      </span>
-      <span>
-        <label htmlFor="ubicacionHorario">Ubicación:</label>
-        <select
-          name="ubicacionHorario"
-          defaultValue={"0"}>
-          <option value={"0"}>Todos</option>
-          <option value={"1"}>1</option>
-          <option value={"2"}>2</option>
-          <option value={"3"}>3</option>
-          <option value={"4"}>4</option>
-          <option value={"5"}>5</option>
-        </select>
-      </span>
-        <span>
-          <label htmlFor="show_virtual">Mostrar cursos virtuales</label>
-          <input
-            type="checkbox"
-            id="shVirt"
-            name="show_virtual"
-            onChange={()=>{}}
-            className="largerCheckBox"
-            checked={searchParams.get("showvirtual") === "true" ? true:false}
-            value="true"></input>
+        <span className="fil-selectors">
+            <div>
+              <label htmlFor="planEstudios">Plan de estudios:</label>
+              <select
+                name="planEstudios"
+                defaultValue={0}>
+                <option value={0}>Todos</option>
+                {planesEstudio}
+              </select>
+            </div>
+          
+          <div>
+            <label htmlFor="diaHorarioFilter">Día:</label>
+            <select
+              name="diaHorarioFilter"
+              defaultValue={"LUNES"}>
+              <option value={"LUNES"}>Lunes</option>
+              <option value={"MARTES"}>Martes</option>
+              <option value={"MIERCOLES"}>Miércoles</option>
+              <option value={"JUEVES"}>Jueves</option>
+              <option value={"VIERNES"}>Viernes</option>
+              <option value={"SABADO"}>Sábado</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="ubicacionHorario">Ubicación:</label>
+            <select
+              name="ubicacionHorario"
+              defaultValue={"0"}>
+              <option value={"0"}>Todos</option>
+              <option value={"1"}>1</option>
+              <option value={"2"}>2</option>
+              <option value={"3"}>3</option>
+              <option value={"4"}>4</option>
+              <option value={"5"}>5</option>
+            </select>
+          </div>
         </span>
         <span>
-          <label htmlFor="show_empty">Ocultar aulas vacías</label>
-          <input
-            type="checkbox"
-            id="shEmpty"
-            name="show_empty"
-            onChange={()=>{}}
-            className="largerCheckBox"
-            checked={searchParams.get("hideempty") === "true" ? true:false}
-            value="true"></input>
+          <div className="fil-checkboxes">
+            <div>
+              <span>
+              <label htmlFor="shVirt">Mostrar cursos virtuales</label>
+              <input
+                type="checkbox"
+                id="shVirt"
+                name="show_virtual"
+                onChange={()=>{}}
+                className="largerCheckBox"
+                checked={searchParams.get("showvirtual") === "true" ? true:false}
+                value="true"></input>
+              </span>
+              <span>
+                <label htmlFor="shEmpty">Ocultar aulas vacías</label>
+                <input
+                  type="checkbox"
+                  id="shEmpty"
+                  name="show_empty"
+                  onChange={()=>{}}
+                  className="largerCheckBox"
+                  checked={searchParams.get("hideempty") === "true" ? true:false}
+                  value="true"></input>
+              </span>
+            </div>
+          </div>
         </span>
     </Form>
   </>
