@@ -266,3 +266,12 @@ table tr:hover{
 }
 
 /**/
+
+@media (width <= 1000px) {
+  
+  .lnk-btn{
+    display: block;
+    margin: auto !important;
+    text-align: center;
+  }
+}

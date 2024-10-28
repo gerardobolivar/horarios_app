@@ -71,17 +71,19 @@ export default function () {
         <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
       </div>
       <div className="scheduleConfigBtn" hidden={user?.role !== "ADMIN"}>
-        <Link to={`/horario/${data.idHorario}/config`}>
+        <Link replace={true} to={`/horario/${data.idHorario}/config`}>
           <i className="bi bi-gear-fill gear-icon"></i>
         </Link>
       </div>
     </div>
-    <Link hidden={isGuest} to={{
-      pathname:`/horario/${data.idHorario}/new`,
-      search: searchParams.toString()
-    }}>
-      <button className="mainButton">Registrar</button>
-    </Link>
+    <div className="regis-btn-sch">
+      <Link hidden={isGuest} className="lnk-btn" to={{
+        pathname:`/horario/${data.idHorario}/new`,
+        search: searchParams.toString()
+      }}>
+        <button className="mainButton">Registrar</button>
+      </Link>      
+    </div>
 
     <div className="grid_container">
       <div

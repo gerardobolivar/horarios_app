@@ -1,25 +1,47 @@
 .filtersHorario form{
   margin-bottom: 25px;
   margin-top: 25px;
+
+  label{
+    font-weight: bold;
+  }
 }
-.filtersHorario form span{
-  display: inline-block !important;
-  margin-right: 25px
+
+.fil-selectors{
+  display: flex;
 }
+
+.filters-form{
+  display: flex;
+  justify-content: center;
+  
+}
+
+.fil-selectors div:not(:first-child){
+  margin-left: 10px;
+}
+.fil-checkboxes{
+  display: flex;
+}
+
+.fil-checkboxes > div > span {
+  margin-left: 10px !important;  
+}
+
+.fil-checkboxes > div > span > label {
+  margin-bottom: 2px !important;  
+}
+
+.fil-checkboxes > div > span > input[type="checkbox"]{
+  margin-left: 10px !important;
+  margin-top: 5px ;
+}
+
 
 .modalContainer form span input, label {
   display: inherit !important;
 }
 
-.filtersHorario form span label{
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.filtersHorario input[type="checkbox"]{
-  background-color: red;
-
-}
 
 .largerCheckBox{
   width: 22px;
@@ -71,20 +93,12 @@
 }
 
 .scheduleConfigBtn{
-  text-align: right;
-  padding-top: 10px;
-  padding-right: 10px;
-}
-
-.grid_container_filter_config{
-  display: grid;
-  grid-template-columns: 80% 20%;
+  text-align: end;
 }
 
 .grid_container_filter_config .scheduleConfigBtn i {
-  position: relative;
-  top:0;
-  left: 0;
+  top: 35px;
+  left: -25px;
 }
 
 .mainTitleVirtualCourses{
@@ -102,6 +116,49 @@
   font-weight: bold !important;
 }
 
-@media (width <= 1250px) {
+@media (width <= 1230px ) and (width >= 1000px ){
+  .fil-checkboxes > div > span{
+    display: flex;
+  }
+}
 
+@media (width <= 1000px) {
+  .filters-form{
+    display: block;
+  }
+  .grid_container_filter_config{
+    display: grid;
+    grid-template-columns: 100% 0%;
+  }
+
+  .scheduleConfigBtn{
+    position: absolute;
+    right: 1%;
+  }
+
+  .filtersHorario form{
+    position: relative;
+    text-align: center;
+  }
+
+  .fil-selectors{
+    display: block;
+
+    select{
+      margin-bottom: 10px;
+    }
+  }
+  
+  .fil-selectors div:not(:first-child){
+    margin-left: 0px;
+  }
+
+  .fil-checkboxes div {
+    margin-top: 10px !important;
+    margin: auto;
+  }
+
+  .fil-checkboxes > div > span{
+    display: flex;
+  }
 }
