@@ -50,20 +50,22 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
       action={`/horario/${horarioId}`}>
         <span className="fil-selectors">
             <div>
-              <label htmlFor="planEstudios">Plan de estudios:</label>
               <select
                 name="planEstudios"
-                defaultValue={0}>
-                <option value={0}>Todos</option>
+                defaultValue={0}
+                className="form-select form-select-lg mb-3"
+                aria-label=".form-select-lg example">
+                <option value={0}>Plan de estudio</option>
                 {planesEstudio}
               </select>
             </div>
           
           <div>
-            <label htmlFor="diaHorarioFilter">Día:</label>
             <select
               name="diaHorarioFilter"
-              defaultValue={"LUNES"}>
+              defaultValue={"LUNES"}
+              className="form-select form-select-lg mb-3"
+              aria-label=".form-select-lg example">
               <option value={"LUNES"}>Lunes</option>
               <option value={"MARTES"}>Martes</option>
               <option value={"MIERCOLES"}>Miércoles</option>
@@ -74,11 +76,12 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
           </div>
 
           <div>
-            <label htmlFor="ubicacionHorario">Ubicación:</label>
             <select
               name="ubicacionHorario"
-              defaultValue={"0"}>
-              <option value={"0"}>Todos</option>
+              defaultValue={"0"}
+              className="form-select form-select-lg mb-3"
+                aria-label=".form-select-lg example">
+              <option value={"0"}>Ubicación en el plan</option>
               <option value={"1"}>1</option>
               <option value={"2"}>2</option>
               <option value={"3"}>3</option>
@@ -87,11 +90,11 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
             </select>
           </div>
         </span>
-        <span>
+        <div>
           <div className="fil-checkboxes">
             <div>
               <span>
-              <label htmlFor="shVirt">Mostrar cursos virtuales</label>
+              <label htmlFor="shVirt">Cursos virtuales</label>
               <input
                 type="checkbox"
                 id="shVirt"
@@ -102,7 +105,7 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
                 value="true"></input>
               </span>
               <span>
-                <label htmlFor="shEmpty">Ocultar aulas vacías</label>
+                <label htmlFor="shEmpty">Ocultar vacías</label>
                 <input
                   type="checkbox"
                   id="shEmpty"
@@ -114,7 +117,7 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
               </span>
             </div>
           </div>
-        </span>
+        </div>
     </Form>
   </>
 }

@@ -90,6 +90,13 @@
   margin-left: 18px;
 }
 
+.mainButton:hover{
+  background-color: #2a6697;
+}
+
+.mainButton:active{
+  background-color: #204C6F;
+}
 
 
 [value="delete"]{
