@@ -18,12 +18,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="es-013">
       <head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/calendar.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1,  maximum-scale=1.0, user-scalable=0" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="Web site for managing courses inscriptions" />
         <meta name="author" content="Gerardo Vargas Fernández" />
         <meta name="email" content="geramena102@gmail.com" />
+        <title>SISTEMA DE HORARIOS</title>
         <Meta />
         <Links />
       </head>

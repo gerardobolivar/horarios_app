@@ -38,6 +38,17 @@ export default function () {
     setSearchParams(defaultParams);
   },[])
 
+  useEffect(()=>{
+    const scheduleLayout = document.getElementById("scheduleLayout") as HTMLDivElement;
+    if(showVirtual){
+      scheduleLayout.classList.remove("grid_container");
+      scheduleLayout.classList.add("grid_container_dual");
+    }else{
+      scheduleLayout.classList.remove("grid_container_dual");
+      scheduleLayout.classList.add("grid_container");
+    }
+  },[showVirtual])
+
   const listaClassroom = 
     data.aulas.map((classroom, index) => {
     return classroom.identificador !== 999 ? <ClassroomColumn
@@ -82,10 +93,12 @@ export default function () {
         pathname:`/horario/${data.idHorario}/config`,
         search: searchParams.toString()
       }}>
-        <button className="mainButton">Config</button>
+        <button className="mainButton">
+        <i className="bi bi-gear-fill"></i>
+        </button>
       </Link>   
     </div>
-    <div className="grid_container">
+    <div className="grid_container" id="scheduleLayout">
       <div
         onDrag={handleDrag}
         className="mainScheduleUI">
@@ -98,13 +111,15 @@ export default function () {
           <Outlet />
         </div>
       </div>
-      <div className="virtual_courses_container" style={{ display: showVirtual ? "block" : "none" }}>
-        <div className="virtualCoursesContainer">
-          {
-            showVirtual ? <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} search={searchParams.toString()}/> : null
-          }
-        </div>
-      </div>
+      {
+        showVirtual ?
+          <div className="virtual_courses_container">
+            <div className="virtualCoursesContainer">
+              <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} search={searchParams.toString()}/>
+            </div>
+          </div>
+        :null
+      }
     </div>
   </>
 }

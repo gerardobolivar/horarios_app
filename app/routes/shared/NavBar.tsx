@@ -25,11 +25,11 @@ type Props = {
       <nav className="navbar d-flex flex-row-reverse mainNavBar">
         <a className="navbar-brand d-flex" href="#">
           <p>{username}</p>
-          <img src="/favicon.ico" width="30" height="30" className="d-inline-block align-top" alt="" />
+          <i className="bi bi-person-fill" id="profileIcon"></i>
         </a>
       </nav>
       <nav className="navbar d-flex flex-row metaNavBar">
-        <Link to="/" className="noDecoration navbar-brand d-flex"><p>Sistema de Horarios</p></Link>
+        <Link to="/" className="noDecoration navbar-brand d-flex"><p>Sistema de horarios</p></Link>
       </nav>
       <hr className="hr divider"></hr>
       <nav className="navbar navbar-expand-lg mainNavBarmenu ">

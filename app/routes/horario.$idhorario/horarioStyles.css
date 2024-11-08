@@ -50,24 +50,32 @@
 
 .grid_container{
   display: grid;
-  grid-template: 50% / auto auto;
+  grid-template: 100% / auto;
   grid-gap: 10px;
   padding: 10px;
   margin-bottom: 50px;
 }
 
-.grid_container > div{
+.grid_container_dual{
+  display: grid;
+  grid-template: 100% / 60% 40%;
+  grid-gap: 10px;
+  margin-bottom: 50px;
+}
+
+.grid_container,.grid_container_dual > div{
   overflow-x: scroll;
   height: 110vh;
 }
 
-.grid_container > .virtual_courses_container {
+
+.grid_container,.grid_container_dual > .virtual_courses_container {
   overflow: hidden;
   overflow: scroll;
   
 }
 
-.grid_container > .mainScheduleUI {
+.grid_container,.grid_container_dual > .mainScheduleUI {
   border: 3px solid #204C6F;
   border-radius: 10px 10px 0px 0px;
   padding: 1vh;
