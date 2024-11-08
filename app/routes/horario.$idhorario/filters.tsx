@@ -105,7 +105,7 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
                 value="true"></input>
               </span>
               <span>
-                <label htmlFor="shEmpty">Aulas vacías</label>
+                <label htmlFor="shEmpty">Ocultar vacías</label>
                 <input
                   type="checkbox"
                   id="shEmpty"
