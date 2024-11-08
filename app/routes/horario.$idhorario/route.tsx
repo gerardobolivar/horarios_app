@@ -70,21 +70,21 @@ export default function () {
       <div className="filtersHorario">
         <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
       </div>
-      <div className="scheduleConfigBtn" hidden={user?.role !== "ADMIN"}>
-        <Link replace={true} to={`/horario/${data.idHorario}/config`}>
-          <i className="bi bi-gear-fill gear-icon"></i>
-        </Link>
-      </div>
     </div>
     <div className="regis-btn-sch">
-      <Link hidden={isGuest} className="lnk-btn" to={{
+      <Link replace={true} hidden={isGuest} className="lnk-btn" to={{
         pathname:`/horario/${data.idHorario}/new`,
         search: searchParams.toString()
       }}>
         <button className="mainButton">Registrar</button>
-      </Link>      
+      </Link>
+      <Link replace={true} hidden={user?.role !== "ADMIN"} className="lnk-btn" to={{
+        pathname:`/horario/${data.idHorario}/config`,
+        search: searchParams.toString()
+      }}>
+        <button className="mainButton">Config</button>
+      </Link>   
     </div>
-
     <div className="grid_container">
       <div
         onDrag={handleDrag}
