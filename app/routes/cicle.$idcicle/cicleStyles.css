@@ -9,13 +9,27 @@
 }
 
 #main-doc{
-  position: absolute;
-  margin-left: 50px;
-  padding-top: 30px;
+  padding: 45px;
+  
+  background-color: #fff;
+  margin-top: 10px;
 }
+
+#submitBtn{
+  margin-left: 0px;
+}
+
 
 #main-doc header {
   font-weight : bold;
+}
+
+#main-doc > .card:not(:last-child){
+  margin-bottom: 25px;
+}
+
+#main-doc select{
+  max-width:  300px !important;
 }
 
 .tooltip_ {

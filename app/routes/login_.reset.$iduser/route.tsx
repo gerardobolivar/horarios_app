@@ -21,14 +21,15 @@ export default function Reset() {
             <input
               autoComplete="username"
               hidden></input>
-            <label htmlFor="password">Nueva contraseña</label>
+            <label htmlFor="password">Nueva contraseña:</label>
             <input
               type="password"
               name="password"
               autoComplete="new-password"
               required={true}
               minLength={8}
-              maxLength={64} />
+              maxLength={64}
+              className="form-control"/>
           </div>
           <div>
             <label>Confirme la contraseña:</label>
@@ -39,6 +40,7 @@ export default function Reset() {
               required={true}
               minLength={8}
               maxLength={64}
+              className="form-control"
             />
           </div>
           <div>

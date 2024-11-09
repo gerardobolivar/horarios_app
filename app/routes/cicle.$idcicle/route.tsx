@@ -4,6 +4,8 @@ import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";//Common
 import configPageStyles from "./cicleStyles.css?url";
 import actionCycleIdcycle from "~/.server/Controller/cycle.$idcycle/action";
 import { loaderCycleIdcycle } from "~/.server/Controller/cycle.$idcycle/loader";
+import appStyles from '~/stylesheets/plan_.new.css?url';
+
 
 export default function Cicle() {
   const data = useLoaderData<typeof loader>();
@@ -15,59 +17,71 @@ export default function Cicle() {
   const isActiveCycle = data.activeCycle?.ciclo_id === ciclo.ciclo_id;
 
   return <>
-    <main id="main-doc">
-      <section
-        className="main-section"
-        id="General">
-        <header>Información General</header>
-        <article>
-          <p>Nombre: {ciclo.nombre}</p>
-          <p>Creado: {getTimeStamp(ciclo.fecha_creado)}</p>
-          <p>Modificado: {getTimeStamp(ciclo.fecha_modificado)}</p>
-          <p >Estado: {isActiveCycle ? "Activo" : "Inactivo"} <i className="bi bi-info-circle tooltip_">
-            <span className="tooltiptext no-select">{isActiveCycle ? "El ciclo es el vigente y se ecuentra activo." : "El ciclo no es el vigente y se encuentra inactivo"}</span>
-          </i></p>
-        </article>
-      </section>
-      <section
-        className="main-section"
-        id="Archivar">
-        <header>Configuración</header>
-        <Form method="POST">
+    <div id="main-doc" className="container">
+      <h2>{ciclo.nombre}</h2>
+      <div className="card">
+        <div className="card-body">
+          <header>Información General</header>
           <article>
-            <label htmlFor="horario_vinculado">Horario vinculado:</label>
-            <select
-              name="horario_vinculado"
-              id="horario_vinculadoID"
-              defaultValue={horario ? horario.horario_id : ""}>
-              <option value="">Ninguno</option>
-              {listaHorarios}
-            </select>
+            <p>Nombre: {ciclo.nombre}</p>
+            <p>Creado: {getTimeStamp(ciclo.fecha_creado)}</p>
+            <p>Modificado el: {getTimeStamp(ciclo.fecha_modificado)}</p>
+            <p >Estado: {isActiveCycle ? "Activo" : "Inactivo"} <i className="bi bi-info-circle tooltip_">
+              <span className="tooltiptext no-select">{isActiveCycle
+                ? "El ciclo es el vigente y se ecuentra activo." :
+                "El ciclo no es el vigente y se encuentra inactivo"}</span>
+            </i></p>
           </article>
-          <article>
-            <label>Crear asignar un horario nuevo:</label>
-            <button
-              name="intent"
-              value="create_new_schedule"
-              disabled={horario ? true : false}>Crear
-            </button>
-          </article>
-          <article>
-            <label htmlFor="setAsCurrentCycle">Establecer como ciclo vigente:</label>
-            <input
-              type="checkbox"
-              defaultChecked={isActiveCycle}
-              name="setAsCurrentCycle"
-            />
-          </article>
-          <button
-            type="submit"
-            name="intent"
-            value="save_cicle_config"
-            className="mainButton">Cuardar cambios</button>
-        </Form>
-      </section>
-    </main>
+        </div>
+      </div>
+
+      <Form method="POST">
+        <div className="card">
+          <div className="card-body">
+            <header>Configuración</header>
+            <div className="input-group mb-3">
+              <span className="input-group-text" id="inputGroup-sizing-default">Horario vinculado</span>
+              <select
+                className="form-select"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-default"
+                name="horario_vinculado"
+                id="horario_vinculadoID"
+                defaultValue={horario ? horario.horario_id : ""}>
+                <option value="">Ninguno</option>
+                {listaHorarios}
+              </select>
+            </div>
+            <div className="d-flex">
+              <label>Crear y asignar un horario nuevo:</label>
+              <button
+                name="intent"
+                value="create_new_schedule"
+                disabled={horario ? true : false}
+                className="btn btn-primary mainButton">Crear
+              </button>
+            </div>
+            <div className="d-flex">
+              <label htmlFor="setAsCurrentCycle">Establecer como ciclo vigente:</label>
+              <input
+                type="checkbox"
+                defaultChecked={isActiveCycle}
+                name="setAsCurrentCycle"
+                className="form-check-input"
+              />
+            </div>
+          </div>
+        </div>
+        <button
+          id="submitBtn"
+          type="submit"
+          name="intent"
+          value="save_cicle_config"
+          className="btn mainButton">Cuardar</button>
+
+      </Form>
+
+    </div>
   </>
 
 }
@@ -77,4 +91,5 @@ export const loader = loaderCycleIdcycle;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: configPageStyles },
+  { rel: "stylesheet", href: appStyles },
 ];
