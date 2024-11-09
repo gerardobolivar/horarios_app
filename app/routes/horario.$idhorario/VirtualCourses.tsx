@@ -33,19 +33,22 @@ const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual, s
 
   return <>
   <h3 className="mainTitle mainTitleVirtualCourses" >Cursos Virtuales</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Curso</th>
-          <th>Grupo</th>
-          <th>Horario</th>
-          <th>Actualizar</th>
-        </tr>
-      </thead>
-      <tbody>
-        {listaCursos}
-      </tbody>
-    </table>
+  {
+    listaCursos.length >= 1 ? <table>
+    <thead>
+      <tr>
+        <th>Curso</th>
+        <th>Grupo</th>
+        <th>Horario</th>
+        <th>Actualizar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {listaCursos}
+    </tbody>
+  </table>: <h6>Sin cursos virtuales.</h6> 
+  }
+
   </>
 }
 

@@ -125,14 +125,14 @@ export default function PlanEdit() {
                   preventScrollReset={true}>
                   <button type="submit"
                     disabled={curretCellId === "" ? true : false}
-                    className={curretCellId === "" ? "disabled" : "active"}>
-                    Ver/Actualizar</button>
+                    className={curretCellId === "" ? "disabled mainButton" : "active mainButton"}>
+                    Ver</button>
                 </Link>
                 <button name="intent"
                   value="delete_course"
                   type="submit"
                   disabled={curretCellId === "" || btnDisabled ? true : false}
-                  className={`${curretCellId === "" || btnDisabled? "disabled":"active"}`}>
+                  className={`${curretCellId === "" || btnDisabled? "disabled mainButton":"active mainButton"}`}>
                   Eliminar</button>
               </span>
             </div>

@@ -39,7 +39,7 @@ export default function ModalProfesor() {
                     type="text"
                     name="profesor_name"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={30}
                     defaultValue={!isNewProfesor && course ? course.nombre : ""}   
@@ -53,7 +53,7 @@ export default function ModalProfesor() {
                     type="text"
                     name="primer_apellido"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={45}
                     defaultValue={!isNewProfesor && course ? course.primer_apellido : ""}   
@@ -67,7 +67,7 @@ export default function ModalProfesor() {
                     type="text"
                     name="segundo_apellido"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     maxLength={45}
                     defaultValue={!isNewProfesor && course ? course.segundo_apellido : ""}   
                   />
@@ -80,7 +80,7 @@ export default function ModalProfesor() {
                     type="text"
                     name="email"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     maxLength={320}
                     defaultValue={!isNewProfesor && course ? course.email : ""}   
                   />
@@ -97,7 +97,7 @@ export default function ModalProfesor() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled" : ""}
+              className={btnDisabled ? "disabled mainButton" : "mainButton"}
               name="intent"
               disabled={btnDisabled}
               value={isNewProfesor ? "create" : "update"}>

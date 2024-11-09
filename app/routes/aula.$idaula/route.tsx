@@ -41,7 +41,8 @@ export default function ModalCourse() {
                     type="number"
                     name="ident"
                     placeholder=""
-                    className=""
+                    className="form-control"
+                    aria-label="numero_aula_input"
                     required={true}
                     min="1"
                     max="999"
@@ -56,7 +57,8 @@ export default function ModalCourse() {
                     type="number"
                     name="cupo"
                     placeholder=""
-                    className=""
+                    className="form-control"
+                    aria-label="cupo_input"
                     required={true}
                     min={1}
                     max={50}
@@ -71,7 +73,7 @@ export default function ModalCourse() {
                     type="text"
                     name="detalle"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={100}
                     defaultValue={!isNewAula && aula ? aula.detalle : ""}   
@@ -85,7 +87,7 @@ export default function ModalCourse() {
                     type="text"
                     name="edificio"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={45}
                     defaultValue={!isNewAula && aula ? aula.edificio : ""}   
@@ -103,7 +105,7 @@ export default function ModalCourse() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled" : ""}
+              className={btnDisabled ? "disabled mainButton" : "mainButton"}
               name="intent"
               disabled={btnDisabled}
               value={isNewAula ? "create" : "update"}>

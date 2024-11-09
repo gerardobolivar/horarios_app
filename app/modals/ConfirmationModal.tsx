@@ -27,7 +27,7 @@ const ConfirmationModal: React.FC<{ show: boolean, currentCellId: string, btnDis
           <button name="intent"
             value={value}
             type="submit"
-            className={`${currentCellId === "" || btnDisabled ? "disabled" : "active"}`}>
+            className={`${currentCellId === "" || btnDisabled ? "disabled mainButton" : "active mainButton"}`}>
             Aceptar</button>
           <button id={"cancelBtn"} className={"mainButton"} name="intent" value="cancelar" onClick={(e) => { handleCancelar(e) }}>Cancelar</button>
         </form>

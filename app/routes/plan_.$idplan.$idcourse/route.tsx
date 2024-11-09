@@ -39,7 +39,7 @@ export default function ModalCourse() {
                     type="text"
                     name="course_name"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={150}
                     defaultValue={!isNewCourse && course ? course.nombre : ""}   
@@ -53,7 +53,7 @@ export default function ModalCourse() {
                     type="text"
                     name="sigla"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={10}
                     defaultValue={!isNewCourse && course ? course.sigla : ""}             
@@ -67,7 +67,7 @@ export default function ModalCourse() {
                     type="number"
                     name="horas"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     min={1}
                     max={12}
                     defaultValue={!isNewCourse && course ? course.horas : ""}
@@ -80,7 +80,8 @@ export default function ModalCourse() {
                     name="ubicacionCurso"
                     id="ubicacionCurso"
                     required={true}
-                    defaultValue={course?.ubicacion} >
+                    defaultValue={course?.ubicacion}
+                    className="form-control">
                     <option value={""}>Escoger</option>
                     <option value={"1"}>1</option>
                     <option value={"2"}>2</option>
@@ -91,7 +92,10 @@ export default function ModalCourse() {
                 </span>
                 <span>
                   <label htmlFor="type" >Tipo de Curso</label>
-                  <select name="tipo" id="type" defaultValue={!isNewCourse && course? course.tipoCurso : "T"} >
+                  <select name="tipo"
+                    id="type"
+                    defaultValue={!isNewCourse && course? course.tipoCurso : "T"} 
+                    className="form-control">
                     <option value="T">Teórico</option>
                     <option value="P">Práctico</option>
                     <option value="TP">Teórico-Práctico</option>
@@ -109,7 +113,7 @@ export default function ModalCourse() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled" : ""}
+              className={btnDisabled ? "disabled maintButton" : "mainButton"}
               name="intent"
               disabled={btnDisabled}
               value={isNewCourse ? "create" : "update"}>
