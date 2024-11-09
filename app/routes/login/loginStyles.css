@@ -1,11 +1,7 @@
 .loginContainer > Form > div > input{
   display: block;
   margin-bottom: 25px;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-width: 1px;
-  border-color: #204C6F;
+  
 }
 
 .loginContainer{

@@ -29,6 +29,7 @@ export default function login() {
             type="text"
             name="username"
             autoComplete="username"
+            className="form-control"
             maxLength={30} />
         </div>
         <div>
@@ -36,6 +37,7 @@ export default function login() {
           <input
             type="password"
             name="password"
+            className="form-control"
             autoComplete="current-password"
             maxLength={50}
           />
