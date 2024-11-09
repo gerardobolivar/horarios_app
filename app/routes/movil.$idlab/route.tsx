@@ -45,7 +45,7 @@ export default function ModalProfesor() {
                     type="text"
                     name="nombre_lab"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     maxLength={30}
                     defaultValue={!isNewLab && laboratory ? laboratory.nombre : ""}
@@ -57,8 +57,10 @@ export default function ModalProfesor() {
                     id="labDetail"
                     title="Nombre del laboratorio móvil"
                     name="labDetail"
+                    className="form-control"
                     rows={4}
                     cols={50}
+                    maxLength={400}
                     defaultValue={laboratory?.detalle}
                     style={{
                       "resize": "none"
@@ -71,7 +73,9 @@ export default function ModalProfesor() {
                     name="profesorLab"
                     id="profesorLab"
                     required={true}
-                    defaultValue={laboratory?.profesor_id} >
+                    defaultValue={laboratory?.profesor_id} 
+                    className="form-control"
+                    aria-label="profesor_selector">
                     <option value={""}>Elegir profesor</option>
                     {profesoresLista}
                   </select>
@@ -88,7 +92,7 @@ export default function ModalProfesor() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled" : ""}
+              className={btnDisabled ? "disabled mainButton" : "mainButton"}
               name="intent"
               disabled={btnDisabled}
               value={isNewLab ? "create" : "update"}>

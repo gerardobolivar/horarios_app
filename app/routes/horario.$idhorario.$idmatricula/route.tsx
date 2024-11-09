@@ -265,14 +265,16 @@ export default function HorarioModal() {
 
                   <div className="section">
                     <span>
-                      <label htmlFor="cursoHorario" >Curso:</label>
+                    <label htmlFor="cursoHorario" hidden={true}>Curso</label>
                       <select
                         name="cursoHorario"
                         id="cursoHorario"
                         required={true}
-                        defaultValue={matricula?.group?.curso.id_curso}
-                        hidden={hiddeOwnerOptions && !isNewMatricula}>
-                        <option value={""}></option>
+                        defaultValue={matricula ? matricula?.group?.curso.id_curso:0}
+                        hidden={hiddeOwnerOptions && !isNewMatricula}
+                        className="form-select"
+                        aria-label="curso_selector">
+                        <option value={""}>Curso</option>
                         {cursosLista}
                       </select>
                       <p hidden={!hiddeOwnerOptions || isNewMatricula}>
@@ -281,14 +283,16 @@ export default function HorarioModal() {
                     </span>
 
                     <span>
-                      <label htmlFor="profesorHorario" >Profesor:</label>
+                      <label htmlFor="profesorHorario" hidden={true}>Profesor</label>
                       <select
                         name="profesorHorario"
                         id="profesorHorario"
                         required={true}
                         defaultValue={matricula?.group?.profesor_id}
-                        hidden={hiddeOwnerOptions && !isNewMatricula}>
-                        <option value={""}></option>
+                        hidden={hiddeOwnerOptions && !isNewMatricula}
+                        className="form-select"
+                        aria-label="profesor_selector">
+                        <option value={""}>Profesor</option>
                         {profesoresLista}
                       </select>
                       <p hidden={!hiddeOwnerOptions || isNewMatricula}>
@@ -318,7 +322,7 @@ export default function HorarioModal() {
 
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span>
-                        <label htmlFor="modalidadHorario" >Modalidad:</label>
+                        <label htmlFor="modalidadHorario" hidden={true}>Modalidad</label>
                         <select
                           name="modalidadHorario"
                           id="modalidadHorario"
@@ -326,8 +330,9 @@ export default function HorarioModal() {
                           hidden={!isNewMatricula}
                           onMouseDown={handleModalidadClick}
                           onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
-                          defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"} >
-                          <option value=""></option>
+                          defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"}
+                          className="form-select"
+                          aria-label="modalidad_selector">
                           <option value={"PRESENCIAL"}>PRESENCIAL</option>
                           <option value={"BAJOVIRTUAL"}>BAJO VIRTUAL</option>
                           <option value={"BIMODAL"}>BIMODAL</option>
@@ -339,12 +344,14 @@ export default function HorarioModal() {
                     }
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span>
-                        <label htmlFor="movilHorario" >Laboratorio móvil:</label>
+                        <label htmlFor="movilHorario" hidden={true}>Laboratorio móvil</label>
                         <select
                           name="movilHorario"
                           id="movilHorario"
-                          defaultValue={matricula?.laboratorio_movil ? matricula.laboratorio_movil?.id_lab_mov : ""} >
-                          <option value={"0"}>No</option>
+                          defaultValue={matricula?.laboratorio_movil ? matricula.laboratorio_movil?.id_lab_mov : ""}
+                          className="form-select"
+                          aria-label="laboratorio_selector">
+                          <option value={"0"}>Sin laboratorio móvil</option>
                           {movilesLista}
                         </select>
                       </span>
@@ -358,7 +365,8 @@ export default function HorarioModal() {
                           type="number"
                           name="grupo"
                           placeholder=""
-                          className=""
+                          className="form-control"
+                          aria-label="Grupo_input"
                           required={true}
                           readOnly={!!matricula?.group}
                           min="1"
@@ -370,7 +378,11 @@ export default function HorarioModal() {
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span className="colorSelector">
                         <label htmlFor="color">Color:</label>
-                        <input name="color" type="color" list="suggestedColors" defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} />
+                        <input name="color"
+                          type="color"
+                          list="suggestedColors"
+                          defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} 
+                          className="form-control form-control-color"/>
                         <datalist id="suggestedColors">
                           <option value="#00c0f3" />
                           <option value="#005da4" />
@@ -396,7 +408,7 @@ export default function HorarioModal() {
                       <p>{isNewMatricula ? "" : matricula?.group?.completed ? null : `Horas por asignar: ${matricula?.group?.Ahours}`}</p>
                       
                       <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="diaHorario" >Día:</label>
+                        <label htmlFor="diaHorario" hidden={true}>Día</label>
                         <select
                           name="diaHorario"
                           id="diaHorario"
@@ -404,8 +416,10 @@ export default function HorarioModal() {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                             handleDiaChange(event);
                           }}
-                          hidden={matricula?.group?.completed}>
-                          <option value={""}></option>
+                          hidden={matricula?.group?.completed}
+                          className="form-select"
+                          aria-label="dia_selector">
+                          <option value={""}>Día</option>
                           <option value={"LUNES"}>Lunes</option>
                           <option value={"MARTES"}>Martes</option>
                           <option value={"MIERCOLES"}>Miércoles</option>
@@ -417,7 +431,7 @@ export default function HorarioModal() {
 
                        
                       <span hidden={isVirtual || matricula?.group?.completed}  >
-                        <label htmlFor="aulaHorario" >Aula:</label>
+                        <label htmlFor="aulaHorario" hidden={true}>Aula</label>
                         <select
                           name="aulaHorario"
                           id="aulaHorario"
@@ -426,7 +440,9 @@ export default function HorarioModal() {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                             handleAulaChange(event);
                           }}
-                          defaultValue={aula} >
+                          defaultValue={aula}
+                          className="form-select"
+                          aria-label="aula_selector">
                           <option value={""}></option>
                           {aulasLista}
                         </select>
@@ -434,15 +450,17 @@ export default function HorarioModal() {
                       
                       
                       <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="horaInicio" >Hora de inicio:</label>
+                        <label htmlFor="horaInicio" hidden={true}>Hora de inicio</label>
                         <select
                           name="horaInicio"
                           id="horaInicio"
                           onChange={() => {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors)
                           }}
-                          hidden={matricula?.group?.completed}>
-                          <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
+                          hidden={matricula?.group?.completed}
+                          className="form-select"
+                          aria-label="hora_inicio_selector">
+                          <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora inicio"}</option>
                           {timeList}
                         </select>
                       </span>
@@ -450,24 +468,28 @@ export default function HorarioModal() {
 
                       
                       <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="horaFin" >Hora de finalización:</label>
-
+                        <label htmlFor="horaFin" hidden={true}>Hora de finalización</label>
                         <select
                           name="horaFin"
                           id="horaFin"
                           onChange={() => {
                             validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
                           }}
-                          hidden={matricula?.group?.completed}>
-                          <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : null}</option>
+                          hidden={matricula?.group?.completed}
+                          className="form-select"
+                          aria-label="hora_fin_selector">
+                          <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora Fin"}</option>
                           {timeList}
                         </select>
                       </span>
                       
                       
                       <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="tipoHoras">Tipo:</label>
-                        <select name="tipoHoras" defaultValue="T">
+                        <label htmlFor="tipoHoras" hidden={true}>Tipo:</label>
+                        <select name="tipoHoras" defaultValue="T"
+                          className="form-select"
+                          aria-label="tipo_curso_selector">
+                          <option value={""}>Tipo de curso</option>
                           <option value="T">Teórico</option>
                           <option value="P">Práctico</option>
                           <option value="TP">Teórico-Práctico</option>
@@ -520,7 +542,7 @@ export default function HorarioModal() {
             <button
               id="m_course_create"
               type="submit"
-              className={""}
+              className={"mainButton"}
               name="intent"
               value={isNewMatricula ? "create" : "update"}
               hidden={hiddeOwnerOptions && !isNewMatricula}>

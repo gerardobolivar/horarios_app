@@ -127,8 +127,7 @@
 }
 
 .modalContainer{
-  width: 30%;
-  background-color: #d9d9d9;
+  scroll-behavior: unset;
   border-radius: 10px;
   width: fit-content;
 }
@@ -139,28 +138,18 @@
 }
 
 .outter_white_container {
-  background-color: #fff;
-  padding: 10px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin: 15px;
-  border-radius: 10px;
-  width: fit-content;
+
 }
 
 .modalContainer form span{
   display: block;
 }
 .grayContainer{
-  background-color: #d9d9d9;
-  border-radius: 10px;
-  padding: 40px;
-  width: fit-content;
+
   
 }
 
 .course_input_container{
-  background-color: #d9d9d9;
   padding-left: 5px ;
   width: fit-content;
   margin: auto;
@@ -178,15 +167,7 @@
   text-align: center;
 }
 
-.modalContainer input,select{
-  width: 250px;
-  background-color: transparent;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-width: 2px;
-  border-color: black;
-}
+
 
 .modalContainer label{
   font-weight: bold;
@@ -202,6 +183,7 @@
   left: 50%;
   padding: 10px;
   z-index: 1000;
+  background-color: #fff;
 }
 
 .overlay_styles{
@@ -280,5 +262,22 @@ table tr:hover{
     display: block;
     margin: auto !important;
     text-align: center;
+  }
+}
+
+@media (width < 1200px) {
+  
+  .modalContainer{
+    height: 90%;
+    overflow-y: scroll;
+  }
+}
+
+@media (width < 800px) {
+  
+  .modalContainer{
+    height: 90%;
+    width: 80%;
+    overflow-y: scroll;
   }
 }

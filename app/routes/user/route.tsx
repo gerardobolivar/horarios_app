@@ -82,14 +82,14 @@ export default function Usuarios() {
                 preventScrollReset={true}>
                 <button type="submit"
                   disabled={curretCellId === "" ? true : false}
-                  className={curretCellId === "" ? "disabled" : "active"}>
-                  Ver/Actualizar</button>
+                  className={curretCellId === "" ? "disabled mainButton" : "active mainButton"}>
+                  Ver</button>
               </Link>
               <button
                 type="button"
                 onClick={handleEliminar}
                 disabled={curretCellId === "" || btnDisabled ? true : false}
-                className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
+                className={`${curretCellId === "" || btnDisabled ? "disabled mainButton" : "active mainButton"}`}>
                 Eliminar</button>
             </span>
           </div>

@@ -83,14 +83,14 @@ export default function Aulas() {
                 preventScrollReset={true}>
                 <button type="submit"
                   disabled={curretCellId === "" ? true : false}
-                  className={curretCellId === "" ? "disabled" : "active"}>
-                  Ver/Actualizar</button>
+                  className={curretCellId === "" ? "disabled mainButton" : "active mainButton"}>
+                  Ver</button>
               </Link>
               <button
                 onClick={handleEliminar}
                 type="button"
                 disabled={curretCellId === "" || btnDisabled ? true : false}
-                className={`${curretCellId === "" || btnDisabled ? "disabled" : "active"}`}>
+                className={`${curretCellId === "" || btnDisabled ? "disabled mainButton" : "active mainButton"}`}>
                 Eliminar</button>
             </span>
           </div>

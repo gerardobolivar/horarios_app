@@ -34,7 +34,7 @@ export default function ModalUsuario() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>{isNewUser ? "Agregar Usuario":"Ver/Actualizar usuario"}</h2>
+      <h2>{isNewUser ? "Agregar Usuario":"Usuario"}</h2>
       <div className="body_container">
         <Form id="courseForm"
               method="post"
@@ -52,7 +52,7 @@ export default function ModalUsuario() {
                     type="text"
                     name="username"
                     placeholder=""
-                    className=""
+                    className="form-control"
                     required={true}
                     readOnly={isNewUser?false:true}
                     maxLength={30}
@@ -66,6 +66,7 @@ export default function ModalUsuario() {
                     name="user_role"
                     id="user_role"
                     required={true}
+                    className="form-control"
                     defaultValue={user?.role} >
                     <option value={""}>Rol</option>
                     <option value={"ADMIN"}>ADMIN</option>
