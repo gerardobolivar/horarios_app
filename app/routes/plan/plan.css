@@ -1,0 +1,11 @@
+.mainButton{
+  margin-left: 0px;
+}
+
+.whiteContainer{
+  height: 65vh !important;
+  overflow-y: scroll;
+  border: 5px solid #fff !important;
+  border-left-width: 0px !important;
+  border-right-width: 0px !important;
+}
