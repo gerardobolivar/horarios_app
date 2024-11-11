@@ -8,7 +8,7 @@
   text-align: justify;
 }
 
-#main-doc{
+.main-doc{
   padding: 45px;
   
   background-color: #fff;
@@ -20,15 +20,19 @@
 }
 
 
-#main-doc header {
+.main-doc header {
   font-weight : bold;
 }
 
-#main-doc > .card:not(:last-child){
+.main-doc > .card:not(:last-child){
   margin-bottom: 25px;
 }
 
-#main-doc select{
+.schConfiCard .card:not(:last-child){
+  margin-bottom: 25px;
+}
+
+.main-doc select{
   max-width:  300px !important;
 }
 
@@ -57,7 +61,7 @@
 }
 
 @media (max-width: 800px){
-  #main-doc{
+  .main-doc{
  
 }
 }

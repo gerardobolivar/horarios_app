@@ -17,7 +17,7 @@ export default function Cicle() {
   const isActiveCycle = data.activeCycle?.ciclo_id === ciclo.ciclo_id;
 
   return <>
-    <div id="main-doc" className="container">
+    <div className="container main-doc">
       <h2>{ciclo.nombre}</h2>
       <div className="card">
         <div className="card-body">
