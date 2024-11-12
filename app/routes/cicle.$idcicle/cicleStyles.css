@@ -19,6 +19,15 @@
   margin-left: 0px;
 }
 
+.datetimeInput{
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+}
+
+.submitBtn{
+  margin-left: 0px !important;
+}
 
 .main-doc header {
   font-weight : bold;

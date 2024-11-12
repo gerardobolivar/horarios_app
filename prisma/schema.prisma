@@ -121,7 +121,15 @@ model Horario{
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
-  ciclo Ciclo? 
+  ciclo Ciclo?
+  horario_close_time HorarioCloseTime? 
+}
+
+model HorarioCloseTime{
+  horario_close_time_id Int @id @default(autoincrement())
+  datetime String @db.VarChar(24)
+  horario_id Int @unique
+  horario Horario @relation(fields: [horario_id],references: [horario_id])
 }
 
 model Ciclo{

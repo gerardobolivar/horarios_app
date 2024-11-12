@@ -70,3 +70,40 @@ export const getHorarioState = async (horarioId:number) => {
     }
   })
 }
+
+/*HorarioCloseTime MODEL*/
+
+export const createHorarioCloseTime = async (datetime:string, horario_id:number) => {
+  return await prisma.horarioCloseTime.create({
+    data:{
+      datetime: datetime,
+      horario_id: horario_id,
+    }
+  })
+}
+
+export const deleteHorarioCloseTime = async (horario_id:number) => {
+  return await prisma.horarioCloseTime.delete({
+    where:{
+      horario_id: horario_id
+    }
+  })
+}
+
+export const countHorarioCloseTime = async (horario_id:number) => {
+  return await prisma.horarioCloseTime.count({
+    where:{
+      horario_id: horario_id
+    }
+  })
+}
+
+export const getHorarioCloseTimeByHorario = async (horario_id:number) => {
+  return await prisma.horarioCloseTime.findUnique({
+    where:{
+      horario_id: horario_id
+    }
+  })
+}
+
+

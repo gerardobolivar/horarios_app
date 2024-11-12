@@ -1,12 +1,11 @@
 import { LinksFunction } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
-import scheduleConfigPageStyles from './scheduleConfigPageStyles.css?url';
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
 import loaderHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/loader";
 import actionHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/action";
 import configPageStyles from "~/routes/cicle.$idcicle/cicleStyles.css?url";
-
+import ReactTimeAgo from 'react-time-ago'
 
 
 export default function HorarioConfigPage() {
@@ -15,7 +14,13 @@ export default function HorarioConfigPage() {
   const horario: any = data.horario;
   const ciclo = data.ciclo
   const isBinded = data.ciclo ? true : false;
-
+  const hasCloseTime = data.closeHorario;
+  const datetime = hasCloseTime?.datetime as string;
+  const date = new Date(datetime);
+  const isPast = new Date() > date;
+  const myDate = new Date()
+  const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
+  
   return <>
     <div className="container main-doc schConfiCard">
 
@@ -37,33 +42,48 @@ export default function HorarioConfigPage() {
         <div className="card">
           <div className="card-body">
             <Form method="POST">
+              <header>Estado</header>
               <div>
-                <header>Estado</header>
                 <article>
-                  <h6>Cierre manual</h6>
-                  <p>Al cerrar el horario ningún usuario podrá relizar cambios al mismo.</p>
-                  <p>Estado: <b>{`${horario.active ? "Activo" : "Inactivo"}`}</b></p>
+                  <p>Al cerrar el horario ningún usuario podrá relizar cambios.</p>
+                  <p >Estado: <b className={horario.active ? "text-success" :"text-danger"}>{`${horario.active ? "Activo" : "Inactivo"}`}</b></p>
                   <button
                     id="submitBtn"
                     value={horario.active ? "archivar" : "desarchivar"}
                     name="intent"
-                    className="btn mainButton">{horario.active ? "Cerrar" : "Abrir"}</button>
+                    className="btn mainButton submitBtn">{horario.active ? "Cerrar" : "Abrir"}</button>
                 </article>
                 <hr></hr>
-                <h6>Programar cierre</h6>
-                <p>Al cerrar el horario no se podrán relizar cambios al mismo.</p>
-                <label htmlFor="close_sch">Ingrese la fecha y hora en que desea cerrar el horario:</label>
-                <input
-                  id="close_sch"
-                  type="datetime-local"
-                  name="close-schedule"
-                  className="form-control" />
+                {
+                  !hasCloseTime ? <div>
+                    <h6>Programar cierre</h6>
+                    <label htmlFor="close_sch">Ingrese la fecha y hora en que desea programar el cierre del horario:</label>
+                    <input
+                      id="close_sch"
+                      type="datetime-local"
+                      min={actualDate}
+                      name="close_sch"
+                      className="form-control datetimeInput" />
+                    <button
+                      id="scheduleBtn"
+                      value={"schedule"}
+                      name="intent"
+                      disabled={!horario.active}
+                      className="btn mainButton submitBtn">Guardar</button>
+                  </div> : 
+                  
+                  <div>
+                    <p>{`${isPast ? "El horario cerró ":"El horario cerrará "}`}<ReactTimeAgo date={date}/>.</p>
+                    {hasCloseTime && !isPast ?                     <button
+                      id="scheduleBtn"
+                      value={"schedule_cancel"}
+                      name="intent"
+                      className="btn mainButton submitBtn">Cancelar</button>:null}
+
+                  </div>
+                }
+
               </div>
-              <button
-                id="submitBtn"
-                value={"programar"}
-                name="intent"
-                className="btn mainButton">Guardar</button>
             </Form>
 
           </div>
