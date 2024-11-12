@@ -8,14 +8,41 @@
   text-align: justify;
 }
 
-#main-doc{
-  position: absolute;
-  margin-left: 50px;
-  padding-top: 30px;
+.main-doc{
+  padding: 45px;
+  
+  background-color: #fff;
+  margin-top: 10px;
 }
 
-#main-doc header {
+#submitBtn{
+  margin-left: 0px;
+}
+
+.datetimeInput{
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+}
+
+.submitBtn{
+  margin-left: 0px !important;
+}
+
+.main-doc header {
   font-weight : bold;
+}
+
+.main-doc > .card:not(:last-child){
+  margin-bottom: 25px;
+}
+
+.schConfiCard .card:not(:last-child){
+  margin-bottom: 25px;
+}
+
+.main-doc select{
+  max-width:  300px !important;
 }
 
 .tooltip_ {
@@ -43,7 +70,7 @@
 }
 
 @media (max-width: 800px){
-  #main-doc{
+  .main-doc{
  
 }
 }

@@ -54,3 +54,11 @@ export const getPlansByUserId = async (user_id: number)=> {
     }
   })
 }
+
+export const countPlansByUserID = async (usuario_id:number):Promise<number> =>{
+  return prisma.planEstudio.count({
+    where:{
+      usuario_id: usuario_id
+    }
+  })
+}

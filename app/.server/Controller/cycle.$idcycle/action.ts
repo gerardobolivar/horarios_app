@@ -106,6 +106,7 @@ const actionCycleIdcycle = async ({ request, params }: ActionFunctionArgs) =>{
       return redirect("/error");
     }
   }
+  return null;
 }
 
 export default actionCycleIdcycle;

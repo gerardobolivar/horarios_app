@@ -6,6 +6,9 @@ import bootstrap from "bootstrap/dist/css/bootstrap.css?url";
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
 import MainLayout from "./routes/shared/Main";
 import { getUser } from "./.server/session";
+import TimeAgo from "javascript-time-ago";
+import es from "javascript-time-ago/locale/es"
+TimeAgo.addDefaultLocale(es);
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },

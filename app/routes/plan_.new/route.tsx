@@ -1,10 +1,9 @@
-import { ActionFunctionArgs, LinksFunction, redirect } from "@remix-run/node";
+import { LinksFunction } from "@remix-run/node";
 import { Form, Link, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import icons from "bootstrap-icons/font/bootstrap-icons.css?url";
-import { createPlan } from "prisma/models/planEstudioModel";
-import { requireUser } from "~/.server/session";
+import actionplanNew from "~/.server/Controller/plan_.new/action";
 
 export default function PlanNew() {
   const DEFAULT_TOOLTIP_PLAN = "Nombre del plan de estudios"
@@ -76,16 +75,7 @@ export default function PlanNew() {
   )
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-  const userID = await requireUser(request);
-  const formData = await request.formData();
-  const name = String(formData.get("nombre"));
-  const code = String(formData.get("codigo"));
-  const plan =  await createPlan(name,code,userID)
-  const planId = plan.id_plan_estudio
-  
-  return redirect(`/plan/${planId}`)
-}
+export const action = actionplanNew;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },

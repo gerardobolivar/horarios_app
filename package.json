@@ -22,12 +22,16 @@
     "@remix-run/node": "^2.10.3",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
+    "@types/node-cron": "^3.0.11",
     "@vercel/speed-insights": "^1.0.14",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "dotenv": "^16.4.5",
     "isbot": "^5.1.6",
-    "react-bootstrap": "^2.10.2"
+    "javascript-time-ago": "^2.5.11",
+    "node-cron": "^3.0.3",
+    "react-bootstrap": "^2.10.2",
+    "react-time-ago": "^7.3.3"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",
