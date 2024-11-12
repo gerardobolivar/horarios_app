@@ -20,10 +20,7 @@ export default function HorarioConfigPage() {
   const isPast = new Date() > date;
   const myDate = new Date()
   const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
-  console.log(actualDate);
-  
 
-  
   return <>
     <div className="container main-doc schConfiCard">
 

@@ -39,7 +39,10 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
   } else if (intent === "schedule") {
       const inDate = new Date(dateInput);
       const currentDate = new Date();
+      console.log(`inDate ${inDate} < ${currentDate} = ${inDate < currentDate}`);
+      
       if(inDate < currentDate){
+        
         return null;
       }
     if (dateInput && !hasCloseDatime) {
