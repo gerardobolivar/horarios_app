@@ -17,6 +17,7 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
       await deleteHorarioCloseTime(horarioId).then(async () => {
         const myDate = new Date();
         const utcDate = new Date(myDate.getTime() - myDate.getTimezoneOffset() * 60000);
+        
         //const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1 < 10 ? `0${myDate.getMonth()+1}`:myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
         await createHorarioCloseTime(utcDate, horarioId);
       })
@@ -38,8 +39,8 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
 
   } else if (intent === "schedule") {
     const inDate = new Date(dateInput);
-    inDate.setTime(inDate.getTime() - (360/60));
-    const utcDate = new Date(inDate);
+    const utcDate = new Date(inDate.getTime() - inDate.getTimezoneOffset() * 60000);
+
     const currentDate = new Date();
     console.log(`utcDate ${utcDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
     // console.log("utc_inDate: " + utcActualDate);
