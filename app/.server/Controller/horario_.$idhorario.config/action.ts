@@ -16,8 +16,9 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
       TaskMonitor.stopAll();
       await deleteHorarioCloseTime(horarioId).then(async () => {
         const myDate = new Date();
+        const utcDate = new Date(myDate.getTime() - myDate.getTimezoneOffset() * 60000);
         //const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1 < 10 ? `0${myDate.getMonth()+1}`:myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
-        await createHorarioCloseTime(myDate, horarioId);
+        await createHorarioCloseTime(utcDate, horarioId);
       })
     }
     return redirect(`/horario/${horarioId}/config`)
@@ -36,18 +37,20 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     return null
 
   } else if (intent === "schedule") {
-      const inDate = new Date(dateInput);
-      const currentDate = new Date();
-      console.log(`inDate ${inDate} < ${currentDate} = ${inDate < currentDate}`);
-      
-      if(inDate < currentDate){
-        
-        return null;
-      }
+    const inDate = new Date(dateInput);
+    const utcDate = new Date(inDate.getTime() - inDate.getTimezoneOffset() * 60000);
+    const currentDate = new Date();
+    //console.log(`utcDate ${utcDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
+    // console.log("utc_inDate: " + utcActualDate);
+
+    if (utcDate < currentDate) {
+      return null;
+    }
+
     if (dateInput && !hasCloseDatime) {
-      const date = new Date(dateInput);
-      TaskMonitor.setDeactivation(horarioId, date);
-      await createHorarioCloseTime(date, horarioId);
+      //const date = new Date(utcDate);
+      TaskMonitor.setDeactivation(horarioId, utcDate);
+      await createHorarioCloseTime(utcDate, horarioId);
     }
     return null;
 
