@@ -53,8 +53,8 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
 
     if (dateInput && !hasCloseDatime) {
       //const date = new Date(utcDate);
-      TaskMonitor.setDeactivation(horarioId, utcDate);
-      await createHorarioCloseTime(utcDate, horarioId);
+      TaskMonitor.setDeactivation(horarioId, inDate);
+      await createHorarioCloseTime(inDate, horarioId);
     }
     return null;
 
