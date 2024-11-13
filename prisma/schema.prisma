@@ -127,7 +127,7 @@ model Horario{
 
 model HorarioCloseTime{
   horario_close_time_id Int @id @default(autoincrement())
-  datetime String @db.VarChar(24)
+  datetime DateTime
   horario_id Int @unique
   horario Horario @relation(fields: [horario_id],references: [horario_id])
 }

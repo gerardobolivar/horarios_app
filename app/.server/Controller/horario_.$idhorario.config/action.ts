@@ -9,7 +9,6 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
   const dateInput = formData.get("close_sch") as string;
   const hasCloseDatime = (await countHorarioCloseTime(horarioId)) >= 1;
 
-
   if (intent === "archivar") {
     await deactivateHorarioById(horarioId);
 
@@ -17,8 +16,8 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
       TaskMonitor.stopAll();
       await deleteHorarioCloseTime(horarioId).then(async () => {
         const myDate = new Date();
-        const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1 < 10 ? `0${myDate.getMonth()+1}`:myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
-        await createHorarioCloseTime(actualDate, horarioId);
+        //const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1 < 10 ? `0${myDate.getMonth()+1}`:myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
+        await createHorarioCloseTime(myDate, horarioId);
       })
     }
     return redirect(`/horario/${horarioId}/config`)
@@ -48,7 +47,7 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     if (dateInput && !hasCloseDatime) {
       const date = new Date(dateInput);
       TaskMonitor.setDeactivation(horarioId, date);
-      await createHorarioCloseTime(dateInput, horarioId);
+      await createHorarioCloseTime(date, horarioId);
     }
     return null;
 

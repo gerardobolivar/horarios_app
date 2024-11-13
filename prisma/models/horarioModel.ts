@@ -73,7 +73,7 @@ export const getHorarioState = async (horarioId:number) => {
 
 /*HorarioCloseTime MODEL*/
 
-export const createHorarioCloseTime = async (datetime:string, horario_id:number) => {
+export const createHorarioCloseTime = async (datetime:Date, horario_id:number) => {
   return await prisma.horarioCloseTime.create({
     data:{
       datetime: datetime,
