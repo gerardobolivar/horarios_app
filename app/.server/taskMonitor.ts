@@ -22,6 +22,8 @@ class TaskMonitor {
     const hour = date.getUTCHours();
     const minutes = date.getUTCMinutes();
     const cronString = `${minutes} ${hour} ${dayOfMonth} ${month} *`;
+    console.log("Constring: "+cronString);
+    
     
     if (cron.validate(cronString)) {
       
