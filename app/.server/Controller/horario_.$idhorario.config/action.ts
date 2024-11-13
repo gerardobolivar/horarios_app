@@ -39,26 +39,26 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
 
   } else if (intent === "schedule") {
     const inDate = new Date(dateInput);
-    const utcDate = new Date(inDate.getTime() - inDate.getTimezoneOffset() * 60000);
-    inDate.setUTCHours(inDate.getHours()+(360/60))
+    const utcDate = new Date(dateInput);
+    utcDate.setUTCHours(inDate.getHours()+(360/60))
     const currentDate = new Date();
     //console.log(`inDate ${inDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
     // console.log("utc_inDate: " + utcActualDate);
     //console.log("getUTC hours "+`${inDate.getUTCHours()}`);
-    console.log("setting deactivation to");
-    console.log(inDate);
+    const inDateUTC = new Date(inDate.getTime() - 360 * 60000);
+    console.log(`inDateUTC ${inDateUTC}`);
+    console.log(inDateUTC);
 
-
-    if (inDate < currentDate) {
+    if (inDateUTC < currentDate) {
       return null;
     }
 
     if (dateInput && !hasCloseDatime) {
       //const date = new Date(utcDate);
-      TaskMonitor.setDeactivation(horarioId, inDate);
+      TaskMonitor.setDeactivation(horarioId, inDateUTC);
       
       
-      await createHorarioCloseTime(inDate, horarioId);
+      await createHorarioCloseTime(inDateUTC, horarioId);
     }
     return null;
 
