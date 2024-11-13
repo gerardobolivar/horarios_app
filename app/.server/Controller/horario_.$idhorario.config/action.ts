@@ -44,7 +44,7 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     const currentDate = new Date();
     console.log(`utcDate ${utcDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
     // console.log("utc_inDate: " + utcActualDate);
-    console.log(inDate.getTimezoneOffset);
+    console.log("getUTC hours "+`${inDate.getUTCHours()}`);
     
 
     if (utcDate < currentDate) {
