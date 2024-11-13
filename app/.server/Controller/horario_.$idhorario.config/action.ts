@@ -40,7 +40,7 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     const inDate = new Date(dateInput);
     const utcDate = new Date(inDate.getTime() - inDate.getTimezoneOffset() * 60000);
     const currentDate = new Date();
-    //console.log(`utcDate ${utcDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
+    console.log(`utcDate ${utcDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
     // console.log("utc_inDate: " + utcActualDate);
 
     if (utcDate < currentDate) {
