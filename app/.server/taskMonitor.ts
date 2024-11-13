@@ -16,11 +16,11 @@ class TaskMonitor {
   }
 
   static setDeactivation(horario_id:number,date:Date) {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const dayOfMonth = date.getDate();
-    const hour = date.getHours();
-    const minutes = date.getMinutes();
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth() + 1;
+    const dayOfMonth = date.getUTCDate();
+    const hour = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
     const cronString = `${minutes} ${hour} ${dayOfMonth} ${month} *`;
     
     if (cron.validate(cronString)) {

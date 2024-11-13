@@ -42,10 +42,12 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     const utcDate = new Date(inDate.getTime() - inDate.getTimezoneOffset() * 60000);
     inDate.setUTCHours(inDate.getHours()+(360/60))
     const currentDate = new Date();
-    console.log(`inDate ${inDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
+    //console.log(`inDate ${inDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
     // console.log("utc_inDate: " + utcActualDate);
-    console.log("getUTC hours "+`${inDate.getUTCHours()}`);
-    
+    //console.log("getUTC hours "+`${inDate.getUTCHours()}`);
+    console.log("setting deactivation to");
+    console.log(inDate);
+
 
     if (inDate < currentDate) {
       return null;
@@ -54,6 +56,8 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     if (dateInput && !hasCloseDatime) {
       //const date = new Date(utcDate);
       TaskMonitor.setDeactivation(horarioId, inDate);
+      
+      
       await createHorarioCloseTime(inDate, horarioId);
     }
     return null;
