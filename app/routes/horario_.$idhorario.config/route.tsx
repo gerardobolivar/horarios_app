@@ -61,7 +61,7 @@ export default function HorarioConfigPage() {
                       type="datetime-local"
                       name="close_sch"
                       className="form-control datetimeInput"
-                      min={currentDate.toISOString()}/>
+                      />
                     <button
                       id="scheduleBtn"
                       value={"schedule"}
