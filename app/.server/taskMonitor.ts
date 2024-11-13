@@ -21,7 +21,8 @@ class TaskMonitor {
     const dayOfMonth = date.getDate();
     const hour = date.getHours();
     const minutes = date.getMinutes();
-    const cronString = `${minutes} ${hour} ${dayOfMonth} ${month} *`;
+    //const cronString = `${minutes} ${hour} ${dayOfMonth} ${month} *`;
+    const cronString = `* * * * * *`;
     console.log("Constring: "+cronString);
     
     
