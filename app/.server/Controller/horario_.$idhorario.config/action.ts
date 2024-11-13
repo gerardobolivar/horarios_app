@@ -40,7 +40,7 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
   } else if (intent === "schedule") {
     const inDate = new Date(dateInput);
     const utcDate = new Date(inDate.getTime() - inDate.getTimezoneOffset() * 60000);
-    inDate.setUTCHours
+    inDate.setUTCHours(inDate.getHours()+(360/6))
     const currentDate = new Date();
     console.log(`inDate ${inDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
     // console.log("utc_inDate: " + utcActualDate);
