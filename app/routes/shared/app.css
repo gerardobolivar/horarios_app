@@ -14,7 +14,10 @@ body{
 .app_container{
 }
 
-
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ucr_light_blue) #888 ;
+}
 
 .infoText {
     display: flex;
