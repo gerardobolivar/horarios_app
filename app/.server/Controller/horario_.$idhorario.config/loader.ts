@@ -12,11 +12,11 @@ const loaderHorarioIdhorarioConfig = async ({ params, request }: LoaderFunctionA
   
   const closeDatetime = await getHorarioCloseTimeByHorario(horarioId);
   const hasCloseDatime = (await countHorarioCloseTime(horarioId)) >= 1;
-  const date = new Date(closeDatetime?.datetime as string);
+  const datetime = new Date(closeDatetime?.datetime as Date);
   
   
   if(hasCloseDatime && TaskMonitor.task == null){
-    TaskMonitor.setDeactivation(horarioId,date);
+    TaskMonitor.setDeactivation(horarioId,datetime);
   }
 
   if(user?.role !== "ADMIN"){
@@ -30,7 +30,7 @@ const loaderHorarioIdhorarioConfig = async ({ params, request }: LoaderFunctionA
       return null;
     })
   
-    const closeHorario = await getHorarioCloseTimeByHorario(horarioId);
+    const closeHorario = await getHorarioCloseTimeByHorario(horarioId);    
 
   return json({ horarioId: horarioId, horario: horario, ciclo: ciclo, closeHorario:closeHorario })
 }

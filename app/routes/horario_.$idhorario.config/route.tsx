@@ -5,8 +5,7 @@ import { getTimeStamp } from "../horario.$idhorario.$idmatricula/utils";
 import loaderHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/loader";
 import actionHorarioIdhorarioConfig from "~/.server/Controller/horario_.$idhorario.config/action";
 import configPageStyles from "~/routes/cicle.$idcicle/cicleStyles.css?url";
-import ReactTimeAgo from 'react-time-ago'
-
+import ReactTimeAgo from 'react-time-ago';
 
 export default function HorarioConfigPage() {
   const data = useLoaderData<typeof loader>();
@@ -15,12 +14,10 @@ export default function HorarioConfigPage() {
   const ciclo = data.ciclo
   const isBinded = data.ciclo ? true : false;
   const hasCloseTime = data.closeHorario;
-  const datetime = hasCloseTime?.datetime as string;
-  const date = new Date(datetime);
-  const isPast = new Date() > date;
-  const myDate = new Date()
-  const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
-  
+  const datetime = new Date(hasCloseTime?.datetime as string);
+  const isPast = new Date() > datetime;
+  const currentDate = new Date();
+
   return <>
     <div className="container main-doc schConfiCard">
 
@@ -46,7 +43,7 @@ export default function HorarioConfigPage() {
               <div>
                 <article>
                   <p>Al cerrar el horario ningún usuario podrá relizar cambios.</p>
-                  <p >Estado: <b className={horario.active ? "text-success" :"text-danger"}>{`${horario.active ? "Activo" : "Inactivo"}`}</b></p>
+                  <p >Estado: <b className={horario.active ? "text-success" : "text-danger"}>{`${horario.active ? "Activo" : "Inactivo"}`}</b></p>
                   <button
                     id="submitBtn"
                     value={horario.active ? "archivar" : "desarchivar"}
@@ -61,26 +58,25 @@ export default function HorarioConfigPage() {
                     <input
                       id="close_sch"
                       type="datetime-local"
-                      min={actualDate}
                       name="close_sch"
-                      className="form-control datetimeInput" />
+                      min={currentDate.toISOString()}
+                      className="form-control datetimeInput"
+                      />
                     <button
                       id="scheduleBtn"
                       value={"schedule"}
                       name="intent"
                       disabled={!horario.active}
                       className="btn mainButton submitBtn">Guardar</button>
-                  </div> : 
-                  
-                  <div>
-                    <p>{`${isPast ? "El horario cerró ":"El horario cerrará "}`}<ReactTimeAgo date={date}/>.</p>
-                    {hasCloseTime && !isPast ?                     <button
-                      id="scheduleBtn"
-                      value={"schedule_cancel"}
-                      name="intent"
-                      className="btn mainButton submitBtn">Cancelar</button>:null}
-
-                  </div>
+                  </div> :
+                    <div>
+                      <p>{`${isPast ? "El horario cerró " : "El horario cerrará "}`}<ReactTimeAgo date={datetime} />.</p>
+                      {hasCloseTime && !isPast ? <button
+                        id="scheduleBtn"
+                        value={"schedule_cancel"}
+                        name="intent"
+                        className="btn mainButton submitBtn">Cancelar</button> : null}
+                    </div>
                 }
 
               </div>
