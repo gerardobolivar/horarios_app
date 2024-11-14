@@ -261,7 +261,7 @@ export default function HorarioModal() {
             <div className="grayContainer">
               <div className="course_input_container">
                 {!isNewMatricula ? ownerTag : null}
-                <div className="grid-container">
+                <div className="grid-container" style={matricula?.group?.completed && isOwner ? {display:"block"}:{display:"grid"}}>
 
                   <div className="section">
                     <span>
