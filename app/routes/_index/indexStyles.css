@@ -22,7 +22,7 @@
 .cicleCardContainer{
   display: grid !important;
   grid-template-columns: repeat(3,300px);
-  margin-left: 50px;
+  margin-top: 25px;
 }
 
 .cicleCardContainer > div{
@@ -71,6 +71,11 @@
     visibility:visible;
     opacity: 1;
   
+}
+.mainTitle{
+  margin: 0px;
+  margin-top: 25px;
+
 }
 
 

@@ -5,6 +5,7 @@ import configPageStyles from "./cicleStyles.css?url";
 import actionCycleIdcycle from "~/.server/Controller/cycle.$idcycle/action";
 import { loaderCycleIdcycle } from "~/.server/Controller/cycle.$idcycle/loader";
 import appStyles from '~/stylesheets/plan_.new.css?url';
+import ReactTimeAgo from "react-time-ago";
 
 
 export default function Cicle() {
@@ -25,7 +26,7 @@ export default function Cicle() {
           <article>
             <p>Nombre: {ciclo.nombre}</p>
             <p>Creado: {getTimeStamp(ciclo.fecha_creado)}</p>
-            <p>Modificado el: {getTimeStamp(ciclo.fecha_modificado)}</p>
+            <p>Modificado <ReactTimeAgo date={new Date(ciclo.fecha_modificado)}/></p>
             <p >Estado: {isActiveCycle ? "Activo" : "Inactivo"} <i className="bi bi-info-circle tooltip_">
               <span className="tooltiptext no-select">{isActiveCycle
                 ? "El ciclo es el vigente y se ecuentra activo." :

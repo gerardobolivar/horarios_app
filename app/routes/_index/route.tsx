@@ -28,7 +28,7 @@ export default function HomeAdmin(){
 return (
   <div className="">
     <MainTitle innerText="Ciclos"/>
-    <div className="cicleCardContainer">
+    <div className="cicleCardContainer card p-3 bg-light border-0 mb-3">
       {cicleList}
     </div>
   </div>

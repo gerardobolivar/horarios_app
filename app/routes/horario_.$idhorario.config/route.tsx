@@ -28,8 +28,7 @@ export default function HorarioConfigPage() {
             <div>
               <header>Información General</header>
               <article>
-                <p>Creado el: {getTimeStamp(horario.fecha_creado)}</p>
-                <p>Modificado el: {getTimeStamp(horario.fecha_modificado)}</p>
+                <p>Creado: {getTimeStamp(horario.fecha_creado)}</p>
                 <p>Ciclo vinculado: {isBinded ? ciclo?.nombre : "No existe."}</p>
               </article>
             </div>

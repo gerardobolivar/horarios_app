@@ -1,10 +1,6 @@
 .filtersHorario form{
   margin-bottom: 25px;
   margin-top: 25px;
-
-  label{
-    font-weight: bold;
-  }
 }
 
 .fil-selectors{
@@ -20,23 +16,36 @@
 .fil-selectors div:not(:first-child){
   margin-left: 10px;
 }
+.fil-selectors select{
+  width: 235px;
+  text-overflow: ellipsis;
+}
+
 .fil-checkboxes{
+  
+}
+.form-check{
   display: flex;
 }
-
-.fil-checkboxes > div > span {
-  margin-left: 10px !important;  
+.form-check .form-check-input{
+  margin: 0px;
+  margin-left: 10px;
 }
 
-.fil-checkboxes > div > span > label {
-  margin-bottom: 2px !important;  
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
 }
 
-.fil-checkboxes > div > span > input[type="checkbox"]{
-  margin-left: 10px !important;
-  margin-top: 5px ;
+.form-check-input:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
+.card {
+  box-shadow: 0 2px 4px rgba(0,0,0,.05);
+  flex-direction: row;
+}
 
 .modalContainer form span input, label {
   display: inherit !important;
@@ -65,7 +74,8 @@
 
 .grid_container,.grid_container_dual > div{
   overflow-x: scroll;
-  height: 110vh;
+  overflow-y: unset !important;
+  max-height: fit-content;
 }
 
 
@@ -76,17 +86,21 @@
 }
 
 .grid_container,.grid_container_dual > .mainScheduleUI {
-  border: 3px solid #204C6F;
-  border-radius: 10px 10px 0px 0px;
+  border: 1px solid #204C6F;
+  border-radius: 10px 10px 10px 10px;
   padding: 1vh;
-  background-color: #ffff;
+  background-color: #fff;
+  box-shadow: 0 5px 4px rgba(0, 0, 0, .05);
 }
 
 .virtual_courses_container{
-  border: 3px solid #204C6F;
-  border-radius: 10px 10px 0px 0px;
+  border: 1px solid #204C6F;
+  border-radius: 10px 10px 10px 10px;
+  overflow-x: unset !important;
   padding: 1vh;
-  background-color: white;
+  background-color: #fff;
+  box-shadow: 0 5px 4px rgba(0, 0, 0, .05);
+
 }
 
 .aulaTitle{
@@ -124,13 +138,21 @@
   font-weight: bold !important;
 }
 
+.filter-selector{
+  max-width: 500px;
+}
+
 @media (width <= 1230px ) and (width >= 1000px ){
   .fil-checkboxes > div > span{
     display: flex;
   }
 }
 
-@media (width <= 1000px) {
+@media (width <= 1050px) {
+  .card {
+    flex-direction: column;
+  }
+
   .filters-form{
     display: block;
   }
@@ -151,8 +173,11 @@
 
   .fil-selectors{
     display: block;
-
+    
     select{
+      margin: auto;
+      width: 100%;
+      text-align: center;
       margin-bottom: 10px;
     }
   }
