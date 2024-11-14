@@ -1,5 +1,6 @@
 import { Form, Link, Outlet, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
 import { useEffect, useState } from "react";
+import ReactTimeAgo from "react-time-ago";
 import { actionUserIdUser } from "~/.server/Controller/user.$iduser/action";
 import { loaderUserIdUser } from "~/.server/Controller/user.$iduser/loader";
 
@@ -75,8 +76,11 @@ export default function ModalUsuario() {
                   </select>
                 </span>
                 <span hidden={isNewUser}>
-                  <p><strong>Modificado:</strong>
-                  {!isNewUser && user ? ` ${getTimeStamp(user.fecha_modificado)}`: ""}
+                  <p><strong>Creado: </strong>
+                  {!isNewUser && user ? <ReactTimeAgo date={new Date(new Date(user.fecha_creado))}/>:null}
+                  </p>
+                  <p><strong>Modificado: </strong>
+                  {!isNewUser && user ? <ReactTimeAgo date={new Date(new Date(user.fecha_modificado))}/>:null}
                   </p>
                 </span>
               </div>
@@ -86,7 +90,8 @@ export default function ModalUsuario() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled" : ""}
+              className={btnDisabled ? "disabled mainButton" : "mainButton"}
+              style={{marginLeft:"0px"}}
               name="intent"
               disabled={btnDisabled}
               value={isNewUser ? "create" : "update"}>

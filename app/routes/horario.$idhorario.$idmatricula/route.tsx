@@ -8,6 +8,8 @@ import rstyles from "./styles.css?url"
 import { useOptionalUser } from "~/utils";
 import loaderHorarioIdhorarioIdmatricula from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
 import actionHorarioIdhorarioIdmatricula from "~/.server/Controller/horario.$idhorario.$idmatricula/action";
+import ReactTimeAgo from 'react-time-ago';
+
 
 export default function HorarioModal() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,6 +34,7 @@ export default function HorarioModal() {
   const user = useOptionalUser();
   const hiddeOwnerOptions = !(user?.id_usuario === matricula?.user_id || user?.role === "ADMIN");
   const isOwner = user?.id_usuario === matricula?.user_id;
+  const isAdmin = user?.role === "ADMIN";
   const [timesToRemove, setTimesToRemove] = useState<number[]>([]);
 
   let filters = {
@@ -227,7 +230,7 @@ export default function HorarioModal() {
       <td>{`${DIAS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
       <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
-      <td hidden={!!matricula?.group?.completed || hiddeOwnerOptions}>
+      <td hidden={matricula?.group?.completed || (!isNewMatricula && matricula?.group?.completed) || (!matricula?.group?.completed && !isNewMatricula && (!isOwner)) || (!matricula?.group?.completed && !isNewMatricula && (!isAdmin && !isOwner)) }>
         <button
           id={t.dia + t.aula_id + t.hora_inicio}
           value={t.time_span_id}
@@ -261,7 +264,7 @@ export default function HorarioModal() {
             <div className="grayContainer">
               <div className="course_input_container">
                 {!isNewMatricula ? ownerTag : null}
-                <div className="grid-container" style={matricula?.group?.completed && isOwner ? { display: "block" } : { display: "grid" }}>
+                <div className="grid-container" style={matricula?.group?.completed || (!isNewMatricula && !isOwner) ? { display: "block" } : { display: "grid" }}>
 
                   <div className="section">
                     <span>
@@ -397,8 +400,8 @@ export default function HorarioModal() {
                     }
                     {hiddeOwnerOptions && !isNewMatricula ? null :
                       <span hidden={isNewMatricula}>
-                        <p><strong>Modificado:</strong>
-                          {!isNewMatricula && matricula ? ` ${getTimeStamp(matricula.fecha_modificado)}` : ""}
+                        <p><strong>Modificado: </strong>
+                          {!isNewMatricula && matricula ? <ReactTimeAgo date={new Date(matricula.fecha_modificado)}/>:null}
                         </p>
                       </span>
                     }
