@@ -17,7 +17,6 @@ export default function HorarioConfigPage() {
   const datetime = new Date(hasCloseTime?.datetime as string);
   const isPast = new Date() > datetime;
   const currentDate = new Date();
-  //const actualDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}` : myDate.getMinutes()}`
 
   return <>
     <div className="container main-doc schConfiCard">
@@ -60,6 +59,7 @@ export default function HorarioConfigPage() {
                       id="close_sch"
                       type="datetime-local"
                       name="close_sch"
+                      min={currentDate.toISOString()}
                       className="form-control datetimeInput"
                       />
                     <button

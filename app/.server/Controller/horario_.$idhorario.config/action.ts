@@ -11,16 +11,15 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
 
   if (intent === "archivar") {
     await deactivateHorarioById(horarioId);
-
+    const myDate = new Date();
+    
     if (TaskMonitor.task) {
       TaskMonitor.stopAll();
-      await deleteHorarioCloseTime(horarioId).then(async () => {
-        const myDate = new Date();
-        const utcDate = new Date(myDate.getTime() - myDate.getTimezoneOffset() * 60000);
-        
-        //const actualDate = `${myDate.getFullYear()}-${myDate.getMonth()+1 < 10 ? `0${myDate.getMonth()+1}`:myDate.getMonth()+1}-${myDate.getDate()}T${myDate.getHours()}:${myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}`:myDate.getMinutes()}`
-        await createHorarioCloseTime(utcDate, horarioId);
-      })
+      await deleteHorarioCloseTime(horarioId).catch(e=>{
+        console.error(e);})
+      await createHorarioCloseTime(myDate, horarioId);
+    } else {
+      await createHorarioCloseTime(myDate, horarioId);
     }
     return redirect(`/horario/${horarioId}/config`)
 
@@ -39,26 +38,15 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
 
   } else if (intent === "schedule") {
     const inDate = new Date(dateInput);
-    const utcDate = new Date(dateInput);
-    utcDate.setUTCHours(inDate.getHours()+(360/60))
     const currentDate = new Date();
-    //console.log(`inDate ${inDate} < currectDate ${currentDate} = ${utcDate < currentDate}`);
-    // console.log("utc_inDate: " + utcActualDate);
-    //console.log("getUTC hours "+`${inDate.getUTCHours()}`);
-    const inDateUTC = new Date(inDate.getTime() - 360 * 60000);
-    console.log(`inDateUTC ${inDateUTC}`);
-    console.log(inDateUTC);
 
-    if (inDateUTC < currentDate) {
+    if (inDate < currentDate) {
       return null;
     }
 
     if (dateInput && !hasCloseDatime) {
-      //const date = new Date(utcDate);
       TaskMonitor.setDeactivation(horarioId, inDate);
-      
-      
-      await createHorarioCloseTime(inDateUTC, horarioId);
+      await createHorarioCloseTime(inDate, horarioId);
     }
     return null;
 
