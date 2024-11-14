@@ -32,8 +32,8 @@ export default function HorarioModal() {
   const user = useOptionalUser();
   const hiddeOwnerOptions = !(user?.id_usuario === matricula?.user_id || user?.role === "ADMIN");
   const isOwner = user?.id_usuario === matricula?.user_id;
-  const [timesToRemove,setTimesToRemove] = useState<number[]>([]);
-  
+  const [timesToRemove, setTimesToRemove] = useState<number[]>([]);
+
   let filters = {
     "planEstudios": "",
     "dia": "",
@@ -70,22 +70,22 @@ export default function HorarioModal() {
       try {
         (document.getElementById("modalidadHorario") as HTMLSelectElement).value = "VIRTUAL"
         setIsVirtual(true);
-        
+
       } catch (error) {
-        
+
       }
     }
 
   }, [])
-  
+
 
   useEffect(() => {
     try {
       (document.getElementById("diaHorario") as HTMLSelectElement).value = String(dia)
-      
+
     } catch (error) {
       console.log(error);
-      
+
     }
   }, [dia])
 
@@ -139,10 +139,10 @@ export default function HorarioModal() {
       dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
       type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
     }
-    
-    if (!checkDuplicates(timeSpanList, timeSpan) && isAvailable(timeSpanList,timeSpan) && dia) {
+
+    if (!checkDuplicates(timeSpanList, timeSpan) && isAvailable(timeSpanList, timeSpan) && dia) {
       addTimeSpanToList(timeSpanList, timeSpan);
-    }else{
+    } else {
       console.log(timeSpan)
     }
   }
@@ -158,7 +158,7 @@ export default function HorarioModal() {
   function handleRemoveTimeSpan(event: React.FormEvent<HTMLButtonElement>) {
     const btn = event.currentTarget as HTMLButtonElement
     if (!!btn.id) {
-      if(btn.hasAttribute("value")){
+      if (btn.hasAttribute("value")) {
         const list = [...timesToRemove]
         list.push(Number(btn.value));
         setTimesToRemove(list);
@@ -220,7 +220,7 @@ export default function HorarioModal() {
 
   let ownerTag = user?.role === "ADMIN" ? <p>{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
 
-  let timeSpanListRender = timeSpanList.map((t:any) => {
+  let timeSpanListRender = timeSpanList.map((t: any) => {
     const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
     const formattedClassroom: string = Number(aula?.identificador) < 10 ? `0${aula?.identificador}` : `${aula?.identificador}`;
     return <tr key={t.dia + t.aula_id + t.hora_inicio} id={t.time_span_id}>
@@ -245,7 +245,7 @@ export default function HorarioModal() {
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
-      <h2>{isNewMatricula ? "Registrar curso" : isOwner ? "Ver/Actualizar registro" :"Ver registro"}</h2>
+      <h2>{isNewMatricula ? "Registrar curso" : isOwner ? "Ver/Actualizar registro" : "Ver registro"}</h2>
       <div className="body_container">
         <Form id="courseForm"
           method="post"
@@ -261,25 +261,26 @@ export default function HorarioModal() {
             <div className="grayContainer">
               <div className="course_input_container">
                 {!isNewMatricula ? ownerTag : null}
-                <div className="grid-container" style={matricula?.group?.completed && isOwner ? {display:"block"}:{display:"grid"}}>
+                <div className="grid-container" style={matricula?.group?.completed && isOwner ? { display: "block" } : { display: "grid" }}>
 
                   <div className="section">
                     <span>
-                    <label htmlFor="cursoHorario" hidden={true}>Curso</label>
+                      <label htmlFor="cursoHorario" hidden={true}>Curso</label>
                       <select
                         name="cursoHorario"
                         id="cursoHorario"
                         required={true}
-                        defaultValue={matricula ? matricula?.group?.curso.id_curso:0}
+                        defaultValue={matricula ? matricula?.group?.curso.id_curso : 0}
                         hidden={hiddeOwnerOptions && !isNewMatricula}
                         className="form-select"
                         aria-label="curso_selector">
                         <option value={""}>Curso</option>
                         {cursosLista}
                       </select>
-                      <p hidden={!hiddeOwnerOptions || isNewMatricula}>
-                        {matricula?.group?.curso.nombre}
-                      </p>
+                      <div hidden={!hiddeOwnerOptions || isNewMatricula} style={{ display: "flex" }}>
+                        <label style={{ marginRight: "10px" }}>Curso:</label>
+                        <p>{matricula?.group?.curso.nombre}</p>
+                      </div>
                     </span>
 
                     <span>
@@ -295,12 +296,13 @@ export default function HorarioModal() {
                         <option value={""}>Profesor</option>
                         {profesoresLista}
                       </select>
-                      <p hidden={!hiddeOwnerOptions || isNewMatricula}>
-                        {`${matricula?.group?.profesor.nombre} ${matricula?.group?.profesor.primer_apellido} ${matricula?.group?.profesor.segundo_apellido}`}
-                      </p>
+                      <div hidden={!hiddeOwnerOptions || isNewMatricula} style={{ display: "flex" }}>
+                        <label style={{ marginRight: "10px" }}>Profesor:</label>
+                        <p>{`${matricula?.group?.profesor.nombre} ${matricula?.group?.profesor.primer_apellido} ${matricula?.group?.profesor.segundo_apellido}`}</p>
+                      </div>
                     </span>
                     {
-                      (matricula?.group?.completed || !isOwner) && !isNewMatricula? 
+                      (matricula?.group?.completed || !isOwner) && !isNewMatricula ?
                         <span>
                           <label>Horario:</label>
                           <table>
@@ -317,7 +319,7 @@ export default function HorarioModal() {
                             </tbody>
                           </table>
                         </span>
-                    : null
+                        : null
                     }
 
                     {hiddeOwnerOptions && !isNewMatricula ? null :
@@ -381,8 +383,8 @@ export default function HorarioModal() {
                         <input name="color"
                           type="color"
                           list="suggestedColors"
-                          defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"} 
-                          className="form-control form-control-color"/>
+                          defaultValue={matricula ? `#${matricula.color}` : "#f0f0f0"}
+                          className="form-control form-control-color" />
                         <datalist id="suggestedColors">
                           <option value="#00c0f3" />
                           <option value="#005da4" />
@@ -401,118 +403,118 @@ export default function HorarioModal() {
                       </span>
                     }
                   </div>
-                  { (!matricula?.group?.completed && isOwner) || isNewMatricula ?
-                  <div className="section">
-                    <div hidden={hiddeOwnerOptions && !isNewMatricula}>
+                  {(!matricula?.group?.completed && isOwner) || isNewMatricula ?
+                    <div className="section">
+                      <div hidden={hiddeOwnerOptions && !isNewMatricula}>
 
-                      <p>{isNewMatricula ? "" : matricula?.group?.completed ? null : `Horas por asignar: ${matricula?.group?.Ahours}`}</p>
-                      
-                      <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="diaHorario" hidden={true}>Día</label>
-                        <select
-                          name="diaHorario"
-                          id="diaHorario"
-                          onChange={(event) => {
-                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
-                            handleDiaChange(event);
-                          }}
-                          hidden={matricula?.group?.completed}
-                          className="form-select"
-                          aria-label="dia_selector">
-                          <option value={""}>Día</option>
-                          <option value={"LUNES"}>Lunes</option>
-                          <option value={"MARTES"}>Martes</option>
-                          <option value={"MIERCOLES"}>Miércoles</option>
-                          <option value={"JUEVES"}>Jueves</option>
-                          <option value={"VIERNES"}>Viernes</option>
-                          <option value={"SABADO"}>Sábado</option>
-                        </select>
-                      </span>
+                        <p>{isNewMatricula ? "" : matricula?.group?.completed ? null : `Horas por asignar: ${matricula?.group?.Ahours}`}</p>
 
-                       
-                      <span hidden={isVirtual || matricula?.group?.completed}  >
-                        <label htmlFor="aulaHorario" hidden={true}>Aula</label>
-                        <select
-                          name="aulaHorario"
-                          id="aulaHorario"
-                          hidden={matricula?.group?.completed}
-                          onChange={(event) => {
-                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
-                            handleAulaChange(event);
-                          }}
-                          defaultValue={aula}
-                          className="form-select"
-                          aria-label="aula_selector">
-                          <option value={""}></option>
-                          {aulasLista}
-                        </select>
-                      </span>
-                      
-                      
-                      <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="horaInicio" hidden={true}>Hora de inicio</label>
-                        <select
-                          name="horaInicio"
-                          id="horaInicio"
-                          onChange={() => {
-                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors)
-                          }}
-                          hidden={matricula?.group?.completed}
-                          className="form-select"
-                          aria-label="hora_inicio_selector">
-                          <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora inicio"}</option>
-                          {timeList}
-                        </select>
-                      </span>
-                      
+                        <span hidden={matricula?.group?.completed}>
+                          <label htmlFor="diaHorario" hidden={true}>Día</label>
+                          <select
+                            name="diaHorario"
+                            id="diaHorario"
+                            onChange={(event) => {
+                              validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                              handleDiaChange(event);
+                            }}
+                            hidden={matricula?.group?.completed}
+                            className="form-select"
+                            aria-label="dia_selector">
+                            <option value={""}>Día</option>
+                            <option value={"LUNES"}>Lunes</option>
+                            <option value={"MARTES"}>Martes</option>
+                            <option value={"MIERCOLES"}>Miércoles</option>
+                            <option value={"JUEVES"}>Jueves</option>
+                            <option value={"VIERNES"}>Viernes</option>
+                            <option value={"SABADO"}>Sábado</option>
+                          </select>
+                        </span>
 
-                      
-                      <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="horaFin" hidden={true}>Hora de finalización</label>
-                        <select
-                          name="horaFin"
-                          id="horaFin"
-                          onChange={() => {
-                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
-                          }}
-                          hidden={matricula?.group?.completed}
-                          className="form-select"
-                          aria-label="hora_fin_selector">
-                          <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora Fin"}</option>
-                          {timeList}
-                        </select>
-                      </span>
-                      
-                      
-                      <span hidden={matricula?.group?.completed}>
-                        <label htmlFor="tipoHoras" hidden={true}>Tipo:</label>
-                        <select name="tipoHoras" defaultValue="T"
-                          className="form-select"
-                          aria-label="tipo_curso_selector">
-                          <option value={""}>Tipo de curso</option>
-                          <option value="T">Teórico</option>
-                          <option value="P">Práctico</option>
-                          <option value="TP">Teórico-Práctico</option>
-                        </select>
-                      </span>
 
-                      <span hidden={!!matricula?.group?.completed}>
-                        <button
-                          id="addTimeSpanBtn"
-                          type="button"
-                          className={btnDisabled || areThereErrors ? "mainButton disabled" : "mainButton"}
-                          disabled={btnDisabled || areThereErrors}
-                          onClick={() => {
-                            const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
-                            const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value);
-                            if(initialTime !== 0 && endTime !== 0){
-                              handleTimeSpanAdd();
-                            }
+                        <span hidden={isVirtual || matricula?.group?.completed}  >
+                          <label htmlFor="aulaHorario" hidden={true}>Aula</label>
+                          <select
+                            name="aulaHorario"
+                            id="aulaHorario"
+                            hidden={matricula?.group?.completed}
+                            onChange={(event) => {
+                              validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                              handleAulaChange(event);
+                            }}
+                            defaultValue={aula}
+                            className="form-select"
+                            aria-label="aula_selector">
+                            <option value={""}></option>
+                            {aulasLista}
+                          </select>
+                        </span>
 
-                            validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
-                          }}>+</button>
-                      </span>
-                      <span>
+
+                        <span hidden={matricula?.group?.completed}>
+                          <label htmlFor="horaInicio" hidden={true}>Hora de inicio</label>
+                          <select
+                            name="horaInicio"
+                            id="horaInicio"
+                            onChange={() => {
+                              validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors)
+                            }}
+                            hidden={matricula?.group?.completed}
+                            className="form-select"
+                            aria-label="hora_inicio_selector">
+                            <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora inicio"}</option>
+                            {timeList}
+                          </select>
+                        </span>
+
+
+
+                        <span hidden={matricula?.group?.completed}>
+                          <label htmlFor="horaFin" hidden={true}>Hora de finalización</label>
+                          <select
+                            name="horaFin"
+                            id="horaFin"
+                            onChange={() => {
+                              validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                            }}
+                            hidden={matricula?.group?.completed}
+                            className="form-select"
+                            aria-label="hora_fin_selector">
+                            <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora Fin"}</option>
+                            {timeList}
+                          </select>
+                        </span>
+
+
+                        <span hidden={matricula?.group?.completed}>
+                          <label htmlFor="tipoHoras" hidden={true}>Tipo:</label>
+                          <select name="tipoHoras" defaultValue="T"
+                            className="form-select"
+                            aria-label="tipo_curso_selector">
+                            <option value={""}>Tipo de curso</option>
+                            <option value="T">Teórico</option>
+                            <option value="P">Práctico</option>
+                            <option value="TP">Teórico-Práctico</option>
+                          </select>
+                        </span>
+
+                        <span hidden={!!matricula?.group?.completed}>
+                          <button
+                            id="addTimeSpanBtn"
+                            type="button"
+                            className={btnDisabled || areThereErrors ? "mainButton disabled" : "mainButton"}
+                            disabled={btnDisabled || areThereErrors}
+                            onClick={() => {
+                              const initialTime = Number((document.getElementById("horaInicio") as HTMLSelectElement).value);
+                              const endTime = Number((document.getElementById("horaFin") as HTMLSelectElement).value);
+                              if (initialTime !== 0 && endTime !== 0) {
+                                handleTimeSpanAdd();
+                              }
+
+                              validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
+                            }}>+</button>
+                        </span>
+                        <span>
                           <label>Horario:</label>
                           <table>
                             <thead>
@@ -528,9 +530,9 @@ export default function HorarioModal() {
                             </tbody>
                           </table>
                         </span>
+                      </div>
                     </div>
-                  </div>
-                  : null}
+                    : null}
                 </div>
               </div>
               <div className="errorBlock" style={{ color: "red" }}>
