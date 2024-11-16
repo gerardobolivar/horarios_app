@@ -10,7 +10,7 @@ import { useOptionalUser } from "~/utils";
 import HorarioLoader from "~/.server/Controller/horario.$idhorario/loader";
 import HorarioAction from "~/.server/Controller/horario.$idhorario/action";
 import { DIAS } from "./reversedTimes";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function () {
   const data = useLoaderData<typeof loader>();
@@ -18,8 +18,8 @@ export default function () {
   const timeSlots: string[] = Object.values(data.timeSlots);
   const classrooms = Object.values(data.aulas).map(a => a.identificador);
   const [searchParams, setSearchParams] = useSearchParams();
-  const showVirtual = searchParams.get("showvirtual") === "true" ? true : false;
-  const hideEmpty = searchParams.get("hideempty") === "false" || searchParams.get("hideempty") === null ? false : true;
+  const [showVirtual, setShowVirtual] = useState(false);
+  const [hideEmpty, setHideEmpty] = useState(false); 
   const scheduleTimeSpans = data.scheduleTimeSpans;
   const user = useOptionalUser();
   const isGuest = user?.role === "GUEST"
@@ -79,7 +79,12 @@ export default function () {
   return <>
     <div className="grid_container_filter_config">
       <div className="filtersHorario">
-        <Filters data={data} horarioId={data.idHorario} planes={data.planes}></Filters>
+        <Filters
+          data={data}
+          horarioId={data.idHorario}
+          planes={data.planes}
+          setShowVirtual={setShowVirtual}
+          setHideEmpty={setHideEmpty}></Filters>
       </div>
     </div>
     <div className="regis-btn-sch">

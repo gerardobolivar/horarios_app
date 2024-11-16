@@ -1,15 +1,20 @@
 import { Form, useSearchParams } from "@remix-run/react";
 import { useSubmit } from "@remix-run/react";
+import { ChangeEvent, useState } from "react";
 import { Planes } from "~/types/horarioTypes";
 
 type Props = {
   horarioId: number,
   data: any,
-  planes: Planes
+  planes: Planes,
+  setHideEmpty: React.Dispatch<React.SetStateAction<boolean>>,
+  setShowVirtual: React.Dispatch<React.SetStateAction<boolean>>
 }
-const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
+const Filters: React.FC<Props> = ({ horarioId, planes, data, setHideEmpty, setShowVirtual }) => {
   const submit = useSubmit();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [show_virtual, setShow_virtual] = useState(false);
+  const [hide_empty, setHide_empty] = useState(false);
 
   const planesEstudio = planes.map((plan) => {
     return <option value={plan.id_plan_estudio} key={plan.id_plan_estudio}>
@@ -17,24 +22,39 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
     </option>
   })
 
-  function handleChangeForm(event: any) {
+  function handleChangeForm(event: ChangeEvent<HTMLSelectElement>) {
     const params = new URLSearchParams();
-    let planEstudios = event.currentTarget.querySelector('select[name="planEstudios"]').value;
-    let dia = event.currentTarget.querySelector('select[name="diaHorarioFilter"]').value;
-    let ubicacion = event.currentTarget.querySelector('select[name="ubicacionHorario"]').value;
-    const showVirtual = event.currentTarget.querySelector('input[name="show_virtual"]').checked;
-    const hideEmpty = event.currentTarget.querySelector('input[name="show_empty"]').checked;
+    const form = document.getElementById("filtersSchedule") as HTMLFormElement;
+    let planEstudios = (form.querySelector('select[name="planEstudios"]') as HTMLSelectElement).value;    
+    let dia = (form.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value
+    let ubicacion = (form.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement).value
     params.set("planEstudios", `${planEstudios}`);
     params.set("dia", `${dia}`);
     params.set("ubicacion", `${ubicacion}`);
-    params.set("showvirtual", `${showVirtual}`);
-    params.set("hideempty", `${hideEmpty}`);
-
-    if (showVirtual) {
-      submit(event.currentTarget)
-    }
 
     setSearchParams(params, { preventScrollReset: true, });
+  }
+
+  function handleHideEmpty(e:ChangeEvent<HTMLInputElement>){
+     const isChecked = Boolean(e.currentTarget.checked);
+    if(isChecked){
+      setHideEmpty(true);
+      setHide_empty(true);
+    }else{
+      setHideEmpty(false);
+      setHide_empty(false);
+    }
+  }
+
+  function handleShowVirtual(e:ChangeEvent<HTMLInputElement>){
+    const isChecked = Boolean(e.currentTarget.checked)
+    if(isChecked){
+      setShowVirtual(true);
+      setShow_virtual(true);
+    }else{
+      setShowVirtual(false);
+      setShow_virtual(false);
+    }
   }
 
   return <>
@@ -42,7 +62,6 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
       method="POST"
       id="filtersSchedule"
       preventScrollReset={true}
-      onChange={(e) => { handleChangeForm(e) }}
       className="filters-form"
       action={`/horario/${horarioId}`}>
       <div className="card p-3 bg-light border-0 mb-3">
@@ -53,8 +72,10 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
               name="planEstudios"
               defaultValue={0}
               className="form-select form-select-lg mb-3"
-              aria-label=".form-select-lg example">
-              <option value={0}>Plan de estudio</option>
+              aria-label=".form-select-lg example"
+              onChange={(e)=>{handleChangeForm(e)}}>
+              <option value={0}>Plan de estudio
+              </option>
               {planesEstudio}
             </select>
           </div>
@@ -64,7 +85,8 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
               name="diaHorarioFilter"
               defaultValue={"LUNES"}
               className="form-select form-select-lg mb-3"
-              aria-label=".form-select-lg example">
+              aria-label=".form-select-lg example"
+              onChange={(e)=>{handleChangeForm(e)}}>
               <option value={"LUNES"}>Lunes</option>
               <option value={"MARTES"}>Martes</option>
               <option value={"MIERCOLES"}>Miércoles</option>
@@ -79,7 +101,8 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
               name="ubicacionHorario"
               defaultValue={"0"}
               className="form-select form-select-lg mb-3"
-              aria-label=".form-select-lg example">
+              aria-label=".form-select-lg example"
+              onChange={(e)=>{handleChangeForm(e)}}>
               <option value={"0"}>Ubicación en el plan</option>
               <option value={"1"}>1</option>
               <option value={"2"}>2</option>
@@ -97,9 +120,9 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
               type="checkbox"
               id="shVirt"
               name="show_virtual"
-              onChange={() => { }}
+              onChange={(e) => { handleShowVirtual(e)}}
               className="largerCheckBox form-check-input"
-              checked={searchParams.get("showvirtual") === "true" ? true : false}
+              checked={show_virtual}
               value="true"></input>
           </div>
           <div className="form-check">
@@ -108,9 +131,9 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data }) => {
               type="checkbox"
               id="shEmpty"
               name="show_empty"
-              onChange={() => { }}
+              onChange={(e) => { handleHideEmpty(e)}}
               className="largerCheckBox form-check-input"
-              checked={searchParams.get("hideempty") === "true" ? true : false}
+              checked={hide_empty}
               value="true"></input>
           </div>
         </div>
