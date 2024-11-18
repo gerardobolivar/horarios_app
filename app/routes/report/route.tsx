@@ -1,22 +1,38 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/react";
-import { getUserById } from "prisma/models/userModel";
-import { requireUser } from "~/.server/session";
+import { LinksFunction } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import actionReport from "~/.server/Controller/report/action";
+import loaderReport from "~/.server/Controller/report/loader";
+import configPageStyles from "~/routes/cicle.$idcicle/cicleStyles.css?url";
 
-export default function Report(){
-  return(
-    <div>
-      <h1>Personal Report</h1>
-      <p>This is where you will be able to generate a personal report</p>
+
+export default function Report() {
+  const data = useLoaderData<typeof loader>();
+  const isAdmin = data.isAdmin;
+
+  return (
+    <div className="container main-doc" >
+      <h1>{isAdmin ? "Reportes" : "Mi reporte"}</h1>
+      <Form
+        method="post"
+        className="">
+        <div>
+          <button type="submit" value="reporte_personal" name="intent" className="">Crear reporte personal</button>
+        </div>
+        {
+          isAdmin ?
+            <div>
+              <button value="reporte_general" name="intent" className="">Crear reporte general</button>
+            </div>
+            : null
+        }
+      </Form>
     </div>
   )
 }
 
-export async function loader({request}:LoaderFunctionArgs){
-  const userId = await requireUser(request);
-  const user = await getUserById(userId);
-  if(user?.role === "GUEST"){
-    return redirect("/");
-  }
-  return null;
-}
+export const loader = loaderReport;
+export const action = actionReport;
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: configPageStyles },
+];
