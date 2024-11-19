@@ -362,13 +362,100 @@ export function getColorByMatriculaId(matricula_id:number){
   })
 }
 
-export function getMatriculaModalidad(matricula_id:number){
-  return prisma.matricula.findUnique({
+export async function getMatriculaModalidad(matricula_id:number){
+  return await prisma.matricula.findUnique({
     where:{
       matricula_id: matricula_id
     },
     select:{
       modalidad: true
+    }
+  })
+}
+
+export async function getMatriculasByHorarioActivo(){
+  return await prisma.matricula.findMany({
+    where:{
+      horario:{
+        active: true
+      }
+    },
+    include:{
+      group: {
+        include:{
+          curso: {
+            include:{
+              plan: true,
+            }
+          },
+          profesor: true,
+        }
+      },
+      time_spans: {
+        include:{
+          aula:true
+        }
+      }
+    }
+  })
+}
+
+export async function getMatriculasByHorarioActivoByPLan(plan_id:number){
+  return await prisma.matricula.findMany({
+    where:{
+      horario:{
+        active: true
+      },
+      group:{
+        curso:{
+          plan_id: plan_id
+        }
+      }
+    },
+    include:{
+      group: {
+        include:{
+          curso: {
+            include:{
+              plan: true,
+            }
+          },
+          profesor: true,
+        }
+      },
+      time_spans: {
+        include:{
+          aula:true
+        }
+      }
+    }
+  })
+}
+
+export async function getMatriculasByHorarioActivoByUserPLan(user_id:number){
+  return await prisma.matricula.findMany({
+    where:{
+      horario:{
+        active: true
+      },
+      user_id : user_id
+    },
+    include:{
+      group: {
+        include:{
+          curso: {
+            include:{
+              plan: true,
+            }
+          },
+          profesor: true,
+        }
+      },
+      time_spans: {
+        include:{
+          aula:true
+        }
+      }
     }
   })
 }

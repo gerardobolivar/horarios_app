@@ -9,7 +9,7 @@ type Props = {
 }
 
  const NavBar: React.FC<Props> = ({user}) => {
-
+  const isAdmin = user.role === "ADMIN";
   let username = `${user?.nombre_usuario.toLocaleUpperCase()} ${user.role !== "USER" ? `(${user.role})` :"" }`
 
 
@@ -21,7 +21,7 @@ type Props = {
   }
 
   return (
-    <div id="NavBar">
+    <div id="NavBar" className="hide-on-print">
       <nav className="navbar d-flex flex-row-reverse mainNavBar">
         <a className="navbar-brand d-flex" href="#">
           <p>{username}</p>
@@ -39,13 +39,13 @@ type Props = {
               preventScrollReset={true}
               className="navbar-brand d-flex nav-item" >Planes de estudio</Link>
           </li>
-          <li hidden={user.role !== "ADMIN"}>
+          <li hidden={!isAdmin}>
             <Link 
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
               to="/aula">Aulas</Link>
           </li>
-          <li hidden={user.role !== "ADMIN"}>
+          <li hidden={!isAdmin}>
             <Link 
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
@@ -54,7 +54,7 @@ type Props = {
           <li hidden={user.role === "GUEST"}>
             <Link className="navbar-brand d-flex nav-item"
               preventScrollReset={true}
-              to="/report">Mi reporte</Link>
+              to="/report">{isAdmin ? "Reportes":"Mi reporte"}</Link>
           </li>
           <li hidden={user.role === "GUEST"}>
             <Link
@@ -62,7 +62,7 @@ type Props = {
               preventScrollReset={true}
               to="profesor">Profesores</Link>
           </li>
-          <li hidden={user.role !== "ADMIN"}>
+          <li hidden={!isAdmin}>
             <Link
               className="navbar-brand d-flex nav-item"
               preventScrollReset={true}

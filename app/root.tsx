@@ -19,7 +19,7 @@ export const links: LinksFunction = () => [
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-013">
-      <head>
+      <head className="printable">
         <meta charSet="utf-8" />
         <link rel="icon" href="/calendar.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1,  maximum-scale=1.0, user-scalable=0" />
