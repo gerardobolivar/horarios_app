@@ -1,6 +1,7 @@
 import CourseCell from "./courseCell";
 import { Link } from "@remix-run/react";
 import { TIMESLOTS_REVERSE } from "./reversedTimes";
+import { useOptionalUser } from "~/utils";
 
 
 type Props = {
@@ -10,12 +11,15 @@ type Props = {
   horarioId: number,
   aula_id: number,
   index: number,
-  search: string
+  search: string,
+  isActive: boolean
 }
 
-const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeSlots, index, horarioId, aula_id,search }) => {
+const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeSlots, index, horarioId, aula_id,search, isActive }) => {
   let isCellMerged: boolean = false;
   let cont: number = 1;
+  const user = useOptionalUser();
+  const isAdmin = user?.role === "ADMIN";
   
   return <div key={nombreAula + index} className="classroom-column">
     <h3 className="aulaTitle">{`${nombreAula < 10 ? "Aula 0" + nombreAula:  nombreAula === 999 ? "Virtual" : "Aula "+nombreAula}`}</h3>
@@ -77,6 +81,7 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
             matricula={matricula}
             search={search}>
           </CourseCell> :
+            !isActive && isAdmin ?
             <Link
               key={slot+aula_id}
               state={{ timePicked: TIMESLOTS_REVERSE[slot],aulaID: aula_id}}
@@ -86,6 +91,10 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
               }}>
                 <div className="single-slot empty-slot"></div>
             </Link>
+            : 
+              <div key={slot+aula_id}>
+                <div className="single-slot empty-slot"></div>
+              </div>
         }
       })
 

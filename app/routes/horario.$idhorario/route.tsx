@@ -26,6 +26,7 @@ export default function () {
   const isAdmin = user?.role === "ADMIN";
   const should_deactivate = !isAdmin && !data.isActive;
   
+  
   const defaultParams = {
     dia: "LUNES"
   }
@@ -61,7 +62,8 @@ export default function () {
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
       key={classroom.identificador}
-      search={searchParams.toString()}></ClassroomColumn>: null
+      search={searchParams.toString()}
+      isActive={Boolean(data.isActive)}></ClassroomColumn>: null
   })
 
   const listaClassroomHidden = 
@@ -75,7 +77,8 @@ export default function () {
       horarioId={data.idHorario}
       aula_id={classroom.id_aula}
       key={classroom.identificador}
-      search={searchParams.toString()}></ClassroomColumn> : null
+      search={searchParams.toString()}
+      isActive={Boolean(data.isActive)}></ClassroomColumn> : null
   })
 
   function handleCloseAlert(){
@@ -116,7 +119,7 @@ export default function () {
         pathname:`/horario/${data.idHorario}/new`,
         search: searchParams.toString()
       }}>
-        <button className={should_deactivate ? "mainButton disabled": "mainButton"}>Registrar</button>
+        <button disabled={should_deactivate} className={should_deactivate ? "mainButton disabled": "mainButton"}>Registrar</button>
       </Link>
       <Link replace={true} hidden={user?.role !== "ADMIN"} className="lnk-btn" to={{
         pathname:`/horario/${data.idHorario}/config`,
