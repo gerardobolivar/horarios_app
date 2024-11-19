@@ -22,7 +22,9 @@ export default function () {
   const [hideEmpty, setHideEmpty] = useState(false); 
   const scheduleTimeSpans = data.scheduleTimeSpans;
   const user = useOptionalUser();
-  const isGuest = user?.role === "GUEST"
+  const isGuest = user?.role === "GUEST";
+  const isAdmin = user?.role === "ADMIN";
+  const should_deactivate = !isAdmin && !data.isActive;
   
   const defaultParams = {
     dia: "LUNES"
@@ -76,7 +78,29 @@ export default function () {
       search={searchParams.toString()}></ClassroomColumn> : null
   })
 
+  function handleCloseAlert(){
+    const alert = document.getElementById("state_alert") as HTMLDivElement;
+    alert.classList.add("vanish");
+  }
+
   return <>
+    <div
+      style={data.isActive || isGuest? {display:"none"}:{}}
+      className="alert alert-warning alert-dismissible fade show"
+      id="state_alert"
+      role="alert">
+    {isAdmin ? <p><strong>Horario deshabilitado.</strong> Los usuarios no pueden realizar cambios.</p>:
+      <p><strong>Horario deshabilitado.</strong> No se aceptan cambios.</p>}
+      <button
+        type="button"
+        className="btn"
+        data-dismiss="alert ms-auto"
+        aria-label="Close"
+        onClick={handleCloseAlert}>
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+    </div>
     <div className="grid_container_filter_config">
       <div className="filtersHorario">
         <Filters
@@ -92,7 +116,7 @@ export default function () {
         pathname:`/horario/${data.idHorario}/new`,
         search: searchParams.toString()
       }}>
-        <button className="mainButton">Registrar</button>
+        <button className={should_deactivate ? "mainButton disabled": "mainButton"}>Registrar</button>
       </Link>
       <Link replace={true} hidden={user?.role !== "ADMIN"} className="lnk-btn" to={{
         pathname:`/horario/${data.idHorario}/config`,

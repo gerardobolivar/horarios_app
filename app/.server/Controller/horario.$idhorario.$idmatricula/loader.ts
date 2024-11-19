@@ -2,6 +2,7 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/react";
 import { getAula, getAulas } from "prisma/models/aulaModel";
 import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
+import { getHorario } from "prisma/models/horarioModel";
 import { getMatriculaById, getMatriculaModalidad } from "prisma/models/matriculaModelo";
 import { getMovileLabs } from "prisma/models/movileLab";
 import { getProfesores, getProfesoresByUserId } from "prisma/models/profesorModel";
@@ -21,8 +22,9 @@ const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunc
   const horarioId: number = Number(params.idhorario);
   const matriculaId: number = Number(params.idmatricula);
   const isNewMatricula: boolean = params.idmatricula === "new";
+  const isActive = (await getHorario(horarioId))?.active;
 
-  if(user?.role === "GUEST" && isNewMatricula){
+  if(user?.role === "GUEST" && isNewMatricula || (!isActive && isNewMatricula && !isAdmin)){
     return redirect(`/horario/${horarioId}`)
   }
 
@@ -80,7 +82,8 @@ const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunc
     matriculaTimeSpans: matriculaTimeSpans,
     times: TIMESLOTS,
     time_white_list: time_white_list,
-    matricula: isNewMatricula ? null : await getMatriculaById(matriculaId)
+    matricula: isNewMatricula ? null : await getMatriculaById(matriculaId),
+    isActive: isActive
   })
 }
 
