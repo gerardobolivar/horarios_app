@@ -1,0 +1,42 @@
+.filterBar{
+  margin-top: 15px;
+}
+
+.report-layout{
+  max-height: 650px;
+  overflow-y: scroll;
+  border-top: 2.5px solid #fff !important;
+  margin-bottom: 10px;
+}
+
+@media print{
+  .report-layout{
+    max-width: fit-content;
+    overflow-y: unset;
+    border: 0px;
+  }
+
+  .hide-on-print{
+    display: none;
+  }
+
+  .printable{
+    font-size: 10px;
+  }
+
+  .printable .show_on_print{
+    display: block !important;
+  }
+  .printable h4{
+    display: none;
+  }
+
+  .printable title{
+    display: none;
+  }
+
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+}

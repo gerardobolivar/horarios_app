@@ -3,7 +3,7 @@ import { Form, Link, useLoaderData, useLocation, useNavigation, useSearchParams,
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
 import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
-import { checkDuplicates, checkForErrors, getTimeStamp, handleModalidadChange, isAvailable, validateTimeSpans, } from "./utils";
+import { checkDuplicates, checkForErrors, handleModalidadChange, isAvailable, validateTimeSpans, } from "./utils";
 import rstyles from "./styles.css?url"
 import { useOptionalUser } from "~/utils";
 import loaderHorarioIdhorarioIdmatricula from "../../.server/Controller/horario.$idhorario.$idmatricula/loader";
@@ -20,10 +20,8 @@ export default function HorarioModal() {
   const matricula = data.matricula;
   let timeSlots: string[] = data.time_white_list ? Object.keys(data.time_white_list) : [];
   const location = useLocation();
-  const timePicked = location.state?.timePicked;
   const dia = searchParams.get("dia");
   let aula = location.state?.aulaID;
-  const showVirtual: boolean = location.state?.showVirtual;
   const [isVirtual, setIsVirtual] = useState(false);
   let [errorList, setErrorList] = useState<string[]>([]);
   const [areThereErrors, setAreThereErrors] = useState(false);
@@ -36,6 +34,8 @@ export default function HorarioModal() {
   const isOwner = user?.id_usuario === matricula?.user_id;
   const isAdmin = user?.role === "ADMIN";
   const [timesToRemove, setTimesToRemove] = useState<number[]>([]);
+  const should_deactivate = !data.isActive && !isAdmin;
+  
 
   let filters = {
     "planEstudios": "",
@@ -172,13 +172,6 @@ export default function HorarioModal() {
       throw new Error(SCHEDULE_ERRORS["NULL_ID_ELEMENT"]);
     }
   }
-
-  function manageColorChange(event: React.FormEvent<HTMLInputElement>) {
-    const colorInput = event.currentTarget;
-    console.log(colorInput.value);
-
-  }
-
 
   function addNewError(errorList: string[], newError: string) {
     const errors = [...errorList];
@@ -547,7 +540,8 @@ export default function HorarioModal() {
             <button
               id="m_course_create"
               type="submit"
-              className={"mainButton"}
+              className={!should_deactivate ? "mainButton":" mainButton disabled"}
+              disabled={should_deactivate}
               name="intent"
               value={isNewMatricula ? "create" : "update"}
               hidden={hiddeOwnerOptions && !isNewMatricula}>

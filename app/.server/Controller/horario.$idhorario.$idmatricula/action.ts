@@ -1,18 +1,16 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { getHorario } from "prisma/models/horarioModel";
 import { createMatricula, removeMatricula, updateMatricula } from "prisma/models/matriculaModelo";
 import { deleteTimeSpanById } from "prisma/models/timeSpanModel";
-import { requireUser } from "~/.server/session";
+import { getUser, requireUser } from "~/.server/session";
 
 export default async function actionHorarioIdhorarioIdmatricula({ request, params }: ActionFunctionArgs) {
   const user_id = await requireUser(request);
+  const user = await getUser(request);
   const formData = await request.formData();
   const curso = Number(formData.get("cursoHorario"));
   const profesor = Number(formData.get("profesorHorario"));
-  const dia = String(formData.get("diaHorario"));
-  const horaInicio = Number(formData.get("horaInicio"));
-  const horaFin = Number(formData.get("horaFin")) + 1;
   const modalidad = (formData.get("modalidadHorario")) as string;
-  const aula = Number(formData.get("aulaHorario"));
   const timeSpans = formData.get("time_spans") as string;
   const mobileLab = Number(formData.get("movilHorario")) === 0 ? null : Number(formData.get("movilHorario"));
   const intent = formData.get("intent");
@@ -25,7 +23,8 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
   const timesToRemove = formData.get("times_to_remove") as string;
   const timesToRemoveJson = JSON.parse(timesToRemove);
 
-  
+  const isActive = (await getHorario(horarioId))?.active;
+  if(!isActive && user?.role !== "ADMIN"){return null};
   
 
   if (intent === "create") {
@@ -54,13 +53,15 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
     
     if(timesToRemoveJson.length > 0){
       timesToRemoveJson.map(async (t:number)=>{
-        await deleteTimeSpanById(t);
+        await deleteTimeSpanById(t).catch(e=>{
+          console.error(e);
+        });
       })
     }
 
     return redirect(`/horario/${horarioId}/${searchQueries}`)
   } else if (intent == "eliminar") {
-    const matricula = await removeMatricula(matriculaID).catch(e => {
+      await removeMatricula(matriculaID).catch(e => {
       console.error(e);
     });
     return redirect(`/horario/${horarioId}/${searchQueries}`)

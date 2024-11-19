@@ -142,6 +142,33 @@
   max-width: 500px;
 }
 
+.alert{
+  margin-top: 20px;
+  transition-property: opacity, display;
+  transition-duration: 0.5s;
+  transition-behavior: allow-discrete;
+}
+
+.alert button{
+  font-size: 30px;
+  padding: 0px;
+  font-weight: 500;
+  color: var(--bs-warning-text-emphasis);
+  position: absolute;
+  right: 10px;
+  top:50%;
+  transform: translate(-50%, -50%);
+}
+
+.alert p{
+  margin-bottom: 0;
+}
+
+.vanish{
+  opacity: 0.01;
+  display: none;
+}
+
 @media (width <= 1230px ) and (width >= 1000px ){
   .fil-checkboxes > div > span{
     display: flex;

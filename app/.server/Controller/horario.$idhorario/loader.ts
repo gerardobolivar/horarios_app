@@ -1,5 +1,4 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/react";
 import { getAulas } from "prisma/models/aulaModel";
 import { getHorarioState } from "prisma/models/horarioModel";
 import { filterMatriculas, getVirtualMatriculas } from "prisma/models/matriculaModelo";
@@ -16,12 +15,6 @@ const HorarioLoader = async ({ params, request }: LoaderFunctionArgs) => {
   const idHorario: number = Number(params.idhorario);
   const isActive = (await getHorarioState(idHorario))?.active;
   
-  if(!isActive && user?.role != "ADMIN"){
-    const url = new URL(request.url);
-    url.pathname = "/error";
-    url.searchParams.set("reason", "INACTIVE_SCHEDULE");
-    return redirect(url.toString());
-  }
   const url = new URL(request.url);
   const id_plan_estudioParam = url.searchParams.get("planEstudios");
   const id_plan_estudio = Number(id_plan_estudioParam) === 0 ? undefined : id_plan_estudioParam !== null ? Number(id_plan_estudioParam) : undefined;
@@ -32,7 +25,6 @@ const HorarioLoader = async ({ params, request }: LoaderFunctionArgs) => {
   const timeSlots = TIMESLOTS;
   const timesTitle = TIMES_TITLE;
   const planes: Planes = await getPlanes();
-  const showVirtual: Boolean = url.searchParams.get("showvirtual") === "true" ? true : false;
   const cursosVirtuales: Matricula[] = await getVirtualMatriculas(idHorario);
 
   const matriculas: Matricula[] = await filterMatriculas(idHorario, dia, id_plan_estudio, ubicacion).catch(e => {
@@ -56,7 +48,7 @@ const HorarioLoader = async ({ params, request }: LoaderFunctionArgs) => {
     planes: planes,
     scheduleTimeSpans: scheduleTimeSpans,
     day: dia,
-  });
+    isActive: isActive});
 }
 
 export default HorarioLoader;
