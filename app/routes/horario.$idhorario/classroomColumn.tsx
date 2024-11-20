@@ -81,7 +81,7 @@ const ClassroomColumn: React.FC<Props> = ({ scheduleTimeSpans, nombreAula, timeS
             matricula={matricula}
             search={search}>
           </CourseCell> :
-            !isActive && isAdmin ?
+            (!isActive && isAdmin) || isActive?
             <Link
               key={slot+aula_id}
               state={{ timePicked: TIMESLOTS_REVERSE[slot],aulaID: aula_id}}
