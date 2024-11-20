@@ -1,5 +1,5 @@
-import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { getMatriculasByHorarioActivo, getMatriculasByHorarioActivoByPLan, getMatriculasByHorarioActivoByUserPLan } from "prisma/models/matriculaModelo";
+import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { getMatriculasByActiveCycleHorario, getMatriculasByActiveCycleHorarioByPLan, getMatriculasByActiveCycleHorarioByUserPLan } from "prisma/models/matriculaModelo";
 import { getPlanById, getPlanes, getPlansByUserId } from "prisma/models/planEstudioModel";
 import { getUserById } from "prisma/models/userModel";
 import { requireUser } from "~/.server/session";
@@ -17,17 +17,17 @@ export default async function loaderReport({params, request}:LoaderFunctionArgs)
   if(isAdmin){
     const planes: Planes = await getPlanes();
     if(plan_id === 0){
-      const matriculas = await getMatriculasByHorarioActivo();
+      const matriculas = await getMatriculasByActiveCycleHorario();
       return json({isAdmin:isAdmin, planes: planes, matriculas: matriculas,plan_id: plan_id, username:username, plan_name:"GENERAL"})
     }else{
       
-      const matriculas = await getMatriculasByHorarioActivoByPLan(plan_id);
+      const matriculas = await getMatriculasByActiveCycleHorarioByPLan(plan_id);
       const plan_name = (await getPlanById(plan_id))?.nombre_plan
       return json({isAdmin:isAdmin, planes: planes, matriculas: matriculas, plan_id: plan_id, username:username, plan_name:plan_name})
     }
 
   }else{
-    const matriculas = await getMatriculasByHorarioActivoByUserPLan(userId);
+    const matriculas = await getMatriculasByActiveCycleHorarioByUserPLan(userId);
     /* At this moment users can only have one plan. If this changes in the future
     *  a selector must be habilitaded in the UI so the user can choose which plan to choose from.
     *

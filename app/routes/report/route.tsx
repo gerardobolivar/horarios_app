@@ -32,7 +32,7 @@ export default function Report() {
 
   const tdElement = (condition:boolean,value:string)=> {return <td style={condition ? skip_styles:{}}>{value}</td>}
 
-  const tableDataNew = matriculas.map(m =>{
+  const tableDataNew = matriculas?.map(m =>{
 
     return m.time_spans.map((t,i,array)=>{
       let should_skip:boolean|null = null;
