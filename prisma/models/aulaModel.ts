@@ -5,6 +5,9 @@ export const getAulas = async ()=>{
     select: {
       id_aula: true,
       identificador: true
+    },
+    orderBy:{
+      identificador: "asc"
     }
   })
 }

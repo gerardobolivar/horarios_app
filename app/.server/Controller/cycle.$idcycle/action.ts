@@ -2,8 +2,14 @@ import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { clearActiveCycle, getActiveCycle, updateActiveCycle } from "prisma/models/activeCycles";
 import { bindCicloByHorario, unBindByCiclo, updateCiclo } from "prisma/models/cicloModel";
 import { createHorario } from "prisma/models/horarioModel";
+import { getUserById } from "prisma/models/userModel";
+import { requireUser } from "~/.server/session";
 
 const actionCycleIdcycle = async ({ request, params }: ActionFunctionArgs) =>{
+  const userId = await requireUser(request);
+  const user = await getUserById(userId);
+  if(user?.role === "ADMIN"){return null}
+  
   const formData = await request.formData();
   const intent = formData.get("intent");
   const cicloID = Number(params.idcicle)
