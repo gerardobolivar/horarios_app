@@ -47,6 +47,7 @@ body{
   margin: auto;
   background-color: #ffffff !important;
 }
+
 .metaNavBar p{
   margin: auto;
   margin-left: 50px;
@@ -139,14 +140,6 @@ body{
   border-radius: 50px;
 }
 
-
-
-@media only screen and (width <= 1000px) {
-  .mainNavBarmenu>ul{
-    display: none !important;
-  }
-}
-
 .gear-icon {
   position: relative;
   top: 90px;
@@ -213,4 +206,41 @@ option:checked {
 
 select option:hover,select option:focus{
   background-color: var(--ucr_blue) !important;
+}
+
+@media (width < 1200px){
+  .metaNavBar a{
+    margin: auto;
+  }
+  .metaNavBar p{
+    margin: 0;
+  }
+
+  .navbar-nav a{
+    margin-right: 0;
+  } 
+
+  .mainNavBarmenu{
+    
+    overflow-y: scroll;
+  }
+
+  .mainNavBarmenu > ul{
+    display: block !important;
+    margin: auto;
+  }
+  .navbar-brand{
+    justify-content: center !important;
+  }
+
+  .openMenu{
+    height: fit-content;
+    background-color: aquamarine !important;
+    z-index: 100;
+  }
+
+  .mainTitle{
+    margin-left: 0px; 
+  }
+
 }

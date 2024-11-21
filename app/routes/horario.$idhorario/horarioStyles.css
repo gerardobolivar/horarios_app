@@ -175,6 +175,22 @@
   }
 }
 
+@media (width <= 1200px) {
+  .virtual_courses_container{
+    margin-top: 25px;
+  }
+
+  .grid_container_dual{
+    display: block;
+    grid-template: none;
+  }
+
+  .regis-btn-sch{
+    display: flex;
+    margin-bottom: 10px;
+  }
+}
+
 @media (width <= 1050px) {
   .card {
     flex-direction: column;
