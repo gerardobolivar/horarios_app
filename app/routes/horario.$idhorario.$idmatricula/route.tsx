@@ -554,10 +554,11 @@ export default function HorarioModal() {
               }
               }
               preventScrollReset={true}>
-              <button type="submit" className="mainButton">Cancelar</button>
+              <button id="cancel_btn" type="submit" className="mainButton">&times;</button>
             </Link>
             <button
               name="intent"
+              id="remove_btn"
               value="eliminar"
               hidden={isNewMatricula || hiddeOwnerOptions}
               className="mainButton">Eliminar</button>
