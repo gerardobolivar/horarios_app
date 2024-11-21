@@ -2,7 +2,7 @@ import { LinksFunction } from "@remix-run/node";
 import { Form, Link, useLoaderData, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { SCHEDULE_ERRORS, scheduleFilters, TimeSpan } from "~/types/horarioTypes";
-import { DIAS, TIMES } from "../horario.$idhorario/reversedTimes";
+import { DIAS, SHORTEN_DAYS, TIMES } from "../horario.$idhorario/reversedTimes";
 import { checkDuplicates, checkForErrors, handleModalidadChange, isAvailable, validateTimeSpans, } from "./utils";
 import rstyles from "./styles.css?url"
 import { useOptionalUser } from "~/utils";
@@ -207,10 +207,17 @@ export default function HorarioModal() {
       {`${movil.nombre}`}
     </option>
   })
-
-  let timeList = timeSlots.map((time) => {
+  
+  let timeListStart = timeSlots.map((time) => {
     return <option value={Number(time)} key={Number(time)}>
-      {`${TIMES[Number(time)]}`}
+      {`${TIMES[Number(time)].split("-")[0]}`}
+    </option>
+  })
+
+
+  let timeListEnd = timeSlots.map((time) => {
+    return <option value={Number(time)} key={Number(time)}>
+      {`${TIMES[Number(time)].split("-")[1]}`}
     </option>
   })
 
@@ -220,7 +227,7 @@ export default function HorarioModal() {
     const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
     const formattedClassroom: string = Number(aula?.identificador) < 10 ? `0${aula?.identificador}` : `${aula?.identificador}`;
     return <tr key={t.dia + t.aula_id + t.hora_inicio} id={t.time_span_id}>
-      <td>{`${DIAS[t.dia]}`}</td>
+      <td>{` ${(matricula?.group?.completed || !isOwner) && !isNewMatricula ? DIAS[t.dia]: SHORTEN_DAYS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
       <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
       <td hidden={matricula?.group?.completed || (!isNewMatricula && matricula?.group?.completed) || (!matricula?.group?.completed && !isNewMatricula && (!isOwner)) || (!matricula?.group?.completed && !isNewMatricula && (!isAdmin && !isOwner)) }>
@@ -458,8 +465,8 @@ export default function HorarioModal() {
                             hidden={matricula?.group?.completed}
                             className="form-select"
                             aria-label="hora_inicio_selector">
-                            <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora inicio"}</option>
-                            {timeList}
+                            <option value="">{timeListStart.length < 1 ? "Sin espacios disponibles" : "Hora inicio"}</option>
+                            {timeListStart}
                           </select>
                         </span>
 
@@ -476,8 +483,8 @@ export default function HorarioModal() {
                             hidden={matricula?.group?.completed}
                             className="form-select"
                             aria-label="hora_fin_selector">
-                            <option value="">{timeList.length < 1 ? "Sin espacios disponibles" : "Hora Fin"}</option>
-                            {timeList}
+                            <option value="">{timeListEnd.length < 1 ? "Sin espacios disponibles" : "Hora Fin"}</option>
+                            {timeListEnd}
                           </select>
                         </span>
 
