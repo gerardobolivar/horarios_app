@@ -269,15 +269,20 @@ table tr:hover{
   
   .modalContainer{
     height: 90%;
+    width: 80%;
     overflow-y: scroll;
   }
+
+  .grid-container{
+    display: block !important;
+
+  }
+
+
+
 }
 
 @media (width < 800px) {
   
-  .modalContainer{
-    height: 90%;
-    width: 80%;
-    overflow-y: scroll;
-  }
+
 }

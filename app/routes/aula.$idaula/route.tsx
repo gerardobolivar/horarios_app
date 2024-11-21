@@ -9,6 +9,7 @@ export default function ModalCourse() {
   const data = useLoaderData<typeof loader>();
   const isNewAula: boolean = data.isNewAula;
   const aula = data.aula;
+  const should_block = aula?.identificador === 999
 
   useEffect(()=>{
     if(navigation.state === "submitting"){
@@ -93,7 +94,7 @@ export default function ModalCourse() {
                     defaultValue={!isNewAula && aula ? aula.edificio : ""}   
                   />
                 </span>
-                <span hidden={isNewAula}>
+                <span hidden={isNewAula || should_block}>
                   <p><strong>Modificado:</strong>
                   {!isNewAula && aula ? ` ${getTimeStamp(aula.fecha_modificado)}`: ""}
                   </p>
@@ -105,9 +106,9 @@ export default function ModalCourse() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled mainButton" : "mainButton"}
+              className={btnDisabled || should_block? "disabled mainButton" : "mainButton"}
               name="intent"
-              disabled={btnDisabled}
+              disabled={btnDisabled || should_block}
               value={isNewAula ? "create" : "update"}>
               {isNewAula ? "Guardar" : "Actualizar"}
             </button>
@@ -129,7 +130,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const cupo = Number(formData.get("cupo"))
   const intent = formData.get("intent")
 
-  
+  if(identificador === 999){return null}
+
   if (intent === "create") {
     const aula = await createAula(identificador,cupo,detalle,edificio);
   } else {

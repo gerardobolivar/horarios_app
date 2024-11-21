@@ -2,6 +2,8 @@ import prisma from "prisma/client";
 import { TimeSpan, TimeSpans } from "~/types/horarioTypes";
 import { getCourseById } from "./courseModel";
 import { getGroupByMatricula } from "./groupModel";
+import { getActiveCycle } from "./activeCycles";
+import { getCiclo } from "./cicloModel";
 
 export const getMatriculas = async () => {
   return await prisma.matricula.findMany({
@@ -373,89 +375,108 @@ export async function getMatriculaModalidad(matricula_id:number){
   })
 }
 
-export async function getMatriculasByHorarioActivo(){
-  return await prisma.matricula.findMany({
-    where:{
-      horario:{
-        active: true
-      }
-    },
-    include:{
-      group: {
-        include:{
-          curso: {
-            include:{
-              plan: true,
-            }
-          },
-          profesor: true,
+export async function getMatriculasByActiveCycleHorario(){
+  const activeCicle = (await getActiveCycle())?.ciclo_id;
+  if(activeCicle){
+    const active_cicles_schedule = Number((await getCiclo(activeCicle))?.horario_id);
+    return await prisma.matricula.findMany({
+      where:{
+        horario:{
+          horario_id: active_cicles_schedule
         }
       },
-      time_spans: {
-        include:{
-          aula:true
+      include:{
+        group: {
+          include:{
+            curso: {
+              include:{
+                plan: true,
+              }
+            },
+            profesor: true,
+          }
+        },
+        time_spans: {
+          include:{
+            aula:true
+          }
         }
       }
-    }
-  })
+    })
+  }else{
+    return null;
+  }
 }
 
-export async function getMatriculasByHorarioActivoByPLan(plan_id:number){
-  return await prisma.matricula.findMany({
-    where:{
-      horario:{
-        active: true
-      },
-      group:{
-        curso:{
-          plan_id: plan_id
-        }
-      }
-    },
-    include:{
-      group: {
-        include:{
-          curso: {
-            include:{
-              plan: true,
-            }
-          },
-          profesor: true,
+export async function getMatriculasByActiveCycleHorarioByPLan(plan_id:number){
+  const activeCicle = (await getActiveCycle())?.ciclo_id;
+
+  if(activeCicle){
+    const active_cicles_schedule = Number((await getCiclo(activeCicle))?.horario_id);
+    return await prisma.matricula.findMany({
+      where:{
+        horario:{
+          horario_id: active_cicles_schedule
+        },
+        group:{
+          curso:{
+            plan_id: plan_id
+          }
         }
       },
-      time_spans: {
-        include:{
-          aula:true
+      include:{
+        group: {
+          include:{
+            curso: {
+              include:{
+                plan: true,
+              }
+            },
+            profesor: true,
+          }
+        },
+        time_spans: {
+          include:{
+            aula:true
+          }
         }
       }
-    }
-  })
+    })
+
+  }else{
+    return null;
+  }
 }
 
-export async function getMatriculasByHorarioActivoByUserPLan(user_id:number){
-  return await prisma.matricula.findMany({
-    where:{
-      horario:{
-        active: true
+export async function getMatriculasByActiveCycleHorarioByUserPLan(user_id:number){
+  const activeCicle = (await getActiveCycle())?.ciclo_id;
+  if(activeCicle){
+    const active_cicles_schedule = Number((await getCiclo(activeCicle))?.horario_id);
+    return await prisma.matricula.findMany({
+      where:{
+        horario:{
+          horario_id: active_cicles_schedule
+        },
+        user_id : user_id
       },
-      user_id : user_id
-    },
-    include:{
-      group: {
-        include:{
-          curso: {
-            include:{
-              plan: true,
-            }
-          },
-          profesor: true,
-        }
-      },
-      time_spans: {
-        include:{
-          aula:true
+      include:{
+        group: {
+          include:{
+            curso: {
+              include:{
+                plan: true,
+              }
+            },
+            profesor: true,
+          }
+        },
+        time_spans: {
+          include:{
+            aula:true
+          }
         }
       }
-    }
-  })
+    })
+  }else{return null}
+  
 }
