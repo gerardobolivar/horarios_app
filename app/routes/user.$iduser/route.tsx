@@ -34,7 +34,7 @@ export default function ModalUsuario() {
   }
 
   return <div className="overlay_styles" >
-    <div className="modalContainer">
+    <div className="modalContainer modalContainer-small">
       <h2>{isNewUser ? "Agregar Usuario":"Usuario"}</h2>
       <div className="body_container">
         <Form id="courseForm"
@@ -97,8 +97,8 @@ export default function ModalUsuario() {
               value={isNewUser ? "create" : "update"}>
               {isNewUser ? "Guardar" : "Actualizar"}
             </button>
-            <Link to={`/user`} preventScrollReset={true}>
-              <button type="submit" className="mainButton">Cancelar</button>
+            <Link to={`/user`} preventScrollReset={true} className="">
+              <button type="submit" className="mainButton cancel_btn">&times;</button>
             </Link>
           </div>
         </Form>

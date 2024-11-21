@@ -24,7 +24,7 @@ export default function ModalProfesor() {
   }
 
   return <div className="overlay_styles" >
-    <div className="modalContainer">
+    <div className="modalContainer modalContainer-small">
       <h2>{isNewProfesor?"Agregar Profesor":"Ver/Actualizar Profesor"}</h2>
       <div className="body_container">
         <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
@@ -104,7 +104,7 @@ export default function ModalProfesor() {
               {isNewProfesor ? "Guardar" : "Actualizar"}
             </button>
             <Link to={`/profesor`} preventScrollReset={true}>
-              <button type="submit" className="mainButton">Cancelar</button>
+              <button type="submit" className="mainButton cancel_btn">&times;</button>
             </Link>
           </div>
         </Form>

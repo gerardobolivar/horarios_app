@@ -25,7 +25,7 @@ export default function ModalCourse() {
   }
 
   return <div className="overlay_styles" >
-    <div className="modalContainer">
+    <div className="modalContainer modalContainer-small">
       <h2>{isNewAula?"Agregar aula":`Aula ${Number(aula?.identificador) < 10 ? "0"+aula?.identificador:
                                     aula?.identificador === 999 ? "Virtual":
                                     aula?.identificador}`}</h2>
@@ -113,7 +113,7 @@ export default function ModalCourse() {
               {isNewAula ? "Guardar" : "Actualizar"}
             </button>
             <Link to={`/aula`} preventScrollReset={true}>
-              <button type="submit" className="mainButton">Cancelar</button>
+              <button type="submit" className="mainButton cancel_btn">&times;</button>
             </Link>
           </div>
         </Form>
