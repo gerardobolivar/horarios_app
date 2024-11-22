@@ -24,7 +24,7 @@ export default function ModalCourse() {
   }
 
   return <div className="overlay_styles" >
-    <div className="modalContainer">
+    <div className="modalContainer modalContainer-small">
       <h2>{isNewCourse?"Agregar Curso":"Ver/Actualizar Curso"}</h2>
       <div className="body_container">
         <Form id="courseForm" method="post" autoComplete="off" preventScrollReset>
@@ -120,7 +120,7 @@ export default function ModalCourse() {
               {isNewCourse ? "Guardar" : "Actualizar"}
             </button>
             <Link to={`/plan/${data.planId}`} preventScrollReset={true}>
-              <button type="submit" className="mainButton">Cancelar</button>
+              <button type="submit" className="mainButton cancel_btn">&times;</button>
             </Link>
           </div>
         </Form>

@@ -62,8 +62,8 @@ const DIAS:DIAS_ ={
 
 const SHORTEN_DAYS:DIAS_ = {
   "LUNES": "L",
-  "MARTES": "M",
-  "MIERCOLES": "K",
+  "MARTES": "K",
+  "MIERCOLES": "M",
   "JUEVES": "J",
   "VIERNES": "V",
   "SABADO": "S"

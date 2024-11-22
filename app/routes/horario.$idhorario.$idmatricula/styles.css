@@ -25,15 +25,16 @@ overflow-y: unset;
 
 #cancel_btn{
   background-color: #000 !important;
-  opacity: 0.8;
-  width: 45px;
+  opacity: 1;
+  width: 30px;
+  height: 30px;
   position: absolute;
   margin: 0px;
-  top: -30px;
-  right: -30px;
+  top: -15px;
+  right: -15px;
   padding: 0px;
   font-weight: bold !important;
-  font-size: 30px;
+  font-size: 20px;
 }
 
 #remove_btn{
