@@ -13,17 +13,8 @@ export default function PlanEdit() {
   const [curretCellId, setCurretCellId] = useState("");
   const [previousString, setPreviousString] = useState(nombrePlan + codigoPlan);
   const [noChange, setNoChange] = useState(true);
-  const [btnDisabled, setBtnDisabled] = useState(false);
   const navigation = useNavigation();
   
-
-  useEffect(()=>{
-    if(navigation.state === "submitting" || navigation.state === "loading"){
-      setBtnDisabled(true);
-    }else{
-      setBtnDisabled(false);
-    }
-  },[navigation.state])
 
   useEffect(() => {
     const newString = nombrePlan + codigoPlan
@@ -56,6 +47,33 @@ export default function PlanEdit() {
         </h5>
       </div>
     </div>
+  })
+
+  const cursosListaTable = data.cursos.map((curso) => {
+    return <tr id={String(curso.id_curso)} key={curso.id_curso}>
+      <td>{`${curso.sigla}-${curso.nombre}`}</td>
+      <td className="align-end">
+        <Link
+          to={`/plan/${data.plan.id_plan_estudio}/${curso.id_curso}`}
+          preventScrollReset={true}>
+            <button
+              type="submit"
+              disabled={curretCellId === "" || navigation.state === "loading" || navigation.state === "submitting" ? true : false}
+              className={curretCellId === "" ? "disabled mainButton" : "active mainButton"}>
+                <i className="bi bi-eye-fill"></i>
+            </button>
+        </Link>
+        <button 
+          name="intent"
+          value={`delete_course,${curso.id_curso}`}
+          id={String(curso.id_curso)}
+          type="submit"
+          disabled={navigation.state === "loading" || navigation.state === "submitting" ? true : false}
+          className={`${curretCellId === ""  ? "disabled mainButton":"active mainButton"}`}>
+            <i  className="bi bi-trash-fill"></i>
+        </button>
+      </td>
+    </tr>
   })
 
   function handleCellClick(e: any) {
@@ -107,57 +125,53 @@ export default function PlanEdit() {
             <div>
               <div>
               </div>
-              <label>Cursos asociados:</label>
+              <label>Cursos:</label>
               <div className="whiteContainer whiteContainerTable">
-                {cursosLista}
+                <table className="table table-striped myTable">
+                  <thead>
+                    <tr>
+                      <th>Curso</th>
+                      <th className="align-end">Gestionar/Elimninar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cursosListaTable}
+                  </tbody>
+                </table>
               </div>
               <span className="horarios-plan-new-listacursos-buttons">
-                <input id="courseID" name='courseID' hidden={true} defaultValue={curretCellId}></input>
                 <Link to={`/plan/${data.plan.id_plan_estudio}/new`}
                   preventScrollReset={true}>
                   <button
                     type="button"
-                    disabled={btnDisabled}
-                    className={`${btnDisabled?"disabled":null} mainButton active`}>
+                    disabled={navigation.state === "loading" || navigation.state === "submitting" }
+                    className="mainButton active">
                       Agregar</button>
                 </Link>
-                <Link to={`/plan/${data.plan.id_plan_estudio}/${curretCellId}`}
-                  preventScrollReset={true}>
-                  <button type="submit"
-                    disabled={curretCellId === "" ? true : false}
-                    className={curretCellId === "" ? "disabled mainButton" : "active mainButton"}>
-                    Ver</button>
-                </Link>
-                <button name="intent"
-                  value="delete_course"
-                  type="submit"
-                  disabled={curretCellId === "" || btnDisabled ? true : false}
-                  className={`${curretCellId === "" || btnDisabled? "disabled mainButton":"active mainButton"}`}>
-                  Eliminar</button>
               </span>
             </div>
-            <div>
-            </div>
+            <span className="manage_plan_btns">
+              <button className={`${noChange ? "disabled" : "active"} manage_plan_btn`}
+                    name="intent"
+                    type="submit"
+                    value="update"
+                    disabled={noChange || navigation.state === "loading" || navigation.state === "submitting" }>
+                      Actualizar plan
+            </button>
+            <button 
+              className={`${data.cursos.length > 0 ? "disabled" : "active"} menu_bottom_btn_remove tooltip_ manage_plan_btn`}
+              name="intent"
+              type="submit"
+              disabled={data.cursos.length > 0 || navigation.state === "loading" || navigation.state === "submitting" }
+              value="delete">
+                Eliminar plan
+                <span
+                  className="tooltiptext no-select"
+                  style={{left:"100px"}}
+                  hidden={!(data.cursos.length > 0)}>No se puede eliminar un plan con cursos asociados.</span>
+                </button>
+            </span>
           </div>
-          <Link to={"/plan"}>
-            <button className="mainButton" >Regresar</button>
-          </Link>
-          <button className={`${noChange || btnDisabled ? "disabled" : "active"}`}
-                  name="intent"
-                  type="submit"
-                  value="update"
-                  disabled={noChange || btnDisabled}>Actualizar plan</button>
-          <button className={`${data.cursos.length > 0 || btnDisabled? "disabled" : "active"} menu_bottom_btn_remove tooltip_`}
-            name="intent"
-            type="submit"
-            disabled={data.cursos.length > 0 || btnDisabled}
-            value="delete">
-              Eliminar plan
-              <span
-                className="tooltiptext no-select"
-                style={{left:"100px"}}
-                hidden={!(data.cursos.length > 0)}>No se puede eliminar un plan con cursos asociados.</span>
-              </button>
         </Form>
       </div>
       <Outlet/>

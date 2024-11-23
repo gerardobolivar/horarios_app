@@ -7,7 +7,6 @@ const actionIdplan = async ({ request, params }: ActionFunctionArgs) => {
   const name = String(formData.get('nombre'));
   const intent = formData.get('intent');
   const code = String(formData.get('codigo'));
-  const courseID = Number(formData.get('courseID'));
 
   if (intent == 'delete') {
     const coursesCount = await countCoursesById(Number(params.idplan));
@@ -22,13 +21,17 @@ const actionIdplan = async ({ request, params }: ActionFunctionArgs) => {
   else if (intent == "update") {
     await updatePlan(Number(params.idplan), name, code);
     return redirect("/plan");
-  }
-  else if (intent == "delete_course" && courseID != 0) {
-    try {
-      await removeCourse(courseID).then();
-    } catch (error) {
+  }else if(String(intent).split(",")[0] === "delete_course"){
+    const courseID = Number(String(intent).split(",")[1])
+    if (courseID != 0) {
+      try {
+        await removeCourse(courseID).then();
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
+
   return redirect(`/plan/${Number(params.idplan)}`)
 }
 

@@ -5,16 +5,16 @@ import { requireUser } from "~/.server/session";
 export default async function actionAula({ request, params }: ActionFunctionArgs) {
   const userId = await requireUser(request);
   const formData = await request.formData();
-  const intent = formData.get("intent");
-  const currentAula = Number(formData.get("elementID"))
-  const aula_indentificador = Number((await getAula(currentAula))?.identificador);
+  const tokens = formData.get("intent");
+  const intent = String(tokens).split("-")[0];
+  const aulaID = Number(String(tokens).split("-")[1]);
+  const aula_indentificador = Number((await getAula(aulaID))?.identificador);
 
-
-  if (intent === "delete_aula") {
+  if (intent === "delete") {
     if (aula_indentificador === 999) {
       return null;
     } else {
-      return await removeAula(currentAula).then(() => {
+      return await removeAula(aulaID).then(() => {
         return redirect("/aula")
       }, (e) => {
         switch (e.code) {
