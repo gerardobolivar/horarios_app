@@ -116,3 +116,14 @@ export const validateUser = async (password:string, username: string) => {
     
   })
 }
+
+export const updateUserLoginDate = async (id_usuario:number, ultima_sesion: Date) =>{
+  return await prisma.user.update({
+    where:{
+      id_usuario: id_usuario
+    },
+    data:{
+      ultima_sesion: ultima_sesion
+    }
+  })
+}

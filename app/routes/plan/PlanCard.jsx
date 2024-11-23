@@ -14,7 +14,7 @@ export default function PlanCard(props) {
           !isStaticAdd ? <p className="card-text">Sin información adicional sobre el plan.</p> : 
           <p className="card-text">Crear un nuevo plan de estudios.</p>
         }
-        <a href={href} className="btn mainButton">{isStaticAdd ? "Agregar":"Gestionar"}</a>
+        <a href={href} className={`${isStaticAdd?"isStaticAdd":""} btn mainButton`}>{isStaticAdd ? "Agregar":"Gestionar"}</a>
       </div>
     </div>
   )
