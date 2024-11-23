@@ -9,3 +9,14 @@
   border-left-width: 0px !important;
   border-right-width: 0px !important;
 }
+
+.isStaticAdd{
+  border: solid 2px var(--ucr_light_blue);
+}
+
+.isStaticAdd:hover{
+  color:#fff;
+  border: solid 2px var(--ucr_light_blue);
+  box-shadow: 0 0 4px 5px rgba(13, 110, 253, 0.25);
+
+}

@@ -1,7 +1,13 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { createUsuario, getUserByName, updateUsuarioRole } from "prisma/models/userModel";
+import { createUsuario, getUserById, getUserByName, updateUsuarioRole } from "prisma/models/userModel";
+import { requireUser } from "~/.server/session";
 
 export const  actionUserIdUser = async ({ request, params }: ActionFunctionArgs) =>{
+  const currentUserID = await requireUser(request);
+  const currentUser = await getUserById(currentUserID);
+  if(currentUser?.role !== "ADMIN"){return null}
+
+
   const formData = await request.formData();
   const username = String(formData.get("username")).toLocaleLowerCase();
   const role = String(formData.get("user_role"));
@@ -27,9 +33,14 @@ export const  actionUserIdUser = async ({ request, params }: ActionFunctionArgs)
 
   }else if (intent === "update"){
     const iduser = Number(params.iduser);
-    await updateUsuarioRole(iduser,role);
+    if(user?.nombre_usuario === "ad"){
+      return null;
+    }else{
+      await updateUsuarioRole(iduser,role);
+      return redirect(`/user/`); 
+    }
   }
   
     
-  return redirect(`/user/`);
+  return null;
 }

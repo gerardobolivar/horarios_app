@@ -9,6 +9,7 @@ export default function ModalUsuario() {
   const data = useLoaderData<typeof loader>();
   const isNewUser: boolean = data.isNewUser;
   const user = data.user;
+  const hasHash = data.userHasHash;
 
   function getTimeStamp(user_date:string){
     let date = new Date(user_date);
@@ -69,8 +70,8 @@ export default function ModalUsuario() {
                   <p><strong>Creado: </strong>
                   {!isNewUser && user ? <ReactTimeAgo date={new Date(new Date(user.fecha_creado))}/>:null}
                   </p>
-                  <p><strong>Modificado: </strong>
-                  {!isNewUser && user ? <ReactTimeAgo date={new Date(new Date(user.fecha_modificado))}/>:null}
+                  <p><strong>Última sesión: </strong>
+                  {!isNewUser && user && hasHash? <ReactTimeAgo date={new Date(new Date(user.ultima_sesion!))}/>:"Inactivo"}
                   </p>
                 </span>
               </div>

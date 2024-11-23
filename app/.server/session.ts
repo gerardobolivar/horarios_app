@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { createCookieSessionStorage } from "@remix-run/node";
 import { redirect } from "@remix-run/react";
-import { getUserById } from "prisma/models/userModel";
+import { getUserById, updateUserLoginDate } from "prisma/models/userModel";
 
 const USER_SESSION_KEY = "userId"
 
@@ -18,7 +18,7 @@ const sessionStorage = createCookieSessionStorage({
 
 async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
-  return sessionStorage.getSession(cookie);
+  return await sessionStorage.getSession(cookie);
 }
 
 export async function logout(request: Request) {
@@ -34,6 +34,7 @@ export async function logout(request: Request) {
 export async function createUserSession({request,userId}:{request: Request; userId:number}){
   const session = await getSession(request);
   session.set(USER_SESSION_KEY, userId);
+  await updateUserLoginDate(userId,new Date());
 
   return redirect("/",{
     headers: {

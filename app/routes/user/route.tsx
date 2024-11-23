@@ -40,6 +40,7 @@ export default function Usuarios() {
           </Link>
           <button
             type="button"
+            hidden={usuario.nombre_usuario === "ad"}
             id={String(usuario.id_usuario)}
             value={usuario.id_usuario}
             onClick={(e)=>{handleEliminar(e)}}
