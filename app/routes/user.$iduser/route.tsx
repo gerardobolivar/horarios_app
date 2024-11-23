@@ -10,19 +10,14 @@ export default function ModalUsuario() {
   const isNewUser: boolean = data.isNewUser;
   const user = data.user;
   const hasHash = data.userHasHash;
+  const [username, setUsername] = useState(!isNewUser && user ? user.nombre_usuario : "")
 
-  function getTimeStamp(user_date:string){
-    let date = new Date(user_date);
-    let stringDate = date.toLocaleDateString();
-    let stringTime = date.toLocaleTimeString();
-    return `${stringDate} a las ${stringTime}`
+  function handleKeys(e:React.ChangeEvent<HTMLInputElement>){
+    const input = e.currentTarget.value;
+    const formatted_input = input.replace(/\s/g,'').toLocaleLowerCase()
+    setUsername(formatted_input);
   }
 
-  function handleChangeForm(event:any){
-    //const username = String((document.getElementById("username") as HTMLInputElement).value);
-    //submit(event.currentTarget);
-
-  }
 
   return <div className="overlay_styles" >
     <div className="modalContainer modalContainer-small">
@@ -43,12 +38,13 @@ export default function ModalUsuario() {
                     title="Nombre de usuario"
                     type="text"
                     name="username"
+                    onChange={e=>{handleKeys(e)}}
+                    value={username}
                     placeholder=""
                     className="form-control"
                     required={true}
                     readOnly={isNewUser?false:true}
                     maxLength={30}
-                    defaultValue={!isNewUser && user ? user.nombre_usuario : ""}
                   />
                 </span>
                   <Outlet/>
