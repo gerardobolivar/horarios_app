@@ -6,19 +6,9 @@ import { loaderUserIdUser } from "~/.server/Controller/user.$iduser/loader";
 
 export default function ModalUsuario() {
   const navigation = useNavigation()
-  const [btnDisabled, setBtnDisabled] = useState(false);
   const data = useLoaderData<typeof loader>();
   const isNewUser: boolean = data.isNewUser;
   const user = data.user;
-  const submit = useSubmit();
-
-  useEffect(()=>{
-    if(navigation.state === "submitting"){
-      setBtnDisabled(true);
-    }else{
-      setBtnDisabled(false);
-    }
-  },[navigation.state])
 
   function getTimeStamp(user_date:string){
     let date = new Date(user_date);
@@ -90,10 +80,10 @@ export default function ModalUsuario() {
             <button
               id="m_course_create"
               type="submit"
-              className={btnDisabled ? "disabled mainButton" : "mainButton"}
+              className={navigation.state === "submitting" || navigation.state === "loading" ? "disabled mainButton" : "mainButton"}
               style={{marginLeft:"0px"}}
               name="intent"
-              disabled={btnDisabled}
+              disabled={navigation.state === "submitting" || navigation.state === "loading"}
               value={isNewUser ? "create" : "update"}>
               {isNewUser ? "Guardar" : "Actualizar"}
             </button>

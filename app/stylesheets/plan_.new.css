@@ -266,12 +266,24 @@ table tr:hover{
 
 .dataRow{
   width: 100% !important;
-  height: 30px;
+  height: fit-content;
 }
 
 .planContent{
   display: flex;
 }
+
+.manage_plan_btns button{
+  margin: 0;
+  width: fit-content;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.manage_plan_btns button:first-child{
+  margin-right: 20px;
+}
+
 
 /**/
 
@@ -282,6 +294,11 @@ table tr:hover{
     margin: auto !important;
     text-align: center;
   }
+
+  .dataRow{
+    height: fit-content;
+  }
+
 }
 
 @media (width < 1200px) {
@@ -311,6 +328,11 @@ table tr:hover{
 @media (width < 800px) {
   .modalContainer-small{
     width: 100%;
+  }
+
+  .manage_plan_btns {
+    display: flex;
+    justify-content: center;
   }
 
 }

@@ -1,7 +1,7 @@
 import { LinksFunction } from "@remix-run/node"
 import { Form, Link, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import MainTitle from "../shared/MainTitle";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import appStyles from '~/stylesheets/plan_.new.css?url';
 import modalStyles from "~/modals/modalStyles.css?url";
 import ConfirmationModal from "~/modals/ConfirmationModal";
@@ -16,28 +16,43 @@ export default function Aulas() {
   const [btnDisabled, setBtnDisabled] = useState(false);
   const navigation = useNavigation();
   const [show, setShow] = useState(false);
+  const [currentAula,setCurrentAula] = useState(0);
 
-  let aulasLista: any = data.listaAulas.map((aula) => {
-    return <div
-      className="noLinkDecoration dataRowLink"
-      key={String(aula.id_aula)}
-      onMouseDown={handleCellClick}>
-      <div
-        id={String(aula.id_aula) + "d"}>
-        <h5 id={String(aula.id_aula)} className={`${curretCellId === String(aula.id_aula) ? "selected" : null} dataRow`}>
-          {`Aula ${Number(aula?.identificador) < 10 ?
-            "0"+aula?.identificador:
-            aula?.identificador === 999 ? "Virtual" : aula?.identificador}`}
-        </h5>
-      </div>
-    </div>
+  const aulasListaTable = data.listaAulas.map((aula) => {
+    return <tr id={String(aula.id_aula)} key={aula.id_aula}>
+    <td>{`Aula ${Number(aula?.identificador) < 10 ? "0"+aula?.identificador: aula?.identificador === 999 ? "Virtual" : aula?.identificador}`}</td>
+    <td className="align-end">
+      <Link
+        to={`/aula/${aula.id_aula}`}
+        preventScrollReset={true}>
+          <button 
+            type="submit"
+            disabled={navigation.state === "submitting" || navigation.state === "loading"}
+            className="active mainButton">
+            <i className="bi bi-eye-fill"></i>
+          </button>
+        </Link>
+        <button
+          type="button"
+          id={String(aula.id_aula)}
+          value={aula.id_aula}
+          onClick={(e)=>{handleEliminar(e)}}
+          disabled={navigation.state === "submitting" || navigation.state === "loading" ? true : false}
+          className="active mainButton">
+            <i id={String(aula.id_aula)} className="bi bi-trash-fill"/>
+        </button>
+    </td>
+  </tr>
   })
 
   function handleCellClick(e: any) {
     setCurretCellId(e.target.id);
   }
 
-  function handleEliminar(){
+  function handleEliminar(e: FormEvent){
+    const delete_btn = e.target as HTMLButtonElement;
+    const aula_id = Number(delete_btn.id);
+    setCurrentAula(aula_id);
     setShow(true);
   }
 
@@ -67,7 +82,17 @@ export default function Aulas() {
             </div>
             <label>Aulas registradas:</label>
             <div className="whiteContainer whiteContainerTable">
-              {aulasLista}
+            <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Indentificador</th>
+                    <th className="align-end">Gestionar/Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {aulasListaTable}
+                </tbody>
+              </table>
             </div>
             <span className="horarios-plan-new-listacursos-buttons">
               <input id="elementID" name='elementID' hidden={true} defaultValue={curretCellId}></input>
@@ -79,36 +104,19 @@ export default function Aulas() {
                   className={`${btnDisabled ? "disabled" : null} mainButton active`}>
                   Agregar</button>
               </Link>
-              <Link to={`/aula/${curretCellId}`}
-                preventScrollReset={true}>
-                <button type="submit"
-                  disabled={curretCellId === "" ? true : false}
-                  className={curretCellId === "" ? "disabled mainButton" : "active mainButton"}>
-                  Ver</button>
-              </Link>
-              <button
-                onClick={handleEliminar}
-                type="button"
-                disabled={curretCellId === "" || btnDisabled ? true : false}
-                className={`${curretCellId === "" || btnDisabled ? "disabled mainButton" : "active mainButton"}`}>
-                Eliminar</button>
             </span>
           </div>
           <div>
           </div>
         </div>
-        <Link to={"/"}>
-          <button className="mainButton" >Regresar</button>
-        </Link>
       </Form>
       <Outlet/>
       {show ? <ConfirmationModal 
                 show={true} 
-                currentCellId={curretCellId} 
                 btnDisabled={btnDisabled}
                 text="¿Está seguro que desea eliminar el aula?"
                 action="/aula"
-                value="delete_aula" 
+                value={String(currentAula)} 
                 setShow={setShow}/> : null}
     </div>
   )

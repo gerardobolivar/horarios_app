@@ -162,7 +162,7 @@ body{
 .tooltip_ .tooltiptext{
   visibility: hidden;
   width: 300px;
-  background-color: rgb(32, 76, 111,90%);
+  background-color: #ED6E7F;
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -183,6 +183,19 @@ body{
   margin-left: 10px;
 }
 
+.align-end{
+  text-align: end;
+}
+
+.align-end button{
+  width: fit-content;
+  color: var(--ucr_blue);
+  background-color: rgb(255, 255, 255,1%)
+}
+
+.align-end button:hover{
+  color: #fff;
+}
 
 /*Development purposes*/
 .red{
@@ -208,6 +221,15 @@ select option:hover,select option:focus{
   background-color: var(--ucr_blue) !important;
 }
 
+@media(width < 800px){
+
+  .tooltip_ .tooltiptext{
+    width: fit-content;
+    position: absolute;
+    top: -50px !important;
+    left: -150px !important;
+  }
+}
 @media (width < 1200px){
   .metaNavBar a{
     margin: auto;
