@@ -16,13 +16,16 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
   const intent = formData.get("intent");
   const horarioId = Number(params.idhorario);
   const matriculaID = Number(params.idmatricula);
-  const searchQueries = formData.get("filters");
+  // const searchQueries = formData.get("filters");
   const grupo = Number(formData.get("grupo"))
   const timeSpansJson = JSON.parse(timeSpans)
   const color = String(formData.get("color"));
   const timesToRemove = formData.get("times_to_remove") as string;
   const timesToRemoveJson = JSON.parse(timesToRemove);
   const day = formData.get("diaHorario") as string  
+
+  const url = new URL(request.url);
+  const dia = url.searchParams.get("dia") || "LUNES";
   
 
   const isActive = (await getHorario(horarioId))?.active;
@@ -32,11 +35,10 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
   if (intent === "create") {
     if(timeSpansJson.length < 1){
       return null;
-
     }
     try {
       return await createMatricula(curso, timeSpansJson, horarioId, modalidad, profesor, grupo, color, user_id, mobileLab).then(() => {
-        return redirect(`/horario/${horarioId}/${searchQueries}`)
+        return redirect(`/horario/${horarioId}/?dia=${dia}`)
       }).catch(e => {
         console.error(e);
         return [];
@@ -72,7 +74,7 @@ export default async function actionHorarioIdhorarioIdmatricula({ request, param
       await removeMatricula(matriculaID).catch(e => {
       console.error(e);
     });
-    return redirect(`/horario/${horarioId}/${searchQueries}`)
+    return redirect(`/horario/${horarioId}/?dia=${dia}`)
   }
   return null;
 }
