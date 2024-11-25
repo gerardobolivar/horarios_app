@@ -25,7 +25,9 @@ const VirtualCourses: React.FC<Props> = ({ matriculas, horarioId, showVirtual, s
           search: search
         }}
         state={{showVirtual: showVirtual}}>
-          <button>🖉</button>
+          <button className="mainButton iconButton">
+          <i className="bi bi-pencil-fill"></i>
+          </button>
         </Link>
       </td>
     </tr>

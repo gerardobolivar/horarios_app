@@ -235,7 +235,8 @@ export default function HorarioModal() {
           id={t.dia + t.aula_id + t.hora_inicio}
           value={t.time_span_id}
           onClick={handleRemoveTimeSpan}
-          type="button">
+          type="button"
+          className="mainButton iconButton">
           <i className="bi bi-trash-fill"></i>
         </button>
       </td>
@@ -513,9 +514,10 @@ export default function HorarioModal() {
                               if (initialTime !== 0 && endTime !== 0) {
                                 handleTimeSpanAdd();
                               }
-
                               validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
-                            }}>+</button>
+                            }}>
+                              <strong>Agregar</strong>
+                            </button>
                         </span>
                         <span>
                           <label>Horario:</label>

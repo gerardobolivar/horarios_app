@@ -1,6 +1,8 @@
 .confirmationModal{
   text-align: center;
   border: 5px solid #204C6F !important ;
+  height: fit-content !important;
+  overflow: unset;
 }
 
 .confirmationModal p{
@@ -23,4 +25,11 @@ dialog p{
   font-weight: bold;
   margin-top: 3vh;
   margin-bottom: 3vh;
+}
+
+@media (width < 800px){
+  
+  .confirmationModal{
+    width: 90% !important;
+  }
 }
