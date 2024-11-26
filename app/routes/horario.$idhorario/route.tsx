@@ -111,7 +111,8 @@ export default function () {
           horarioId={data.idHorario}
           planes={data.planes}
           setShowVirtual={setShowVirtual}
-          setHideEmpty={setHideEmpty}></Filters>
+          setHideEmpty={setHideEmpty}
+          isGuest={isGuest}></Filters>
       </div>
     </div>
     <div className="regis-btn-sch">
@@ -144,7 +145,7 @@ export default function () {
         </div>
       </div>
       {
-        showVirtual ?
+        showVirtual && !isGuest?
           <div className="virtual_courses_container">
             <div className="virtualCoursesContainer">
               <VirtualCourses

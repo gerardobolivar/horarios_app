@@ -9,8 +9,9 @@ type Props = {
   planes: Planes,
   setHideEmpty: React.Dispatch<React.SetStateAction<boolean>>,
   setShowVirtual: React.Dispatch<React.SetStateAction<boolean>>
+  isGuest:boolean
 }
-const Filters: React.FC<Props> = ({ horarioId, planes, data, setHideEmpty, setShowVirtual }) => {
+const Filters: React.FC<Props> = ({ horarioId, planes, data, setHideEmpty, setShowVirtual, isGuest}) => {
   const submit = useSubmit();
   const [searchParams, setSearchParams] = useSearchParams();
   const [show_virtual, setShow_virtual] = useState(false);
@@ -114,6 +115,8 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data, setHideEmpty, setSh
         </div>
 
         <div className="d-flex align-items-center gap-4 fil-checkboxes">
+          {
+            !isGuest ?
           <div className="form-check">
             <label className="form-check-label" htmlFor="shVirt">Cursos virtuales</label>
             <input
@@ -124,7 +127,8 @@ const Filters: React.FC<Props> = ({ horarioId, planes, data, setHideEmpty, setSh
               className="largerCheckBox form-check-input"
               checked={show_virtual}
               value="true"></input>
-          </div>
+          </div> : null
+          }
           <div className="form-check">
             <label className="form-check-label" htmlFor="shEmpty">Ocultar vacías</label>
             <input
