@@ -70,7 +70,8 @@ const SCHEDULE_ERRORS: SCHEDULE_ERROR = {
   INACTIVE_SCHEDULE: "El horario vinculado a este ciclo se ecuentra inactivo.",
   INACTIVE_SCHEDULE_ADMIN: "Este horario se encuentra inactivo.",
   USER_NOT_AVAILABLE: "El usuario no se encuentra disponible.",
-  NOT_ALLOWED_MAX_LIMIT: "Esta acción no es permitida."
+  NOT_ALLOWED_MAX_LIMIT: "Esta acción no es permitida.",
+  NOT_VISIBLE: "Acción no permitida"
 }
 
 interface Aula{

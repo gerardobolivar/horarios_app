@@ -123,6 +123,7 @@ model Horario{
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
   ciclo Ciclo?
+  visible String @db.Char(1) @default("a")
   horario_close_time HorarioCloseTime? 
 }
 

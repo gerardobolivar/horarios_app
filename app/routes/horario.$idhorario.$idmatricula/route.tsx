@@ -37,13 +37,20 @@ export default function HorarioModal() {
   const should_deactivate = !data.isActive && !isAdmin;
   const course_total_assiganable_hours:number = data.course_hours;
   const [course_hours, setCourse_hours] = useState(isNewMatricula? course_total_assiganable_hours: Number(matricula?.group?.Ahours))
-  const [changeCourseAlarm, setChangeCourseAlarm] = useState(false)
+  const [changeCourseAlarm, setChangeCourseAlarm] = useState(false);
+
+  const [dangerSelects, setDangerSelects] = useState({
+    curso:"",
+    modalidad:""
+  })
+    
+
   
   useEffect(()=>{
     if(isNewMatricula){
       setCourse_hours(course_total_assiganable_hours);
     }
-  },[course_total_assiganable_hours])
+  },[course_total_assiganable_hours,dangerSelects])
   
   
   let filters = {
@@ -136,6 +143,10 @@ export default function HorarioModal() {
     const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value;
     const day = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
     const course = (document.querySelector('select[name="cursoHorario"]') as HTMLSelectElement).value;
+    setDangerSelects({
+      ...dangerSelects,
+      curso: course,
+    })
     
     params.set("dia", `${day}`);
     params.set("aula", aula)
@@ -263,7 +274,7 @@ export default function HorarioModal() {
     </option>
   })
 
-  let ownerTag = user?.role === "ADMIN" ? <p>{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
+  let ownerTag = user?.role === "ADMIN" ? <p className="ownerTag">{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
 
   let timeSpanListRender = timeSpanList.map((t: any) => {
     const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
@@ -271,7 +282,7 @@ export default function HorarioModal() {
     return <tr key={t.dia + t.aula_id + t.hora_inicio} id={t.time_span_id}>
       <td>{` ${(matricula?.group?.completed || !isOwner) && !isNewMatricula ? DIAS[t.dia]: SHORTEN_DAYS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
-      <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
+      <td>{`${TIMES[t.hora_inicio].split("-")[0]} a ${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
       <td hidden={matricula?.group?.completed || (!isNewMatricula && matricula?.group?.completed) || (!matricula?.group?.completed && !isNewMatricula && (!isOwner)) || (!matricula?.group?.completed && !isNewMatricula && (!isAdmin && !isOwner)) }>
         <button
           id={t.dia + t.aula_id + t.hora_inicio}
@@ -386,7 +397,7 @@ export default function HorarioModal() {
                           required={true}
                           hidden={!isNewMatricula}
                           onMouseDown={handleModalidadClick}
-                          onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula) }}
+                          onChange={(e) => { handleModalidadChange(e, setIsVirtual, setSearchParams, aula, setTimeSpanList, setDangerSelects, dangerSelects) }}
                           defaultValue={matricula ? matricula.modalidad : "PRESENCIAL"}
                           className="form-select"
                           aria-label="modalidad_selector">
@@ -461,8 +472,9 @@ export default function HorarioModal() {
                   {(!matricula?.group?.completed && isOwner) || isNewMatricula ?
                     <div className="section">
                       <div hidden={hiddeOwnerOptions && !isNewMatricula}>
-
-                        {course_hours ? <p>{`Horas por asignar: ${course_hours}`}</p>: course_hours === 0 ? <p className="text-success">Completado</p>:"Seleccione un curso"}
+                        <span className="leftTimeTag">
+                          {course_hours ? <p className="">{`Horas por asignar: ${course_hours}`}</p>: course_hours === 0 ? <p className="text-success">Completado</p>:"Seleccione un curso"}
+                        </span>
 
                         <span hidden={matricula?.group?.completed}>
                           <label htmlFor="diaHorario" hidden={true}>Día</label>

@@ -106,4 +106,16 @@ export const getHorarioCloseTimeByHorario = async (horario_id:number) => {
   })
 }
 
-
+export const updateVisibility = async (horario_id: number, visible:string) => {
+  if(visible.length > 1 || visible.length <= 0){
+    console.error("Ivalid string length. Horarios: Visible value?");
+    return null;
+  }else{
+    return await prisma.horario.update({
+      where:{horario_id: horario_id},
+      data:{
+        visible: visible
+      }
+    })
+  }
+}
