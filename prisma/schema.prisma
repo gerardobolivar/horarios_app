@@ -118,6 +118,7 @@ model Matricula{
 model Horario{
   horario_id Int @id @default(autoincrement())
   matriculas Matricula[]
+  grupos Group[]
   active Boolean @default(true)
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
@@ -154,6 +155,8 @@ model Group{
   curso Curso @relation(fields: [course_id],references: [id_curso])
   matricula Matricula @relation(fields: [matricula_id],references: [matricula_id])
   profesor Profesor @relation(fields: [profesor_id],references: [id_profesor])
+  horario Horario @relation(fields: [horario_id],references: [horario_id])
+  horario_id Int @default(3)
   groupNumber Int
   course_id Int
   matricula_id Int @unique
@@ -162,7 +165,7 @@ model Group{
   completed Boolean
   fecha_creado DateTime @default(now())
   fecha_modificado DateTime @updatedAt
-  @@unique([groupNumber,course_id])
+  @@unique([groupNumber,course_id,horario_id])
 }
 
 model Time_span{

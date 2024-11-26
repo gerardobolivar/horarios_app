@@ -206,6 +206,7 @@ export const createMatricula = async (
             Ahours: Ahours,
             profesor_id: profesor_id,
             completed: completed,
+            horario_id: horario_id
           }
         }).then((r) => {
           return r;
