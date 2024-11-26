@@ -3,7 +3,7 @@
 A web application designed to streamline course enrollment management for educational institutions.
 
 
-## Demo
+## Live demo
 
 This demo has restricted access. Limited features are available.
 
