@@ -1,4 +1,4 @@
-# Scheduling system
+# Enrollment management Web App.
 
 A web application designed to streamline course enrollment management for educational institutions.
 
@@ -16,7 +16,7 @@ password: guest2024
 
 ## Tech Stack
 
-**Client:** React, BootStrap
+**Client:** ReactJS, BootStrap V4, Remix
 
-**Server:** Node, Remix/React Router, PrismaJS 
+**Server:** NodeJS, Remix/React Router, Prisma ORM, PostgreSQL
 
