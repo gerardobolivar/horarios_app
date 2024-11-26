@@ -3,6 +3,14 @@
   column-gap: 1px;
 }
 
+.time-column{
+  position: sticky !important;
+  left: 0;
+  background-color: #fff;
+  box-shadow: -20px 0px 0px 0px rgba(255, 255, 255, 1);
+  z-index: 1000;
+}
+
 .time-column, .classroom-column {
   display: grid;
   grid-template-rows: repeat(18, 50px); 
