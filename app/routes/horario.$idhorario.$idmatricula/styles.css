@@ -72,6 +72,20 @@ overflow-y: unset;
   margin-left: 15px;
 }
 
+.leftTimeTag{
+  position: sticky;
+  background-color: #fff;
+  top: 0;
+  box-shadow: 0 0 0 8px #fff;
+  margin-bottom: 25px !important;
+}
+
+.leftTimeTag p{
+  font-weight: bold;
+  box-shadow: 0 0px 25px 20px #fff !important;
+
+}
+
 @media (width < 1200px) {
 
   #cancel_btn{

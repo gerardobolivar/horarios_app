@@ -8,15 +8,30 @@ export function getTimeStamp(matricula_date: string) {
   return `${stringDate} a las ${stringTime}`
 }
 
-export function handleModalidadChange(event: any, setIsVirtual: any, setSearchParams: any, aula: string) {
+export function handleModalidadChange(
+  event: any,
+  setIsVirtual: any,
+  setSearchParams: any,
+  aula: string,
+  setTimeSpanList:React.Dispatch<React.SetStateAction<TimeSpan[]>>,
+  setDangerSelects:React.Dispatch<React.SetStateAction<{curso: string; modalidad: string;}>>,
+  dangerSelects:{curso: string; modalidad: string;}
+  ){
   const modalidad = event.currentTarget.value;
   const aulaSelector = (document.getElementById("aulaHorario") as HTMLSelectElement);
   const virtualClassroomValue = ((document.getElementById("aulaHorario") as HTMLSelectElement).querySelector("option[hidden]") as HTMLOptionElement).value;
   const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
   const diaForm = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
+  const course = (document.querySelector('select[name="cursoHorario"]') as HTMLSelectElement).value;
   diaForm.value = diaFilters
 
   if (modalidad === "VIRTUAL") {
+    setDangerSelects({
+      ...dangerSelects,
+      modalidad: modalidad,
+    })
+
+    setTimeSpanList([]);
     const xpath = "//option[text()='Aula 999']";
     const selectorAula = document.getElementById("aulaHorario");
     (document.getElementById("horaInicio") as HTMLSelectElement).value = "";
@@ -29,6 +44,7 @@ export function handleModalidadChange(event: any, setIsVirtual: any, setSearchPa
     const params = new URLSearchParams();
     params.set("aula", `${valorAulaVirtual.value}`);
     params.set("dia", `${diaFilters}`);
+    params.set("course", course)
     setSearchParams(params)
   } else {
     aulaSelector.value = ""
