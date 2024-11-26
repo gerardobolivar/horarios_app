@@ -103,8 +103,7 @@ interface scheduleFilters {
   planEstudios: string,
   dia: string,
   ubicacion: string,
-  show_virtual: string,
-  hide_empty: string
+  course_id: string
 }
 
 interface LockTime{  

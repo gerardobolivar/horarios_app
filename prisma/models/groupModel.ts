@@ -19,7 +19,7 @@ export const updateGroupCompleteness = async (group_id:number, completed:boolean
   })
 }
 
-export const createGroup = async (groupNumber:number, course_id:number, matricula_id:number, Ahours: number, profesor_id: number,completed:boolean) => {
+export const createGroup = async (groupNumber:number, course_id:number, matricula_id:number, Ahours: number, profesor_id: number,completed:boolean,horario_id:number) => {
   return await prisma.group.create({
     data:{
       groupNumber:groupNumber,
@@ -27,7 +27,8 @@ export const createGroup = async (groupNumber:number, course_id:number, matricul
       matricula_id: matricula_id,
       Ahours: Ahours,
       profesor_id: profesor_id,
-      completed: completed
+      completed: completed,
+      horario_id: horario_id
     }
   })
 }

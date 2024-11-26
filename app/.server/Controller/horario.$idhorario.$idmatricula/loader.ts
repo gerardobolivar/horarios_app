@@ -1,7 +1,7 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/react";
 import { getAula, getAulas } from "prisma/models/aulaModel";
-import { getCourses, getCoursesByUserId } from "prisma/models/courseModel";
+import { getCourseById, getCourses, getCoursesByUserId } from "prisma/models/courseModel";
 import { getHorario } from "prisma/models/horarioModel";
 import { getMatriculaById, getMatriculaModalidad } from "prisma/models/matriculaModelo";
 import { getMovileLabs } from "prisma/models/movileLab";
@@ -33,7 +33,12 @@ const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunc
   const listaMoviles = await getMovileLabs();
   const url = new URL(request.url);
   const dia = url.searchParams.get("dia") || "LUNES";
+  const course_id = Number(url.searchParams.get("course"));
   const aula = Number(url.searchParams.get("aula"));
+  const course_hours: number = Number((await getCourseById(course_id))?.horas)
+  
+  
+  
 
   const matriculaTimeSpans: TimeSpan[] = !!matriculaId ? await getTimeSpanByMatricula(matriculaId).then(r => r).catch(e => {
     console.error(e);
@@ -83,7 +88,8 @@ const loaderHorarioIdhorarioIdmatricula = async ({ params, request }: LoaderFunc
     times: TIMESLOTS,
     time_white_list: time_white_list,
     matricula: isNewMatricula ? null : await getMatriculaById(matriculaId),
-    isActive: isActive
+    isActive: isActive,
+    course_hours: course_hours
   })
 }
 

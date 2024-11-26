@@ -8,7 +8,7 @@ import { requireUser } from "~/.server/session";
 const actionCycleIdcycle = async ({ request, params }: ActionFunctionArgs) =>{
   const userId = await requireUser(request);
   const user = await getUserById(userId);
-  if(user?.role === "ADMIN"){return null}
+  if(user?.role !== "ADMIN"){return null}
   
   const formData = await request.formData();
   const intent = formData.get("intent");

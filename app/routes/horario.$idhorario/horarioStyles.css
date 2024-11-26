@@ -169,6 +169,22 @@
   display: none;
 }
 
+.mainButton{
+  width: fit-content;
+}
+
+.iconButton{
+  color: var(--ucr_blue) !important;
+  background-color: transparent;
+
+}
+
+.iconButton:hover{
+  color: #fff !important;
+  background-color: var(--ucr_blue);
+}
+
+
 @media (width <= 1230px ) and (width >= 1000px ){
   .fil-checkboxes > div > span{
     display: flex;

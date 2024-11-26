@@ -2,7 +2,10 @@
   grid-template: 38vh / auto auto;
   grid-gap: 10px;
   padding: 10px;
-  
+}
+
+body{
+  overflow-y: hidden;
 }
 
 .grid-container > div {

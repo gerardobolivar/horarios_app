@@ -35,22 +35,28 @@ export default function HorarioModal() {
   const isAdmin = user?.role === "ADMIN";
   const [timesToRemove, setTimesToRemove] = useState<number[]>([]);
   const should_deactivate = !data.isActive && !isAdmin;
+  const course_total_assiganable_hours:number = data.course_hours;
+  const [course_hours, setCourse_hours] = useState(isNewMatricula? course_total_assiganable_hours: Number(matricula?.group?.Ahours))
+  const [changeCourseAlarm, setChangeCourseAlarm] = useState(false)
   
-
+  useEffect(()=>{
+    if(isNewMatricula){
+      setCourse_hours(course_total_assiganable_hours);
+    }
+  },[course_total_assiganable_hours])
+  
+  
   let filters = {
     "planEstudios": "",
     "dia": "",
     "ubicacion": "",
-    "show_virtual": "",
-    "hide_empty": ""
+    "course_id": ""
   }
 
   try {
     filters.planEstudios = (document.querySelector('select[name="planEstudios"]') as HTMLSelectElement)?.value;
     filters.dia = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement)?.value;
     filters.ubicacion = (document.querySelector('select[name="ubicacionHorario"]') as HTMLSelectElement)?.value;
-    filters.show_virtual = String((document.querySelector('input[name="show_virtual"]') as HTMLInputElement)?.checked);
-    filters.hide_empty = String((document.querySelector('input[name="show_empty"]') as HTMLInputElement)?.checked);
   } catch (error) {
     console.log(error);
   }
@@ -102,6 +108,8 @@ export default function HorarioModal() {
 
   function handleAulaChange(event: any) {
     const params = new URLSearchParams();
+    const course = (document.querySelector('select[name="cursoHorario"]') as HTMLSelectElement).value;
+    params.set("course", course)
     params.set("dia", `${filters.dia}`);
     params.set("aula", `${event.currentTarget.value}`)
     setSearchParams(params)
@@ -113,9 +121,25 @@ export default function HorarioModal() {
     const selectedDay = event.currentTarget.value
     const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value;
     const diaFilters = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement);
+    const course = (document.querySelector('select[name="cursoHorario"]') as HTMLSelectElement).value;
+    filters.dia = selectedDay;
     diaFilters.value = selectedDay
     params.set("dia", `${selectedDay}`);
     params.set("aula", aula)
+    params.set("course", course)
+    setSearchParams(params)
+  }
+
+  function handleCuorseChange() {
+    setTimeSpanList([]);
+    const params = new URLSearchParams();
+    const aula = (document.querySelector('select[name="aulaHorario"]') as HTMLSelectElement).value;
+    const day = (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value;
+    const course = (document.querySelector('select[name="cursoHorario"]') as HTMLSelectElement).value;
+    
+    params.set("dia", `${day}`);
+    params.set("aula", aula)
+    params.set("course", course)
     setSearchParams(params)
   }
 
@@ -142,10 +166,19 @@ export default function HorarioModal() {
       dia: (document.querySelector('select[name="diaHorarioFilter"]') as HTMLSelectElement).value,
       type: (document.querySelector('select[name="tipoHoras"]') as HTMLSelectElement).value
     }
+    const hoursToAssign = (timeSpan.hora_final-timeSpan.hora_inicio) + 1
+    
 
-    if (!checkDuplicates(timeSpanList, timeSpan) && isAvailable(timeSpanList, timeSpan) && dia) {
-      addTimeSpanToList(timeSpanList, timeSpan);
+    if (!checkDuplicates(timeSpanList, timeSpan) && isAvailable(timeSpanList, timeSpan) && dia && course_hours) {
+      const totalHours = course_hours - hoursToAssign;
+      if(totalHours >= 0){
+        addTimeSpanToList(timeSpanList, timeSpan);
+        setCourse_hours(totalHours);
+
+      }
     } else {
+      console.log("There are not available hours to assign.");
+      
       console.log(timeSpan)
     }
   }
@@ -166,6 +199,15 @@ export default function HorarioModal() {
         list.push(Number(btn.value));
         setTimesToRemove(list);
       }
+      //Calculate the time to restore (ttr)
+      try {
+        const timeSpanToRemove = timeSpanList.filter(t=>t.dia + t.aula_id + t.hora_inicio === btn.id)[0];
+        const ttr = course_hours + ((timeSpanToRemove.hora_final - timeSpanToRemove.hora_inicio));
+        setCourse_hours(ttr);
+      } catch (error) {
+        console.error("Could not remove time span.");
+      }
+      
       const newList = timeSpanList.filter(t => t.dia + t.aula_id + t.hora_inicio !== btn.id)
       setTimeSpanList(newList);
     } else {
@@ -180,7 +222,7 @@ export default function HorarioModal() {
   }
 
   let createSearchQuery: (filters: scheduleFilters) => string = function (filters) {
-    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}&showvirtual=${filters.show_virtual}&hideempty=${filters.hide_empty}`
+    return `?planEstudios=${filters.planEstudios}&dia=${filters.dia}&ubicacion=${filters.ubicacion}`
   }
 
   let profesoresLista = data.listaProfesores.map((profesor) => {
@@ -235,7 +277,8 @@ export default function HorarioModal() {
           id={t.dia + t.aula_id + t.hora_inicio}
           value={t.time_span_id}
           onClick={handleRemoveTimeSpan}
-          type="button">
+          type="button"
+          className="mainButton iconButton">
           <i className="bi bi-trash-fill"></i>
         </button>
       </td>
@@ -244,7 +287,7 @@ export default function HorarioModal() {
 
 
 
-  const renderErrors = areThereErrors ? errorList.map(e => <p key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
+  const renderErrors = areThereErrors ? errorList.map(e => <p className="text-danger" key={e}>{`${SCHEDULE_ERRORS[e]}`}</p>) : null;
 
   return <div className="overlay_styles" >
     <div className="modalContainer">
@@ -268,15 +311,24 @@ export default function HorarioModal() {
 
                   <div className="section">
                     <span>
-                      <label htmlFor="cursoHorario" hidden={true}>Curso</label>
+                      <label htmlFor="cursoHorario" hidden={isNewMatricula}>Curso:</label>
+                      <p>{matricula?.group?.curso?.nombre}</p>
                       <select
+                        style={{display: !isNewMatricula ? "none":""}}
                         name="cursoHorario"
                         id="cursoHorario"
                         required={true}
                         defaultValue={matricula ? matricula?.group?.curso.id_curso : 0}
                         hidden={hiddeOwnerOptions && !isNewMatricula}
                         className="form-select"
-                        aria-label="curso_selector">
+                        aria-label="curso_selector"
+                        onMouseDown={()=>{
+                          if(timeSpanList.length > 0 && !changeCourseAlarm){
+                            alert("Al cambiar de curso se borrarán las franjas horarias selecciodas.");
+                            setChangeCourseAlarm(true);
+                          }
+                        }}
+                        onChange={handleCuorseChange}>
                         <option value={""}>Curso</option>
                         {cursosLista}
                       </select>
@@ -410,7 +462,7 @@ export default function HorarioModal() {
                     <div className="section">
                       <div hidden={hiddeOwnerOptions && !isNewMatricula}>
 
-                        <p>{isNewMatricula ? "" : matricula?.group?.completed ? null : `Horas por asignar: ${matricula?.group?.Ahours}`}</p>
+                        {course_hours ? <p>{`Horas por asignar: ${course_hours}`}</p>: course_hours === 0 ? <p className="text-success">Completado</p>:"Seleccione un curso"}
 
                         <span hidden={matricula?.group?.completed}>
                           <label htmlFor="diaHorario" hidden={true}>Día</label>
@@ -513,9 +565,10 @@ export default function HorarioModal() {
                               if (initialTime !== 0 && endTime !== 0) {
                                 handleTimeSpanAdd();
                               }
-
                               validateTimeSpans(data, filters, aula, errorList, timeSpanList, setErrorList, setAreThereErrors);
-                            }}>+</button>
+                            }}>
+                              <strong>Agregar</strong>
+                            </button>
                         </span>
                         <span>
                           <label>Horario:</label>
@@ -538,7 +591,7 @@ export default function HorarioModal() {
                     : null}
                 </div>
               </div>
-              <div className="errorBlock" style={{ color: "red" }}>
+              <div className="errorBlock">
                 {renderErrors}
               </div>
             </div>

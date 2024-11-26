@@ -125,7 +125,7 @@ export default function () {
         pathname:`/horario/${data.idHorario}/config`,
         search: searchParams.toString()
       }}>
-        <button className="mainButton">
+        <button className="mainButton iconButton">
         <i className="bi bi-gear-fill"></i>
         </button>
       </Link>   
