@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { activateHorarioById, countHorarioCloseTime, createHorarioCloseTime, deactivateHorarioById, deleteHorarioCloseTime } from "prisma/models/horarioModel";
+import { activateHorarioById, countHorarioCloseTime, createHorarioCloseTime, deactivateHorarioById, deleteHorarioCloseTime, updateVisibility } from "prisma/models/horarioModel";
 import TaskMonitor from "~/.server/taskMonitor";
 
 const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionArgs) => {
@@ -7,6 +7,7 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
   const intent = formData.get("intent");
   const horarioId = Number(params.idhorario)
   const dateInput = formData.get("close_sch") as string;
+  const visibiltyInput = formData.get("visibility_select") as string;
   const hasCloseDatime = (await countHorarioCloseTime(horarioId)) >= 1;
 
   if (intent === "archivar") {
@@ -55,6 +56,14 @@ const actionHorarioIdhorarioConfig = async ({ request, params }: ActionFunctionA
     TaskMonitor.stopAll();
     return null;
 
+  }else if(intent === "visibility"){
+    return await updateVisibility(horarioId,visibiltyInput).then((r)=>{
+      return redirect(`/horario/${horarioId}`)
+    }).catch(e=>{
+      console.log(e);
+      return null;
+    });
+    
   } else {
     return null;
   }

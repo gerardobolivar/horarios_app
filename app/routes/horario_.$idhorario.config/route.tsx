@@ -10,13 +10,14 @@ import ReactTimeAgo from 'react-time-ago';
 export default function HorarioConfigPage() {
   const data = useLoaderData<typeof loader>();
   const horarioId = data.horarioId;
-  const horario: any = data.horario;
+  const horario:any = data.horario;
   const ciclo = data.ciclo
   const isBinded = data.ciclo ? true : false;
   const hasCloseTime = data.closeHorario;
   const datetime = new Date(hasCloseTime?.datetime as string);
   const isPast = new Date() > datetime;
   const currentDate = new Date();
+  const visibility = horario?.visible;
 
   return <>
     <div className="container main-doc schConfiCard">
@@ -59,8 +60,7 @@ export default function HorarioConfigPage() {
                       type="datetime-local"
                       name="close_sch"
                       min={currentDate.toISOString()}
-                      className="form-control datetimeInput"
-                      />
+                      className="form-control datetimeInput" />
                     <button
                       id="scheduleBtn"
                       value={"schedule"}
@@ -77,6 +77,33 @@ export default function HorarioConfigPage() {
                         className="btn mainButton submitBtn">Cancelar</button> : null}
                     </div>
                 }
+
+              </div>
+            </Form>
+
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body">
+            <Form method="POST">
+              <header>Visibilidad</header>
+              <div>
+                <p>Este horario puede ser visto por:</p>
+                <select
+                  className="form-select"
+                  name="visibility_select"
+                  id="visibility_select"
+                  defaultValue={visibility}>
+                  <option value="a">Público</option>
+                  <option value="u">Usuarios del sistema</option>
+                  <option value="s">Administradores</option>
+                </select>
+                <button
+                      id="visibilityBtn"
+                      value={"visibility"}
+                      name="intent"
+                      disabled={!horario.active}
+                      className="btn mainButton submitBtn visibilityBtn">Guardar</button>
 
               </div>
             </Form>
