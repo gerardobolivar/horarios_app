@@ -147,7 +147,12 @@ export default function () {
         showVirtual ?
           <div className="virtual_courses_container">
             <div className="virtualCoursesContainer">
-              <VirtualCourses matriculas={data.cursosVirtuales} horarioId={data.idHorario} showVirtual={showVirtual} search={searchParams.toString()}/>
+              <VirtualCourses
+                matriculas={data.cursosVirtuales}
+                horarioId={data.idHorario}
+                showVirtual={showVirtual}
+                search={searchParams.toString()}
+                isAdmin={isAdmin}/>
             </div>
           </div>
         :null

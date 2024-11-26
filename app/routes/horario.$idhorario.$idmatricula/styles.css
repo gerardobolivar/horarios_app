@@ -68,6 +68,10 @@ overflow-y: unset;
   margin-right: 10px;
 }
 
+.ownerTag{
+  margin-left: 15px;
+}
+
 @media (width < 1200px) {
 
   #cancel_btn{

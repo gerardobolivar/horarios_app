@@ -1,7 +1,7 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { getAulas } from "prisma/models/aulaModel";
 import { getHorarioState } from "prisma/models/horarioModel";
-import { filterMatriculas, getVirtualMatriculas } from "prisma/models/matriculaModelo";
+import { filterMatriculas, getVirtualMatriculas, getVirtualMatriculasByHorarioByUser } from "prisma/models/matriculaModelo";
 import { getPlanes } from "prisma/models/planEstudioModel";
 import { getTimesSpanBySchedule } from "prisma/models/timeSpanModel";
 import { getUserById } from "prisma/models/userModel";
@@ -25,7 +25,20 @@ const HorarioLoader = async ({ params, request }: LoaderFunctionArgs) => {
   const timeSlots = TIMESLOTS;
   const timesTitle = TIMES_TITLE;
   const planes: Planes = await getPlanes();
-  const cursosVirtuales: Matricula[] = await getVirtualMatriculas(idHorario);
+
+  let cursosVirtuales: Matricula[]|null;
+
+  if(user?.role === "ADMIN"){
+    cursosVirtuales = await getVirtualMatriculas(idHorario).catch(e=>{
+      console.error(e);
+      return null;
+    });
+  }else{
+    cursosVirtuales = await getVirtualMatriculasByHorarioByUser(idHorario,Number(user!.id_usuario)).catch(e=>{
+      console.error(e);
+      return null;
+    })
+  }
 
   const matriculas: Matricula[] = await filterMatriculas(idHorario, dia, id_plan_estudio, ubicacion).catch(e => {
     console.error(e);

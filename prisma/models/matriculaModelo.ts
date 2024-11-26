@@ -117,6 +117,35 @@ export const getVirtualMatriculas = async (horario_id: number) => {
   });
 }
 
+export const getVirtualMatriculasByHorarioByUser = async (horario_id: number, user_id:number) => {
+  return await prisma.matricula.findMany({
+    where: {
+      horario_id: horario_id,
+      modalidad: "VIRTUAL",
+      user_id: user_id
+    },
+    select: {
+      matricula_id: true,
+      time_spans: {
+        select: {
+          dia: true,
+          hora_inicio: true,
+          hora_final: true,
+          aula: true,
+        }
+      },
+      group: {
+        select: {
+          group_id: true,
+          groupNumber: true,
+          curso: true,
+        }
+      },
+      modalidad: true
+    }
+  });
+}
+
 
 export const getMatriculaById = async (matricula_id: number) => {
   return await prisma.matricula.findUnique({

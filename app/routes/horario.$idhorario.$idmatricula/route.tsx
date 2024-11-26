@@ -263,7 +263,7 @@ export default function HorarioModal() {
     </option>
   })
 
-  let ownerTag = user?.role === "ADMIN" ? <p>{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
+  let ownerTag = user?.role === "ADMIN" ? <p className="ownerTag">{`Dueño: ${matricula?.user.nombre_usuario}`}</p> : null
 
   let timeSpanListRender = timeSpanList.map((t: any) => {
     const aula = data.listaAulas.find(a => a.id_aula === t.aula_id)
@@ -271,7 +271,7 @@ export default function HorarioModal() {
     return <tr key={t.dia + t.aula_id + t.hora_inicio} id={t.time_span_id}>
       <td>{` ${(matricula?.group?.completed || !isOwner) && !isNewMatricula ? DIAS[t.dia]: SHORTEN_DAYS[t.dia]}`}</td>
       <td>{formattedClassroom}</td>
-      <td>{`${TIMES[t.hora_inicio].split("-")[0]}/${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
+      <td>{`${TIMES[t.hora_inicio].split("-")[0]} a ${TIMES[t.hora_final - 1].split("-")[1]}`}</td>
       <td hidden={matricula?.group?.completed || (!isNewMatricula && matricula?.group?.completed) || (!matricula?.group?.completed && !isNewMatricula && (!isOwner)) || (!matricula?.group?.completed && !isNewMatricula && (!isAdmin && !isOwner)) }>
         <button
           id={t.dia + t.aula_id + t.hora_inicio}
